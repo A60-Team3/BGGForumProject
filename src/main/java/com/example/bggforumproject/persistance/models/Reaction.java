@@ -1,21 +1,15 @@
-package com.example.bggforumproject.models;
+package com.example.bggforumproject.persistance.models;
 
-public class Reaction {
+import com.example.bggforumproject.persistance.models.base.BaseEntity;
+import com.example.bggforumproject.persistance.models.enums.ReactionType;
 
-    private int id;
+public class Reaction extends BaseEntity {
+
     private Post postId;
     private User userId;
     private ReactionType reactionType;
 
     public Reaction() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public Post getPostId() {

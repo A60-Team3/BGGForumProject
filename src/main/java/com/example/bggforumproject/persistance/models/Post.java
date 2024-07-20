@@ -1,24 +1,25 @@
-package com.example.bggforumproject.models;
+package com.example.bggforumproject.persistance.models;
+
+import com.example.bggforumproject.persistance.models.base.BaseEntity;
 
 import java.time.LocalDateTime;
 
-public class Comment {
+public class Post extends BaseEntity {
 
-    private int id;
+    private String title;
     private String content;
     private LocalDateTime createdAt;
     private User userId;
-    private Post postId;
 
-    public Comment() {
+    public Post() {
     }
 
-    public int getId() {
-        return id;
+    public String getTitle() {
+        return title;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {
@@ -43,13 +44,5 @@ public class Comment {
 
     public void setUserId(User userId) {
         this.userId = userId;
-    }
-
-    public Post getPostId() {
-        return postId;
-    }
-
-    public void setPostId(Post postId) {
-        this.postId = postId;
     }
 }
