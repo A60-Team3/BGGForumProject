@@ -1,14 +1,25 @@
 package com.example.bggforumproject.persistance.models;
 
 import com.example.bggforumproject.persistance.models.base.BaseEntity;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-
+@Entity
+@Table(name = "comments")
 public class Comment extends BaseEntity {
 
+    @Column(nullable = false)
     private String content;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User userId;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
     private Post postId;
 
     public Comment() {

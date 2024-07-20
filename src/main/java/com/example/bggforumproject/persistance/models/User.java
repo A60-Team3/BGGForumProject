@@ -1,11 +1,10 @@
 package com.example.bggforumproject.persistance.models;
 
 import com.example.bggforumproject.persistance.models.base.BaseEntity;
-import com.example.bggforumproject.persistance.models.enums.UserRole;
+import com.example.bggforumproject.persistance.models.enums.RoleType;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,10 +27,7 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(name = "registered_at")
-    private LocalDateTime registeredAt;
-
-    @Column(name = "user_role", nullable = false)
-    private UserRole role;
+    private LocalDateTime registeredAt = LocalDateTime.now();
 
     @Column(name = "is_blocked")
     private boolean isBlocked = false;
@@ -39,11 +35,16 @@ public class User extends BaseEntity {
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
-    @OneToMany
-    private Set<PhoneNumber> phoneNumbers;
+    @Column(name = "user_role_id", nullable = false)
+    @ManyToMany
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user_id")
-    private List<Post> posts;
+    @OneToMany
+    @JoinColumn
+    private Set<PhoneNumber> phoneNumbers;
 
     public String getFirstName() {
         return firstName;
@@ -93,14 +94,6 @@ public class User extends BaseEntity {
         this.registeredAt = registeredAt;
     }
 
-    public UserRole getRole() {
-        return role;
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
-
     public boolean isBlocked() {
         return isBlocked;
     }
@@ -115,5 +108,21 @@ public class User extends BaseEntity {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Set<PhoneNumber> getPhoneNumbers() {
+        return phoneNumbers;
+    }
+
+    public void setPhoneNumbers(Set<PhoneNumber> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
     }
 }

@@ -1,15 +1,34 @@
 package com.example.bggforumproject.persistance.models;
 
 import com.example.bggforumproject.persistance.models.base.BaseEntity;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Set;
 
+@Entity
+@Table(name = "posts")
 public class Post extends BaseEntity {
 
+    @Column(nullable = false, length = 64)
     private String title;
+
+    @Column(nullable = false, length = 8192)
     private String content;
-    private LocalDateTime createdAt;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User userId;
+
+    @ManyToMany
+    @JoinTable(name = "posts_tags",
+    joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
+    private Set<Tag> tags;
 
     public Post() {
     }
@@ -44,5 +63,20 @@ public class Post extends BaseEntity {
 
     public void setUserId(User userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return Objects.equals(title, post.title)
+                && Objects.equals(content, post.content)
+                && Objects.equals(userId, post.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, content, userId);
     }
 }

@@ -3,6 +3,12 @@ DROP DATABASE boardgames_forum;
 CREATE DATABASE boardgames_forum;
 USE boardgames_forum;
 
+CREATE TABLE roles
+(
+    id      INT AUTO_INCREMENT PRIMARY KEY,
+    role_type  ENUM ('ADMIN', 'MODERATOR', 'USER') NOT NULL
+);
+
 CREATE TABLE users
 (
     id            INT AUTO_INCREMENT PRIMARY KEY,
@@ -12,9 +18,12 @@ CREATE TABLE users
     username      VARCHAR(50)                         NOT NULL,
     password      VARCHAR(50)                         NOT NULL,
     registered_at DATETIME DEFAULT current_timestamp(),
-    user_role     ENUM ('ADMIN', 'MODERATOR', 'USER') NOT NULL,
+    user_role_id     INT         NOT NULL,
     is_blocked    tinyint  DEFAULT 0,
-    is_deleted    tinyint  DEFAULT 0
+    is_deleted    tinyint  DEFAULT 0,
+
+    constraint fk_users_roles
+        foreign key (user_role_id) references roles (id)
 );
 
 CREATE TABLE phones

@@ -2,12 +2,21 @@ package com.example.bggforumproject.persistance.models;
 
 import com.example.bggforumproject.persistance.models.base.BaseEntity;
 import com.example.bggforumproject.persistance.models.enums.ReactionType;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "reactions")
 public class Reaction extends BaseEntity {
-
-    private Post postId;
-    private User userId;
+    @Column(name = "reaction_type", nullable = false)
     private ReactionType reactionType;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post postId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User userId;
 
     public Reaction() {
     }
