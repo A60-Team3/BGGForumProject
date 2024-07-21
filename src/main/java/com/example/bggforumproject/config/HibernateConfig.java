@@ -48,8 +48,8 @@ public class HibernateConfig {
     public Properties hibernateProperties(){
         Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
-        hibernateProperties.setProperty("jpa.show_sql", "true");
-        hibernateProperties.setProperty("jpa.hibernate.ddl-auto", "create");
+        hibernateProperties.setProperty("spring.jpa.show_sql", "true");
+        hibernateProperties.setProperty("spring.jpa.hibernate.ddl-auto", "validate");
         return hibernateProperties;
     }
 }

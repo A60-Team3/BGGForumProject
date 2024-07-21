@@ -1,7 +1,6 @@
 package com.example.bggforumproject.persistance.models;
 
 import com.example.bggforumproject.persistance.models.base.BaseEntity;
-import com.example.bggforumproject.persistance.models.enums.RoleType;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -35,16 +34,12 @@ public class User extends BaseEntity {
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
-    @Column(name = "user_role_id", nullable = false)
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 
-    @OneToMany
-    @JoinColumn
-    private Set<PhoneNumber> phoneNumbers;
 
     public String getFirstName() {
         return firstName;
@@ -116,13 +111,5 @@ public class User extends BaseEntity {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    public Set<PhoneNumber> getPhoneNumbers() {
-        return phoneNumbers;
-    }
-
-    public void setPhoneNumbers(Set<PhoneNumber> phoneNumbers) {
-        this.phoneNumbers = phoneNumbers;
     }
 }

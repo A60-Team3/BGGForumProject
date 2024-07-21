@@ -1,7 +1,13 @@
 package com.example.bggforumproject.service;
 
-import org.springframework.stereotype.Service;
+import com.example.bggforumproject.persistance.models.User;
 
-@Service
+import java.util.List;
+
 public interface UserService {
+    User get(long id);
+
+    User get(String username);
+
+    List<User> getAll();
 }
