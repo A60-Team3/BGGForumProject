@@ -18,7 +18,6 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.env
 .idea
 *.iws
 *.iml
@@ -36,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+#Data
+.env

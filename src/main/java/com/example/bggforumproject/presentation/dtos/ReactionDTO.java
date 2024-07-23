@@ -1,4 +1,4 @@
-package com.example.bggforumproject.presentation.helpers;
+package com.example.bggforumproject.presentation.dtos;
 
 import com.example.bggforumproject.persistance.models.enums.ReactionType;
 import jakarta.validation.constraints.NotNull;

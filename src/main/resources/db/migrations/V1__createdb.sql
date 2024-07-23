@@ -2,25 +2,33 @@ USE boardgames_forum;
 
 CREATE TABLE roles
 (
-    id      INT AUTO_INCREMENT PRIMARY KEY,
-    role_type  ENUM ('ADMIN', 'MODERATOR', 'USER') NOT NULL
+    id        INT AUTO_INCREMENT PRIMARY KEY,
+    role_type ENUM ('ADMIN', 'MODERATOR', 'USER') NOT NULL
 );
 
 CREATE TABLE users
 (
     id            INT AUTO_INCREMENT PRIMARY KEY,
-    first_name    VARCHAR(32)                         NOT NULL,
-    last_name     VARCHAR(32)                         NOT NULL,
-    email         VARCHAR(50)                         NOT NULL UNIQUE,
-    username      VARCHAR(50)                         NOT NULL,
-    password      VARCHAR(50)                         NOT NULL,
+    first_name    VARCHAR(32) NOT NULL,
+    last_name     VARCHAR(32) NOT NULL,
+    email         VARCHAR(50) NOT NULL UNIQUE,
+    username      VARCHAR(50) NOT NULL,
+    password      VARCHAR(1024) NOT NULL,
     registered_at DATETIME DEFAULT current_timestamp(),
-    user_role_id     INT         NOT NULL,
     is_blocked    tinyint  DEFAULT 0,
-    is_deleted    tinyint  DEFAULT 0,
+    is_deleted    tinyint  DEFAULT 0
+);
 
-    constraint fk_users_roles
-        foreign key (user_role_id) references roles (id)
+CREATE TABLE users_roles
+(
+    user_id INT NOT NULL,
+    role_id  INT NOT NULL,
+    constraint fk_users_roles_users
+        foreign key (user_id) references users (id)
+            ON DELETE CASCADE,
+    constraint fk_users_roles_roles
+        foreign key (role_id) references roles (id)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE phones
@@ -40,6 +48,7 @@ CREATE TABLE posts
     title      VARCHAR(64)   NOT NULL,
     content    VARCHAR(8192) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP(),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP(),
     user_id    INT           NOT NULL,
 
     constraint fk_posts_users
@@ -52,6 +61,7 @@ CREATE TABLE comments
     id         INT AUTO_INCREMENT PRIMARY KEY,
     content    VARCHAR(8192) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP(),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP(),
     user_id    INT           NOT NULL,
     post_id    INT           NOT NULL,
 

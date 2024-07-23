@@ -2,13 +2,19 @@ package com.example.bggforumproject.persistance.models;
 
 import com.example.bggforumproject.persistance.models.base.BaseEntity;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
 
     @Column(name = "first_name", nullable = false, length = 32)
     private String firstName;
@@ -26,7 +32,8 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(name = "registered_at")
-    private LocalDateTime registeredAt = LocalDateTime.now();
+    @CreationTimestamp
+    private LocalDateTime registeredAt;
 
     @Column(name = "is_blocked")
     private boolean isBlocked = false;
@@ -38,7 +45,7 @@ public class User extends BaseEntity {
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<Role> roles;
+    private Set<Role> authorities;
 
 
     public String getFirstName() {
@@ -65,6 +72,7 @@ public class User extends BaseEntity {
         this.email = email;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -73,6 +81,7 @@ public class User extends BaseEntity {
         this.username = username;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -105,11 +114,33 @@ public class User extends BaseEntity {
         isDeleted = deleted;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        return authorities;
     }
 
     public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+        this.authorities = roles;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

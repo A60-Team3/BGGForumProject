@@ -1,4 +1,4 @@
-package com.example.bggforumproject.presentation.helpers;
+package com.example.bggforumproject.presentation.dtos;
 
 import jakarta.validation.constraints.NotNull;
 

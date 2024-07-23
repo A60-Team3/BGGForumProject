@@ -13,12 +13,12 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-public class HibernateConfig {
+public class HibernateConfiguration {
 
     private final String dbUrl, dbUsername, dbPassword;
 
     @Autowired
-    public HibernateConfig(Environment env) {
+    public HibernateConfiguration(Environment env) {
         dbUrl = env.getProperty("spring.datasource.url");
         dbUsername = env.getProperty("spring.datasource.username");
         dbPassword = env.getProperty("spring.datasource.password");
@@ -28,7 +28,7 @@ public class HibernateConfig {
     public LocalSessionFactoryBean localSessionFactory(){
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("com.example.bggforumproject.models");
+        sessionFactory.setPackagesToScan("com.example.bggforumproject.persistance.models");
         sessionFactory.setHibernateProperties(hibernateProperties());
 
         return sessionFactory;
@@ -47,7 +47,6 @@ public class HibernateConfig {
 
     public Properties hibernateProperties(){
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
         hibernateProperties.setProperty("spring.jpa.show_sql", "true");
         hibernateProperties.setProperty("spring.jpa.hibernate.ddl-auto", "validate");
         return hibernateProperties;
