@@ -58,6 +58,10 @@ public class SecurityConfig {
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("BGGForum/users/").hasAnyRole("ADMIN", "MODERATOR");
                     auth.requestMatchers("BGGForum/users/me").permitAll();
+                    auth.requestMatchers("BGGForum/posts").permitAll();
+                    auth.requestMatchers("BGGForum/posts/most-commented").permitAll();
+                    auth.requestMatchers("BGGForum/posts/most-recently-created").permitAll();
+                    auth.requestMatchers("BGGForum/posts/{id}").authenticated();
 //                    auth.anyRequest().permitAll();
 //                    auth.anyRequest().authenticated();
                 })

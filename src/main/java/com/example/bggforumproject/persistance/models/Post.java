@@ -3,6 +3,7 @@ package com.example.bggforumproject.persistance.models;
 import com.example.bggforumproject.persistance.models.base.BaseEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -23,11 +24,15 @@ public class Post extends BaseEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User userId;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "posts_tags",
     joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
@@ -58,6 +63,14 @@ public class Post extends BaseEntity {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public User getUserId() {
