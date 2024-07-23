@@ -4,7 +4,6 @@ package com.example.bggforumproject.security.caseOne;
 
 
 import com.example.bggforumproject.persistance.models.User;
-import com.example.bggforumproject.presentation.helpers.UserMapper;
 import com.example.bggforumproject.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ public class AuthenticationControllerOne {
     private final AuthenticationService authenticationService;
     private final JwtService jwtService;
 
-    public AuthenticationControllerOne(UserMapper mapper, AuthenticationService authenticationService, JwtService jwtService) {
+    public AuthenticationControllerOne(AuthenticationService authenticationService, JwtService jwtService) {
         this.authenticationService = authenticationService;
         this.jwtService = jwtService;
     }

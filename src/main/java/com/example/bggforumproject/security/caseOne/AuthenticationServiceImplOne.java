@@ -6,11 +6,13 @@ import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.persistance.models.enums.RoleType;
 import com.example.bggforumproject.persistance.repositories.RoleRepository;
 import com.example.bggforumproject.persistance.repositories.UserRepository;
-import com.example.bggforumproject.presentation.helpers.UserMapper;
+import com.example.bggforumproject.security.caseTwo.RegistrationDTO;
 import com.example.bggforumproject.security.caseTwo.ResponseDTO;
 import com.example.bggforumproject.service.AuthenticationService;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
@@ -22,22 +24,22 @@ public class AuthenticationServiceImplOne implements AuthenticationService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final UserMapper userMapper;
+    private final ModelMapper mapper;
 
 
     public AuthenticationServiceImplOne(UserRepository userRepository, RoleRepository roleRepository,
                                         PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager,
-                                        UserMapper userMapper) {
+                                        ModelMapper mapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
-        this.userMapper = userMapper;
+        this.mapper = mapper;
     }
 
     @Override
     public User registerUser(RegisterUserDTO input) {
-        User user = userMapper.fromDTO(input);
+        User user = mapper.map(input, User.class);
 
         Role role = roleRepository.findByAuthority(RoleType.USER.name());
 
@@ -60,12 +62,14 @@ public class AuthenticationServiceImplOne implements AuthenticationService {
     }
 
     @Override
-    public User registerUser(String firstName, String lastName, String email, String password, String username) {
+    public ResponseDTO registerUser(RegistrationDTO dto) {
         return null;
     }
 
     @Override
-    public ResponseDTO loginUser(String username, String password) {
+    public ResponseDTO loginUser(Authentication auth) {
         return null;
     }
+
+
 }

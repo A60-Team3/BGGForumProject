@@ -9,13 +9,14 @@ import com.example.bggforumproject.persistance.repositories.UserRepository;
 
 import com.example.bggforumproject.security.caseOne.LoginUserDTO;
 import com.example.bggforumproject.security.caseOne.RegisterUserDTO;
+import com.example.bggforumproject.security.caseTwo.RegistrationDTO;
 import com.example.bggforumproject.security.caseTwo.ResponseDTO;
 import com.example.bggforumproject.security.caseTwo.TokenService;
 import com.example.bggforumproject.service.AuthenticationService;
 import jakarta.transaction.Transactional;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,53 +32,53 @@ public class AuthenticationServiceImplTwo implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
+    private final ModelMapper mapper;
 
 
-    public AuthenticationServiceImplTwo(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, TokenService tokenService) {
+    public AuthenticationServiceImplTwo(UserRepository userRepository, RoleRepository roleRepository,
+                                        PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager,
+                                        TokenService tokenService, ModelMapper mapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
+        this.mapper = mapper;
     }
 
-    public User registerUser(String firstName, String lastName, String email, String password , String username){
+    @Override
+    public ResponseDTO registerUser(RegistrationDTO dto) {
 
-        String encodedPassword = passwordEncoder.encode(password);
+        String encodedPassword = passwordEncoder.encode(dto.password());
         Role userRole = roleRepository.findByAuthority(RoleType.USER.name());
 
-        User user = new User();
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setUsername(username);
+        User user = mapper.map(dto, User.class);
+
         user.setPassword(encodedPassword);
         user.setRoles(Set.of(userRole));
 
-        return userRepository.create(user);
+        User created = userRepository.create(user);
+
+        return mapper.map(created, ResponseDTO.class);
     }
 
-    public ResponseDTO loginUser(String username, String password){
+    @Override
+    public ResponseDTO loginUser(Authentication auth) {
 
-        try{
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
-            );
+        String token = tokenService.generateJwt(auth);
+        User user = (User) auth.getPrincipal();
 
-            String token = tokenService.generateJwt(auth);
+        return new ResponseDTO(user.getId(), user.getUsername(), token);
 
-            return new ResponseDTO((User) auth.getPrincipal(), token);
-
-        } catch(AuthenticationException e){
-            return new ResponseDTO(null, "");
-        }
     }
-//One
+
+    //One
     @Override
     public User registerUser(RegisterUserDTO user) {
         return null;
     }
-//One
+
+    //One
     @Override
     public User loginUser(LoginUserDTO input) {
         return null;

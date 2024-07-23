@@ -26,6 +26,9 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    implementation 'org.modelmapper:modelmapper:3.2.0'
+    implementation 'org.modelmapper:modelmapper-module-record:1.0.0'
+
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

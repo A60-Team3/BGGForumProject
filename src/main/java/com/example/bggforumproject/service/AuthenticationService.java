@@ -4,13 +4,16 @@ package com.example.bggforumproject.service;
 import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.security.caseOne.LoginUserDTO;
 import com.example.bggforumproject.security.caseOne.RegisterUserDTO;
+import com.example.bggforumproject.security.caseTwo.RegistrationDTO;
 import com.example.bggforumproject.security.caseTwo.ResponseDTO;
+import org.springframework.security.core.Authentication;
 
 public interface AuthenticationService {
+    ResponseDTO loginUser(Authentication auth);
+
     User registerUser(RegisterUserDTO user);
-    ResponseDTO loginUser(String username, String password);
+
+    ResponseDTO registerUser(RegistrationDTO dto);
 
     User loginUser(LoginUserDTO input);
-
-    User registerUser(String firstName, String lastName, String email, String password, String username);
 }

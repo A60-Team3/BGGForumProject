@@ -43,11 +43,11 @@ public class TagRepositoryImpl implements TagRepository {
     @Override
     public Tag get(String name) {
         try(Session session = sessionFactory.openSession()){
-            Query<Tag> query = session.createQuery("from Tag where name like :name");
+            Query<Tag> query = session.createQuery("from Tag where name like :name", Tag.class);
             query.setParameter("name", name);
 
             List<Tag> result = query.list();
-            if(result.size() == 0){
+            if(result.isEmpty()){
                 throw new EntityNotFoundException("Tag", "name", name);
             }
             return result.get(0);

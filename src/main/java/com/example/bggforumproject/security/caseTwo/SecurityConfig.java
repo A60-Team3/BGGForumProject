@@ -1,6 +1,12 @@
 package com.example.bggforumproject.security.caseTwo;
 
 
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,13 +25,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
 
 @Configuration
@@ -33,7 +35,7 @@ public class SecurityConfig {
 
     private final RSAKeyProperties keys;
 
-    public SecurityConfig(RSAKeyProperties keys) {
+    public SecurityConfig(RSAKeyProperties keys, UserDetailsService userDetailsService) {
         this.keys = keys;
     }
 
@@ -43,9 +45,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authManager(UserDetailsService detailsService) {
+    public AuthenticationManager authManager(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-        daoProvider.setUserDetailsService(detailsService);
+        daoProvider.setUserDetailsService(userDetailsService);
         daoProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(daoProvider);
     }
@@ -56,19 +58,24 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
-                    auth.requestMatchers("BGGForum/users/").hasAnyRole("ADMIN", "MODERATOR");
-                    auth.requestMatchers("BGGForum/users/me").permitAll();
+                    auth.requestMatchers("/BGGForum/users/").hasAnyRole("ADMIN", "MODERATOR");
+                    auth.requestMatchers("/BGGForum/users/me").permitAll();
+                    auth.requestMatchers("/BGGForum").permitAll();
                     auth.requestMatchers("BGGForum/posts").permitAll();
                     auth.requestMatchers("BGGForum/posts/most-commented").permitAll();
                     auth.requestMatchers("BGGForum/posts/most-recently-created").permitAll();
                     auth.requestMatchers("BGGForum/posts/{id}").authenticated();
 //                    auth.anyRequest().permitAll();
-//                    auth.anyRequest().authenticated();
+                    auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .addLogoutHandler(new SecurityContextLogoutHandler())
+                        .logoutSuccessHandler(logoutSuccessHandler()));
 
         return http.build();
     }
@@ -95,4 +102,10 @@ public class SecurityConfig {
         return jwtConverter;
     }
 
+    @Bean
+    public LogoutSuccessHandler logoutSuccessHandler() {
+        SimpleUrlLogoutSuccessHandler successHandler = new SimpleUrlLogoutSuccessHandler();
+        successHandler.setDefaultTargetUrl("/BGGForum?logout");
+        return successHandler;
+    }
 }

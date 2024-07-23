@@ -24,11 +24,11 @@ public class UserRepositoryImpl implements UserRepository {
         try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User where username = :username", User.class);
             query.setParameter("username", username);
-            User user = query.list().get(0);
-            if (user == null) {
+
+            if (query.list().isEmpty()) {
                 throw new EntityNotFoundException("User", "username", username);
             }
-            return user;
+            return query.list().get(0);
         }
 
     }
@@ -38,11 +38,11 @@ public class UserRepositoryImpl implements UserRepository {
         try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User where email = :email", User.class);
             query.setParameter("email", email);
-            User user = query.list().get(0);
-            if (user == null) {
+
+            if (query.list().isEmpty()) {
                 throw new EntityNotFoundException("User", "email", email);
             }
-            return user;
+            return query.list().get(0);
         }
     }
 
@@ -73,6 +73,6 @@ public class UserRepositoryImpl implements UserRepository {
             session.getTransaction().commit();
         }
 
-        return findByEmail(user.getEmail());
+        return findByUsername(user.getUsername());
     }
 }
