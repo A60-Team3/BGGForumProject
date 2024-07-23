@@ -10,9 +10,9 @@ import org.springframework.security.core.GrantedAuthority;
 public class Role extends BaseEntity implements GrantedAuthority {
 
     @Column(name = "role_type")
-    private RoleType authority;
+    private String authority;
 
-    public Role(RoleType type) {
+    public Role(String type) {
         this.authority = type;
     }
 
@@ -20,13 +20,13 @@ public class Role extends BaseEntity implements GrantedAuthority {
 
     }
 
-    public void setAuthority(RoleType type) {
+    public void setAuthority(String type) {
         this.authority = type;
     }
 
     @Override
     public String getAuthority() {
-        return authority.name();
+        return authority;
     }
 
 

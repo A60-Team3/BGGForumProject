@@ -25,4 +25,6 @@ public record RegistrationDTO(
         @Email(message = "Email should be valid")
         @Size(max = 255, message = "Email should not be more than 255 characters")
         String email
-) {}
+) {
+
+}

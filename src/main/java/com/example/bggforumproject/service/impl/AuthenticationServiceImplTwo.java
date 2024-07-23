@@ -1,4 +1,4 @@
-package com.example.bggforumproject.security.caseTwo;
+package com.example.bggforumproject.service.impl;
 
 
 import com.example.bggforumproject.persistance.models.Role;
@@ -9,6 +9,8 @@ import com.example.bggforumproject.persistance.repositories.UserRepository;
 
 import com.example.bggforumproject.security.caseOne.LoginUserDTO;
 import com.example.bggforumproject.security.caseOne.RegisterUserDTO;
+import com.example.bggforumproject.security.caseTwo.ResponseDTO;
+import com.example.bggforumproject.security.caseTwo.TokenService;
 import com.example.bggforumproject.service.AuthenticationService;
 import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
