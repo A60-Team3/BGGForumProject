@@ -8,8 +8,8 @@ import com.example.bggforumproject.persistance.repositories.PostRepository;
 import com.example.bggforumproject.persistance.repositories.UserRepository;
 import com.example.bggforumproject.presentation.helpers.CommentFilterOptions;
 import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
+import com.example.bggforumproject.presentation.helpers.UserFilterOptions;
 import com.example.bggforumproject.service.UserService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +29,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User get(long id) {
         return userRepository.findById(id);
-
     }
 
     @Override
@@ -38,8 +37,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<User> getAll(UserFilterOptions userFilterOptions) {
+        return userRepository.findAll(userFilterOptions);
     }
 
     @Override

@@ -63,7 +63,6 @@ public class PostServiceImpl implements PostService {
     public void update(Post post, User user) throws EntityNotFoundException{
         checkModifyPermissions(post.getId(), user);
 
-
         postRepository.update(post);
     }
 

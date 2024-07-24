@@ -14,7 +14,8 @@ CREATE TABLE users
     email         VARCHAR(50) NOT NULL UNIQUE,
     username      VARCHAR(50) NOT NULL,
     password      VARCHAR(1024) NOT NULL,
-    registered_at DATETIME DEFAULT current_timestamp(),
+    registered_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ,
     is_blocked    tinyint  DEFAULT 0,
     is_deleted    tinyint  DEFAULT 0
 );

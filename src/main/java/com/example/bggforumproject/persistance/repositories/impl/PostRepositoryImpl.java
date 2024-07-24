@@ -7,6 +7,7 @@ import com.example.bggforumproject.persistance.repositories.UserRepository;
 import com.example.bggforumproject.presentation.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.presentation.exceptions.InvalidFilterArgumentException;
 import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
+import com.example.bggforumproject.presentation.helpers.UserFilterOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -189,7 +190,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     private String generateOrderBy(PostFilterOptions postFilterOptions) {
         if (postFilterOptions.getSortBy().isEmpty()) {
-            return "";
+            return String.format(" order by u.id %s", determineSortOrder(postFilterOptions));
         }
 
         String orderBy = switch (postFilterOptions.getSortBy().get()) {
@@ -204,15 +205,19 @@ public class PostRepositoryImpl implements PostRepository {
             case "yearUpdated" -> "year(p.updatedAt)";
             case "monthUpdated" -> "month(p.updatedAt)";
             case "dayUpdated" -> "day(p.updatedAt)";
-            default -> "";
+            default -> "p.id";
         };
 
-        orderBy = String.format(" order by %s", orderBy);
-
-        if (postFilterOptions.getSortOrder().isPresent() && postFilterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
-            orderBy = String.format("%s desc", orderBy);
-        }
+        orderBy = String.format(" order by %s %s", orderBy, determineSortOrder(postFilterOptions));
 
         return orderBy;
+    }
+
+    private String determineSortOrder(PostFilterOptions postFilterOptions) {
+        if (postFilterOptions.getSortOrder().isPresent() &&
+                postFilterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
+            return "desc";
+        }
+        return "";
     }
 }

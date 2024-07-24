@@ -59,4 +59,12 @@ public class Comment extends BaseEntity {
     public void setPostId(Post postId) {
         this.postId = postId;
     }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

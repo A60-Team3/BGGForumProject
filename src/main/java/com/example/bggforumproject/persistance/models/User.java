@@ -3,6 +3,7 @@ package com.example.bggforumproject.persistance.models;
 import com.example.bggforumproject.persistance.models.base.BaseEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +35,10 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "registered_at")
     @CreationTimestamp
     private LocalDateTime registeredAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @Column(name = "is_blocked")
     private boolean isBlocked = false;
@@ -97,6 +102,14 @@ public class User extends BaseEntity implements UserDetails {
         this.registeredAt = registeredAt;
     }
 
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public boolean isBlocked() {
         return isBlocked;
     }
@@ -125,12 +138,12 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return !isDeleted();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isBlocked();
     }
 
     @Override
@@ -140,6 +153,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !isBlocked();
     }
 }

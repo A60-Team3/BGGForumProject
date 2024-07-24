@@ -6,6 +6,7 @@ import com.example.bggforumproject.presentation.exceptions.EntityNotFoundExcepti
 import com.example.bggforumproject.presentation.exceptions.InvalidFilterArgumentException;
 import com.example.bggforumproject.presentation.helpers.CommentFilterOptions;
 import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
+import com.example.bggforumproject.presentation.helpers.UserFilterOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -34,14 +35,22 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public List<Comment> get(CommentFilterOptions commentFilterOptions) {
-        try(Session session = sessionFactory.openSession()){
-            StringBuilder queryString = new StringBuilder("from Comment");
+        try (Session session = sessionFactory.openSession()) {
+            StringBuilder queryString = new StringBuilder("from Comment c");
 
             List<String> filters = new ArrayList<>();
             Map<String, Object> params = new HashMap<>();
 
+            if (commentFilterOptions.getCommentedTo().isPresent()) {
+                queryString.append(" join c.postId p");
+            }
+
+            if (commentFilterOptions.getCreatedBy().isPresent()) {
+                queryString.append(" join c.userId u");
+            }
+
             commentFilterOptions.getContent().ifPresent(value -> {
-                filters.add("p.content like :content");
+                filters.add("c.content like :content");
                 params.put("content", String.format("%%%s%%", value));
             });
 
@@ -50,7 +59,7 @@ public class CommentRepositoryImpl implements CommentRepository {
                 String date = value.split(",")[1];
 
                 if (VALID_CONDITIONS.contains(condition)) {
-                    filters.add(String.format("createdAt %s (:created)", condition));
+                    filters.add(String.format("c.createdAt %s (:created)", condition));
                     params.put("created", LocalDateTime.parse(date, FORMATTER));
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
@@ -62,7 +71,7 @@ public class CommentRepositoryImpl implements CommentRepository {
                 String date = value.split(",")[1];
 
                 if (VALID_CONDITIONS.contains(condition)) {
-                    filters.add(String.format("updatedAt %s (:updated)", condition));
+                    filters.add(String.format("c.updatedAt %s (:updated)", condition));
                     params.put("updated", LocalDateTime.parse(date, FORMATTER));
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
@@ -70,12 +79,12 @@ public class CommentRepositoryImpl implements CommentRepository {
             });
 
             commentFilterOptions.getCreatedBy().ifPresent(value -> {
-                filters.add("userId = :userId");
+                filters.add("u.id = :userId");
                 params.put("userId", value);
             });
 
             commentFilterOptions.getCommentedTo().ifPresent(value -> {
-                filters.add("postId = :postId");
+                filters.add("p.id = :postId");
                 params.put("postId", value);
             });
 
@@ -97,11 +106,11 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public Comment get(int id) {
-        try(Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             Comment comment = session.get(Comment.class, id);
 
 
-            if (comment == null){
+            if (comment == null) {
                 throw new EntityNotFoundException("Comment", id);
             }
 
@@ -111,7 +120,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public void create(Comment comment) {
-        try(Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.persist(comment);
             session.getTransaction().commit();
@@ -120,7 +129,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public void update(Comment comment) {
-        try(Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.merge(comment);
             session.getTransaction().commit();
@@ -130,7 +139,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public void delete(int id) {
         Comment commentToDelete = get(id);
-        try(Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.remove(commentToDelete);
             session.getTransaction().commit();
@@ -139,29 +148,34 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     private String generateOrderBy(CommentFilterOptions commentFilterOptions) {
         if (commentFilterOptions.getSortBy().isEmpty()) {
-            return "";
+            return String.format(" order by u.id %s", determineSortOrder(commentFilterOptions));
         }
 
         String orderBy = switch (commentFilterOptions.getSortBy().get()) {
-            case "content" -> "content";
-            case "user" -> "userId";
-            case "created" -> "createdAt";
-            case "yearCreated" -> "year(createdAt)";
-            case "monthCreated" -> "month(createdAt)";
-            case "dayCreated" -> "day(createdAt)";
-            case "updated" -> "updatedAt";
-            case "yearUpdated" -> "year(updatedAt)";
-            case "monthUpdated" -> "month(updatedAt)";
-            case "dayUpdated" -> "day(updatedAt)";
-            default -> "";
+            case "content" -> "c.content";
+            case "user" -> "c.userId";
+            case "created" -> "c.createdAt";
+            case "yearCreated" -> "year(c.createdAt)";
+            case "monthCreated" -> "month(c.createdAt)";
+            case "dayCreated" -> "day(c.createdAt)";
+            case "updated" -> "c.updatedAt";
+            case "yearUpdated" -> "year(c.updatedAt)";
+            case "monthUpdated" -> "month(c.updatedAt)";
+            case "dayUpdated" -> "day(c.updatedAt)";
+            case "commentedTo" -> "c.postId";
+            default -> "c.id";
         };
 
-        orderBy = String.format(" order by %s", orderBy);
-
-        if (commentFilterOptions.getSortOrder().isPresent() && commentFilterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
-            orderBy = String.format("%s desc", orderBy);
-        }
+        orderBy = String.format(" order by %s %s", orderBy, determineSortOrder(commentFilterOptions));
 
         return orderBy;
+    }
+
+    private String determineSortOrder(CommentFilterOptions commentFilterOptions) {
+        if (commentFilterOptions.getSortOrder().isPresent() &&
+                commentFilterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
+            return "desc";
+        }
+        return "";
     }
 }
