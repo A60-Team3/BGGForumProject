@@ -33,7 +33,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post get(int id) {
+    public Post get(long id) {
         return postRepository.get(id);
     }
 
@@ -67,7 +67,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void delete(int id, User user) {
+    public void delete(long id, User user) {
         checkDeletePermissions(id, user);
 
         postRepository.delete(id);

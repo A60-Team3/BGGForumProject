@@ -11,7 +11,7 @@ public interface PostRepository {
 
     List<Post> get(PostFilterOptions postFilterOptions);
 
-    Post get(int id);
+    Post get(long id);
 
     Post get(String title);
 
@@ -19,7 +19,7 @@ public interface PostRepository {
 
     void update(Post post);
 
-    void delete(int id);
+    void delete(long id);
 
     List<Post> getMostCommented();
 

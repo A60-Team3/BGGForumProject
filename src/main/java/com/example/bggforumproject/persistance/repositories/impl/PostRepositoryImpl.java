@@ -110,7 +110,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post get(int id) {
+    public Post get(long id) {
         try (Session session = sessionFactory.openSession()) {
             Post post = session.get(Post.class, id);
             if (post == null) {
@@ -179,7 +179,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(long id) {
         Post postToDelete = get(id);
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();

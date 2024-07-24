@@ -1,22 +1,22 @@
-package com.example.bggforumproject.persistance.repositories;
+package com.example.bggforumproject.service;
 
 import com.example.bggforumproject.persistance.models.Comment;
 import com.example.bggforumproject.persistance.models.Post;
+import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.presentation.helpers.CommentFilterOptions;
 
 import java.util.List;
 
-public interface CommentRepository {
-
-    List<Comment> get(CommentFilterOptions commentFilterOptions);
+public interface CommentService {
 
     List<Comment> getCommentsForPost(long postId);
 
     Comment get(long id);
 
-    void create(Comment comment);
+    void create(Comment comment, User user);
 
-    void update(Comment comment);
+    void update(Comment comment, User user);
 
-    void delete(long id);
+    void delete(long id, User user);
+
 }

@@ -10,7 +10,7 @@ public interface PostService {
 
     List<Post> get(PostFilterOptions postFilterOptions);
 
-    Post get(int id);
+    Post get(long id);
 
     Post get(String title);
 
@@ -18,7 +18,7 @@ public interface PostService {
 
     void update(Post post, User user);
 
-    void delete(int id, User user);
+    void delete(long id, User user);
 
     List<Post> getMostCommented();
 

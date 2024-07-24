@@ -105,7 +105,17 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public Comment get(int id) {
+    public List<Comment> getCommentsForPost(long postId) {
+        try(Session session = sessionFactory.openSession()){
+            Query<Comment> query = session.createQuery("from Comment " +
+                    "where postId.id = :postId");
+            query.setParameter("postId", postId);
+            return query.list();
+        }
+    }
+
+    @Override
+    public Comment get(long id) {
         try (Session session = sessionFactory.openSession()) {
             Comment comment = session.get(Comment.class, id);
 
@@ -137,7 +147,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(long id) {
         Comment commentToDelete = get(id);
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
