@@ -51,7 +51,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
             commentFilterOptions.getContent().ifPresent(value -> {
                 filters.add("c.content like :content");
-                params.put("content", String.format("%%%s%%", value));
+                params.put("content", String.format("%%%s%%", value.trim()));
             });
 
             commentFilterOptions.getCreated().ifPresent(value -> {
@@ -60,7 +60,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
                 if (VALID_CONDITIONS.contains(condition)) {
                     filters.add(String.format("c.createdAt %s (:created)", condition));
-                    params.put("created", LocalDateTime.parse(date, FORMATTER));
+                    params.put("created", LocalDateTime.parse(date.trim(), FORMATTER));
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
                 }
@@ -72,7 +72,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
                 if (VALID_CONDITIONS.contains(condition)) {
                     filters.add(String.format("c.updatedAt %s (:updated)", condition));
-                    params.put("updated", LocalDateTime.parse(date, FORMATTER));
+                    params.put("updated", LocalDateTime.parse(date.trim(), FORMATTER));
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
                 }
@@ -158,10 +158,10 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     private String generateOrderBy(CommentFilterOptions commentFilterOptions) {
         if (commentFilterOptions.getSortBy().isEmpty()) {
-            return String.format(" order by u.id %s", determineSortOrder(commentFilterOptions));
+            return String.format(" order by c.id %s", determineSortOrder(commentFilterOptions));
         }
 
-        String orderBy = switch (commentFilterOptions.getSortBy().get()) {
+        String orderBy = switch (commentFilterOptions.getSortBy().get().trim()) {
             case "content" -> "c.content";
             case "user" -> "c.userId";
             case "created" -> "c.createdAt";

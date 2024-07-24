@@ -57,18 +57,19 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/auth/**").permitAll();
+                    auth.requestMatchers("/auth/login").permitAll();
+                    auth.requestMatchers("/auth/register").permitAll();
+                    auth.requestMatchers("/BGGForum/main").permitAll();
+                    auth.requestMatchers("/BGGForum/posts/most-commented").permitAll();
+                    auth.requestMatchers("/BGGForum/posts/most-recently-created").permitAll();
+                    auth.requestMatchers("/BGGForum/admin/**").hasAnyRole("ADMIN", "MODERATOR");
+                    auth.requestMatchers("/BGGForum/users/**").hasAnyRole("ADMIN", "MODERATOR", "USER");
                     auth.requestMatchers("/BGGForum/users/").hasAnyRole("ADMIN", "MODERATOR");
-                    auth.requestMatchers("/BGGForum/users/me").permitAll();
-                    auth.requestMatchers("/BGGForum").permitAll();
-                    auth.requestMatchers("BGGForum/posts").permitAll();
-                    auth.requestMatchers("BGGForum/posts/most-commented").permitAll();
-                    auth.requestMatchers("BGGForum/posts/most-recently-created").permitAll();
-                    auth.requestMatchers("BGGForum/posts/{id}").authenticated();
-                    auth.requestMatchers("BGGForum/posts/{id}/comments").authenticated();
-                    auth.requestMatchers("BGGForum/posts/{postId}/comments/{commentId}").authenticated();
-                    auth.requestMatchers("BGGForum/posts/{id}/reactions").authenticated();
-//                    auth.anyRequest().permitAll();
+                    auth.requestMatchers("/BGGForum/admin/admin/**").hasAnyRole("ADMIN");
+//                    auth.requestMatchers("BGGForum/posts/{id}").authenticated();
+//                    auth.requestMatchers("BGGForum/posts/{id}/comments").authenticated();
+//                    auth.requestMatchers("BGGForum/posts/{postId}/comments/{commentId}").authenticated();
+//                    auth.requestMatchers("BGGForum/posts/{id}/reactions").authenticated();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->
@@ -108,7 +109,7 @@ public class SecurityConfig {
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
         SimpleUrlLogoutSuccessHandler successHandler = new SimpleUrlLogoutSuccessHandler();
-        successHandler.setDefaultTargetUrl("/BGGForum?logout");
+        successHandler.setDefaultTargetUrl("/BGGForum/main");
         return successHandler;
     }
 }

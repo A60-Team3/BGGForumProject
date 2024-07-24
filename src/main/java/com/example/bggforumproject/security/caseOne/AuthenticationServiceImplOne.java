@@ -6,8 +6,8 @@ import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.persistance.models.enums.RoleType;
 import com.example.bggforumproject.persistance.repositories.RoleRepository;
 import com.example.bggforumproject.persistance.repositories.UserRepository;
-import com.example.bggforumproject.security.caseTwo.RegistrationDTO;
-import com.example.bggforumproject.security.caseTwo.ResponseDTO;
+import com.example.bggforumproject.presentation.dtos.RegistrationDTO;
+import com.example.bggforumproject.presentation.dtos.ResponseDTO;
 import com.example.bggforumproject.service.AuthenticationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,7 +44,7 @@ public class AuthenticationServiceImplOne implements AuthenticationService {
         Role role = roleRepository.findByAuthority(RoleType.USER.name());
 
         user.setPassword(passwordEncoder.encode(input.password()));
-        user.setAuthorities(Set.of(role));
+        user.setRoles(Set.of(role));
 
         return userRepository.create(user);
     }

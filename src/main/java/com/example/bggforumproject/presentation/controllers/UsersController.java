@@ -6,9 +6,13 @@ import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.presentation.dtos.CommentOutDTO;
 import com.example.bggforumproject.presentation.dtos.PostOutFullDTO;
 import com.example.bggforumproject.presentation.dtos.UserOutDTO;
+import com.example.bggforumproject.presentation.dtos.UserUpdateDTO;
+import com.example.bggforumproject.presentation.exceptions.AuthorizationException;
 import com.example.bggforumproject.presentation.helpers.CommentFilterOptions;
 import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
+import com.example.bggforumproject.presentation.helpers.UserFilterOptions;
 import com.example.bggforumproject.service.UserService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,6 +27,8 @@ import java.util.stream.Collectors;
 @CrossOrigin("*")
 public class UsersController {
 
+    private static final String MODIFY_USER_ERROR_MESSAGE = " Only a user can modified his info!";
+
     private final UserService userService;
     private final ModelMapper mapper;
 
@@ -32,23 +38,34 @@ public class UsersController {
         this.mapper = mapper;
     }
 
-//    @GetMapping("/")
-//    public ResponseEntity<List<UserOutDTO>> getAll() {
-//
-//        List<User> users = userService
-//                .getAll(new UserFilterOptions(
-//                                null, null, null,
-//                                null, null, null,
-//                                null, null, null,
-//                                null, null
-//                        )
-//                );
-//
-//        List<UserOutDTO> userOutDTOS = users.stream()
-//                .map(user -> mapper.map(user, UserOutDTO.class))
-//                .toList();
-//        return ResponseEntity.ok(userOutDTOS);
-//    }
+    @GetMapping("/")
+    public ResponseEntity<List<UserOutDTO>> getAll(
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String registered,
+            @RequestParam(required = false) String updated,
+            @RequestParam(required = false) Boolean isBlocked,
+            @RequestParam(required = false) Boolean isDeleted,
+            @RequestParam(required = false) String authority,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder
+    ) {
+        UserFilterOptions userFilterOptions =
+                new UserFilterOptions(
+                        firstName, lastName, email, username,
+                        registered, updated, isBlocked, isDeleted,
+                        authority, sortBy, sortOrder
+                );
+
+        List<User> users = userService.getAll(userFilterOptions);
+        List<UserOutDTO> userOutDTOS = users.stream()
+                .map(user -> mapper.map(user, UserOutDTO.class))
+                .toList();
+
+        return ResponseEntity.ok(userOutDTOS);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserOutDTO> getById(@PathVariable long id) {
@@ -109,5 +126,26 @@ public class UsersController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(commentOutDTOS);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserOutDTO> update(@PathVariable long id, @Valid @RequestBody UserUpdateDTO dto) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
+
+        checkModifyPermissions(currentUser.getId(), id);
+
+        User user = mapper.map(dto, User.class);
+
+        User updatedUser = userService.update(currentUser, user);
+
+        return ResponseEntity.ok(mapper.map(updatedUser, UserOutDTO.class));
+    }
+
+    private void checkModifyPermissions(long currentUser, long requestUser) {
+        if (currentUser != requestUser) {
+            throw new AuthorizationException(MODIFY_USER_ERROR_MESSAGE);
+        }
     }
 }

@@ -9,17 +9,15 @@ import com.example.bggforumproject.persistance.repositories.UserRepository;
 
 import com.example.bggforumproject.security.caseOne.LoginUserDTO;
 import com.example.bggforumproject.security.caseOne.RegisterUserDTO;
-import com.example.bggforumproject.security.caseTwo.RegistrationDTO;
-import com.example.bggforumproject.security.caseTwo.ResponseDTO;
+import com.example.bggforumproject.presentation.dtos.RegistrationDTO;
+import com.example.bggforumproject.presentation.dtos.ResponseDTO;
 import com.example.bggforumproject.security.caseTwo.TokenService;
 import com.example.bggforumproject.service.AuthenticationService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.authentication.AuthenticationManager;
 
 import java.util.Set;
 
@@ -30,18 +28,16 @@ public class AuthenticationServiceImplTwo implements AuthenticationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final ModelMapper mapper;
 
 
     public AuthenticationServiceImplTwo(UserRepository userRepository, RoleRepository roleRepository,
-                                        PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager,
-                                        TokenService tokenService, ModelMapper mapper) {
+                                        PasswordEncoder passwordEncoder, TokenService tokenService,
+                                        ModelMapper mapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.mapper = mapper;
     }
@@ -55,7 +51,7 @@ public class AuthenticationServiceImplTwo implements AuthenticationService {
         User user = mapper.map(dto, User.class);
 
         user.setPassword(encodedPassword);
-        user.setAuthorities(Set.of(userRole));
+        user.setRoles(Set.of(userRole));
 
         User created = userRepository.create(user);
 

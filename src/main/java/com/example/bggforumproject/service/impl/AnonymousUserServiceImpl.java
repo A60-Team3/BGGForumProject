@@ -1,10 +1,13 @@
 package com.example.bggforumproject.service.impl;
 
+import com.example.bggforumproject.persistance.models.Post;
 import com.example.bggforumproject.persistance.repositories.PostRepository;
 import com.example.bggforumproject.persistance.repositories.UserRepository;
 import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
 import com.example.bggforumproject.service.AnonymousUserService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AnonymousUserServiceImpl implements AnonymousUserService {
@@ -25,7 +28,13 @@ public class AnonymousUserServiceImpl implements AnonymousUserService {
     @Override
     public long countPosts() {
         return postRepository.get(
-                new PostFilterOptions(null, null, null, null, null, null, null, null))
+                        new PostFilterOptions(null, null, null, null,
+                                null, null, null, null))
                 .size();
+    }
+
+    @Override
+    public List<Post> getAllPosts(PostFilterOptions postFilterOptions) {
+        return postRepository.get(postFilterOptions);
     }
 }

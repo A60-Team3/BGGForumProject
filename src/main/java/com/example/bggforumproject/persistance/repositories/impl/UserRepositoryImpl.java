@@ -90,22 +90,22 @@ public class UserRepositoryImpl implements UserRepository {
 
             userFilterOptions.getFirstName().ifPresent(value -> {
                 filters.add("u.firstName like :firstName");
-                params.put("firstName", String.format("%%%s%%", value));
+                params.put("firstName", String.format("%%%s%%", value.trim()));
             });
 
             userFilterOptions.getLastName().ifPresent(value -> {
                 filters.add("u.lastName like :lastName");
-                params.put("lastName", String.format("%%%s%%", value));
+                params.put("lastName", String.format("%%%s%%", value.trim()));
             });
 
             userFilterOptions.getEmail().ifPresent(value -> {
                 filters.add("u.email like :email");
-                params.put("email", String.format("%%%s%%", value));
+                params.put("email", String.format("%%%s%%", value.trim()));
             });
 
             userFilterOptions.getUsername().ifPresent(value -> {
                 filters.add("u.username like :username");
-                params.put("username", String.format("%%%s%%", value));
+                params.put("username", String.format("%%%s%%", value.trim()));
             });
 
             userFilterOptions.getRegistered().ifPresent(value -> {
@@ -114,7 +114,7 @@ public class UserRepositoryImpl implements UserRepository {
 
                 if (VALID_CONDITIONS.contains(condition)) {
                     filters.add(String.format("u.registeredAt %s (:registered)", condition));
-                    params.put("registered", LocalDateTime.parse(date, FORMATTER));
+                    params.put("registered", LocalDateTime.parse(date.trim(), FORMATTER));
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
                 }
@@ -126,7 +126,7 @@ public class UserRepositoryImpl implements UserRepository {
 
                 if (VALID_CONDITIONS.contains(condition)) {
                     filters.add(String.format("u.updatedAt %s (:updated)", condition));
-                    params.put("updated", LocalDateTime.parse(date, FORMATTER));
+                    params.put("updated", LocalDateTime.parse(date.trim(), FORMATTER));
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
                 }
@@ -144,7 +144,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             userFilterOptions.getAuthority().ifPresent(value -> {
                 filters.add("LOWER(r.authority) = :roleType");
-                params.put("roleType", value);
+                params.put("roleType", value.trim());
             });
 
             if (!filters.isEmpty()) {
@@ -171,6 +171,25 @@ public class UserRepositoryImpl implements UserRepository {
         }
 
         return findByUsername(user.getUsername());
+    }
+
+    @Override
+    public void update(User user) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.merge(user);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void delete(long id) {
+        User userToDelete = findById(id);
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.remove(userToDelete);
+            session.getTransaction().commit();
+        }
     }
 
     private String generateOrderBy(UserFilterOptions userFilterOptions) {

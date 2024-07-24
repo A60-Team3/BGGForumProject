@@ -128,12 +128,15 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         return authorities;
     }
 
-    public void setAuthorities(Set<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.authorities = roles;
+    }
+
+    public Set<Role> getRoles(){
+        return authorities;
     }
 
     @Override

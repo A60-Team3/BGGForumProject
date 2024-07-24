@@ -1,4 +1,6 @@
 package com.example.bggforumproject.presentation.dtos;
 
-public record UnknownOutDTO(long userCount, long postCount) {
+import java.util.List;
+
+public record UnknownOutDTO(long userCount, long postCount, List<PostAnonymousOutDTO> postOutFullDTOS) {
 }

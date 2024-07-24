@@ -4,8 +4,8 @@ package com.example.bggforumproject.service;
 import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.security.caseOne.LoginUserDTO;
 import com.example.bggforumproject.security.caseOne.RegisterUserDTO;
-import com.example.bggforumproject.security.caseTwo.RegistrationDTO;
-import com.example.bggforumproject.security.caseTwo.ResponseDTO;
+import com.example.bggforumproject.presentation.dtos.RegistrationDTO;
+import com.example.bggforumproject.presentation.dtos.ResponseDTO;
 import org.springframework.security.core.Authentication;
 
 public interface AuthenticationService {

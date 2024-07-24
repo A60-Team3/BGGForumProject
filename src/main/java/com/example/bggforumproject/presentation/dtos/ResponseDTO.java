@@ -1,4 +1,4 @@
-package com.example.bggforumproject.security.caseTwo;
+package com.example.bggforumproject.presentation.dtos;
 
 public class ResponseDTO {
     private long id;

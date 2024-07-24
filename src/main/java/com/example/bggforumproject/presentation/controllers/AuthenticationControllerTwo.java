@@ -1,11 +1,10 @@
 package com.example.bggforumproject.presentation.controllers;
 
 
-import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.presentation.exceptions.CustomAuthenticationException;
-import com.example.bggforumproject.security.caseTwo.LoginDTO;
-import com.example.bggforumproject.security.caseTwo.RegistrationDTO;
-import com.example.bggforumproject.security.caseTwo.ResponseDTO;
+import com.example.bggforumproject.presentation.dtos.LoginDTO;
+import com.example.bggforumproject.presentation.dtos.RegistrationDTO;
+import com.example.bggforumproject.presentation.dtos.ResponseDTO;
 import com.example.bggforumproject.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class AuthenticationControllerTwo {
     }
 
     @PostMapping("/register")
-    public ResponseDTO addUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
+    public ResponseDTO registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
         return authenticationService.registerUser(registrationDTO);
     }
 

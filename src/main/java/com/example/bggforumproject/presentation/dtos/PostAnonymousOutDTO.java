@@ -1,19 +1,16 @@
 package com.example.bggforumproject.presentation.dtos;
 
-
 import java.time.LocalDateTime;
 import java.util.Set;
 
-public class PostOutFullDTO {
+public class PostAnonymousOutDTO {
     private String title;
-
-    private String content;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    private long userId;
+    private String userFullName;
 
     private Set<String> tags;
 
@@ -23,14 +20,6 @@ public class PostOutFullDTO {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -49,12 +38,12 @@ public class PostOutFullDTO {
         this.updatedAt = updatedAt;
     }
 
-    public long getUserId() {
-        return userId;
+    public String getUserFullName() {
+        return userFullName;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setUserFullName(String userName) {
+        this.userFullName = userName;
     }
 
     public Set<String> getTags() {

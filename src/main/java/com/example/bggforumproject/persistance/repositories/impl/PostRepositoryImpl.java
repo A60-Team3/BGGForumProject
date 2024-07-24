@@ -49,19 +49,18 @@ public class PostRepositoryImpl implements PostRepository {
             Map<String, Object> params = new HashMap<>();
 
             postFilterOptions.getUserId().ifPresent(value -> {
-
                 filters.add("u.id = :userId");
                 params.put("userId", value);
             });
 
             postFilterOptions.getTitle().ifPresent(value -> {
                 filters.add("p.title like :title");
-                params.put("title", String.format("%%%s%%", value));
+                params.put("title", String.format("%%%s%%", value.trim()));
             });
 
             postFilterOptions.getContent().ifPresent(value -> {
                 filters.add("p.content like :content");
-                params.put("content", String.format("%%%s%%", value));
+                params.put("content", String.format("%%%s%%", value.trim()));
             });
 
             postFilterOptions.getTags().ifPresent(value -> {
@@ -78,7 +77,7 @@ public class PostRepositoryImpl implements PostRepository {
 
                 if (VALID_CONDITIONS.contains(condition)) {
                     filters.add(String.format("p.createdAt %s (:created)", condition));
-                    params.put("created", LocalDateTime.parse(date, FORMATTER));
+                    params.put("created", LocalDateTime.parse(date.trim(), FORMATTER));
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
                 }
@@ -90,7 +89,7 @@ public class PostRepositoryImpl implements PostRepository {
 
                 if (VALID_CONDITIONS.contains(condition)) {
                     filters.add(String.format("p.updatedAt %s (:updated)", condition));
-                    params.put("updated", LocalDateTime.parse(date, FORMATTER));
+                    params.put("updated", LocalDateTime.parse(date.trim(), FORMATTER));
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
                 }
@@ -190,10 +189,10 @@ public class PostRepositoryImpl implements PostRepository {
 
     private String generateOrderBy(PostFilterOptions postFilterOptions) {
         if (postFilterOptions.getSortBy().isEmpty()) {
-            return String.format(" order by u.id %s", determineSortOrder(postFilterOptions));
+            return String.format(" order by p.id %s", determineSortOrder(postFilterOptions));
         }
 
-        String orderBy = switch (postFilterOptions.getSortBy().get()) {
+        String orderBy = switch (postFilterOptions.getSortBy().get().trim()) {
             case "title" -> "p.title";
             case "content" -> "p.content";
             case "user" -> "p.userId";

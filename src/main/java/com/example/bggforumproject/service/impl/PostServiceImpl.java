@@ -74,16 +74,17 @@ public class PostServiceImpl implements PostService {
     }
 
     private void checkModifyPermissions(long postId, User user) {
-        Post post = postRepository.get((int) postId);
+        Post post = postRepository.get(postId);
         if (post.getUserId().getId() != user.getId()) {
             throw new AuthorizationException(MODIFY_POST_ERROR_MESSAGE);
         }
     }
 
     private void checkDeletePermissions(long postId, User user) {
-        Post post = postRepository.get((int) postId);
+        Post post = postRepository.get(postId);
         boolean isRegularUser = user.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("USER"));
+
         if (isRegularUser) {
             if(user.getId() != post.getUserId().getId()) {
                 throw new AuthorizationException(DELETE_POST_ERROR_MESSAGE);

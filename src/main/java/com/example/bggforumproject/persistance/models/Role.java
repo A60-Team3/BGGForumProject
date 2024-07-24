@@ -1,9 +1,10 @@
 package com.example.bggforumproject.persistance.models;
 
 import com.example.bggforumproject.persistance.models.base.BaseEntity;
-import com.example.bggforumproject.persistance.models.enums.RoleType;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Objects;
 
 @Entity
 @Table(name = "roles")
@@ -29,5 +30,16 @@ public class Role extends BaseEntity implements GrantedAuthority {
         return authority;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(authority, role.authority);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(authority);
+    }
 }

@@ -9,13 +9,13 @@ CREATE TABLE roles
 CREATE TABLE users
 (
     id            INT AUTO_INCREMENT PRIMARY KEY,
-    first_name    VARCHAR(32) NOT NULL,
-    last_name     VARCHAR(32) NOT NULL,
-    email         VARCHAR(50) NOT NULL UNIQUE,
-    username      VARCHAR(50) NOT NULL,
-    password      VARCHAR(1024) NOT NULL,
-    registered_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ,
+    first_name    VARCHAR(32)                        NOT NULL,
+    last_name     VARCHAR(32)                        NOT NULL,
+    email         VARCHAR(50)                        NOT NULL UNIQUE,
+    username      VARCHAR(50)                        NOT NULL,
+    password      VARCHAR(1024)                      NOT NULL,
+    registered_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     is_blocked    tinyint  DEFAULT 0,
     is_deleted    tinyint  DEFAULT 0
 );
@@ -23,7 +23,7 @@ CREATE TABLE users
 CREATE TABLE users_roles
 (
     user_id INT NOT NULL,
-    role_id  INT NOT NULL,
+    role_id INT NOT NULL,
     constraint fk_users_roles_users
         foreign key (user_id) references users (id)
             ON DELETE CASCADE,

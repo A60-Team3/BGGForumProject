@@ -2,17 +2,19 @@ package com.example.bggforumproject.presentation.controllers;
 
 import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.persistance.repositories.UserRepository;
+import com.example.bggforumproject.presentation.dtos.BlockDTO;
 import com.example.bggforumproject.presentation.dtos.UserOutDTO;
 import com.example.bggforumproject.presentation.helpers.UserFilterOptions;
 import com.example.bggforumproject.service.UserService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/BGGForum/admin")
@@ -25,32 +27,39 @@ public class AdminController {
         this.mapper = mapper;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<UserOutDTO>> getAll(
-            @RequestParam(required = false) String firstName,
-            @RequestParam(required = false) String lastName,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String username,
-            @RequestParam(required = false) String registered,
-            @RequestParam(required = false) String updated,
-            @RequestParam(required = false) Boolean isBlocked,
-            @RequestParam(required = false) Boolean isDeleted,
-            @RequestParam(required = false) String authority,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String sortOrder
-    ) {
-        UserFilterOptions userFilterOptions =
-                new UserFilterOptions(
-                        firstName, lastName, email, username,
-                        registered, updated, isBlocked, isDeleted,
-                        authority, sortBy, sortOrder
-                );
+    @PutMapping("/{id}")
+    public void blockUser(@PathVariable long id, @RequestBody BlockDTO dto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
 
-        List<User> users = userService.getAll(userFilterOptions);
-        List<UserOutDTO> userOutDTOS = users.stream()
-                .map(user -> mapper.map(user, UserOutDTO.class))
-                .toList();
+        userService.blockUser(id, currentUser, dto);
+    }
 
-        return ResponseEntity.ok(userOutDTOS);
+
+    @PutMapping("/admin/{id}")
+    public ResponseEntity<UserOutDTO> promoteUser(@PathVariable long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
+
+        User user = userService.promote(id, currentUser);
+        UserOutDTO dto = mapper.map(user, UserOutDTO.class);
+
+        return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/admin/{id}/archive")
+    public void archiveUser(@PathVariable long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
+
+         userService.softDelete(id, currentUser);
+    }
+
+    @DeleteMapping("/admin/{id}")
+    public void deleteUser(@PathVariable long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
+
+        userService.delete(id, currentUser);
     }
 }
