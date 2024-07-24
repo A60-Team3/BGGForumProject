@@ -1,8 +1,10 @@
 package com.example.bggforumproject.persistance.repositories.impl;
 
+import com.example.bggforumproject.persistance.models.Post;
 import com.example.bggforumproject.persistance.models.Tag;
 import com.example.bggforumproject.persistance.repositories.TagRepository;
 import com.example.bggforumproject.presentation.exceptions.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class TagRepositoryImpl implements TagRepository {
@@ -30,7 +33,7 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
-    public Tag get(int id) {
+    public Tag get(long id) {
         try(Session session = sessionFactory.openSession()){
             Tag tag = session.get(Tag.class, id);
             if(tag == null){
@@ -55,10 +58,31 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
+    public List<Tag> getTagsOfPost(long postId) {
+        try(Session session = sessionFactory.openSession()){
+            Query<Tag> query = session.createQuery("select t from Post p " +
+                    "join p.tags t " +
+                    "where p.id = :postId");
+            query.setParameter("postId", postId);
+            return query.list();
+        }
+    }
+
+    @Override
     public void create(Tag tag) {
         try(Session session = sessionFactory.openSession()){
             session.beginTransaction();
             session.persist(tag);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void addTagToPost(Tag tag, Post post) {
+        try(Session session = sessionFactory.openSession()){
+            session.beginTransaction();
+            session.persist(tag);
+            session.merge(post);
             session.getTransaction().commit();
         }
     }
@@ -72,8 +96,10 @@ public class TagRepositoryImpl implements TagRepository {
         }
     }
 
+
+
     @Override
-    public void delete(int id) {
+    public void delete(long id) {
         Tag tagToDelete = get(id);
         try(Session session = sessionFactory.openSession()){
             session.beginTransaction();

@@ -1,21 +1,12 @@
 package com.example.bggforumproject.presentation.controllers;
 
-import com.example.bggforumproject.persistance.models.Comment;
-import com.example.bggforumproject.persistance.models.Post;
-import com.example.bggforumproject.persistance.models.Reaction;
-import com.example.bggforumproject.persistance.models.User;
-import com.example.bggforumproject.presentation.dtos.CommentDTO;
-import com.example.bggforumproject.presentation.dtos.PostCreateDTO;
-import com.example.bggforumproject.presentation.dtos.PostUpdateDTO;
-import com.example.bggforumproject.presentation.dtos.ReactionDTO;
+import com.example.bggforumproject.persistance.models.*;
+import com.example.bggforumproject.presentation.dtos.*;
 import com.example.bggforumproject.presentation.exceptions.AuthorizationException;
 import com.example.bggforumproject.presentation.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.presentation.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
-import com.example.bggforumproject.service.CommentService;
-import com.example.bggforumproject.service.PostService;
-import com.example.bggforumproject.service.ReactionService;
-import com.example.bggforumproject.service.UserService;
+import com.example.bggforumproject.service.*;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -25,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,13 +26,20 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
     private final ReactionService reactionService;
+    private final TagService tagService;
     private final UserService userService;
     private final ModelMapper mapper;
 
-    public PostController(PostService postService, CommentService commentService, ReactionService reactionService, UserService userService, ModelMapper mapper) {
+    public PostController(PostService postService,
+                          CommentService commentService,
+                          ReactionService reactionService,
+                          TagService tagService,
+                          UserService userService,
+                          ModelMapper mapper) {
         this.postService = postService;
         this.commentService = commentService;
         this.reactionService = reactionService;
+        this.tagService = tagService;
         this.userService = userService;
         this.mapper = mapper;
     }
@@ -89,6 +88,21 @@ public class PostController {
     @GetMapping("/{id}/reactions")
     public List<Reaction> getReactions(@PathVariable long id) {
         return reactionService.getAll(id);
+    }
+
+    @PostMapping("/{id}/tags")
+    public Post addTagToPost(@PathVariable long id, @Valid @RequestBody TagDTO tagDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            User currentUser = userService.get(authentication.getName());
+            Post post = postService.get(id);
+            Tag tagToAdd = mapper.map(tagDto, Tag.class);
+            tagService.addTagToPost(tagToAdd, post);
+
+            return post;
+        } catch (EntityDuplicateException e){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        }
     }
 
     @PostMapping
@@ -269,6 +283,45 @@ public class PostController {
             }
 
             reactionService.delete(reactionId, currentUser);
+
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{postId}/tags/{tagId}")
+    public void deleteTagFromPost(@PathVariable long postId, @PathVariable long tagId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        try {
+
+            User currentUser = userService.get(authentication.getName());
+            Tag tag = tagService.get(tagId);
+            Post post = tag.getPosts().stream().filter(p -> p.getId() == postId).findFirst().orElseThrow();
+            if (post.getId() != postId) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong post");
+            }
+
+            tagService.deleteTagFromPost(tagId, post, currentUser);
+
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/tags/{id}")
+    public void deleteTag(@PathVariable long id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        try {
+
+            User currentUser = userService.get(authentication.getName());
+
+            tagService.delete(id, currentUser);
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
