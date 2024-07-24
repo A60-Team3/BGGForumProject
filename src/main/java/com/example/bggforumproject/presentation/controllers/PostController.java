@@ -2,15 +2,19 @@ package com.example.bggforumproject.presentation.controllers;
 
 import com.example.bggforumproject.persistance.models.Comment;
 import com.example.bggforumproject.persistance.models.Post;
+import com.example.bggforumproject.persistance.models.Reaction;
 import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.presentation.dtos.CommentDTO;
 import com.example.bggforumproject.presentation.dtos.PostCreateDTO;
 import com.example.bggforumproject.presentation.dtos.PostUpdateDTO;
+import com.example.bggforumproject.presentation.dtos.ReactionDTO;
 import com.example.bggforumproject.presentation.exceptions.AuthorizationException;
+import com.example.bggforumproject.presentation.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.presentation.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
 import com.example.bggforumproject.service.CommentService;
 import com.example.bggforumproject.service.PostService;
+import com.example.bggforumproject.service.ReactionService;
 import com.example.bggforumproject.service.UserService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -29,12 +33,14 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final ReactionService reactionService;
     private final UserService userService;
     private final ModelMapper mapper;
 
-    public PostController(PostService postService, CommentService commentService, UserService userService, ModelMapper mapper) {
+    public PostController(PostService postService, CommentService commentService, ReactionService reactionService, UserService userService, ModelMapper mapper) {
         this.postService = postService;
         this.commentService = commentService;
+        this.reactionService = reactionService;
         this.userService = userService;
         this.mapper = mapper;
     }
@@ -80,6 +86,11 @@ public class PostController {
         return commentService.getCommentsForPost(id);
     }
 
+    @GetMapping("/{id}/reactions")
+    public List<Reaction> getReactions(@PathVariable long id) {
+        return reactionService.getAll(id);
+    }
+
     @PostMapping
     public Post create(@Valid @RequestBody PostCreateDTO postDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -104,6 +115,24 @@ public class PostController {
         comment.setPostId(post);
         commentService.create(comment, currentUser);
         return comment;
+    }
+
+    @PostMapping("/{id}/reactions")
+    public Reaction createReaction(@PathVariable long id, @Valid @RequestBody ReactionDTO reactionDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        try {
+            User currentUser = userService.get(authentication.getName());
+            Post post = postService.get(id);
+            Reaction reaction = mapper.map(reactionDto, Reaction.class);
+            reaction.setPostId(post);
+            reactionService.create(reaction, currentUser, post);
+            return reaction;
+        } catch (EntityDuplicateException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
@@ -160,6 +189,38 @@ public class PostController {
 
     }
 
+    @PutMapping("/{postId}/reactions/{reactionId}")
+    public Reaction update(@PathVariable long postId,
+                           @PathVariable long reactionId,
+                           @Valid @RequestBody ReactionDTO reactionDto){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        try {
+
+            User currentUser = userService.get(authentication.getName());
+            Reaction repoReaction = reactionService.get(reactionId);
+            Post post = repoReaction.getPostId();
+            if (post.getId() != postId) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reaction does not belong to the specified post");
+            }
+
+            Reaction reaction = mapper.map(reactionDto, Reaction.class);
+            reaction.setId(reactionId);
+            reaction.setPostId(repoReaction.getPostId());
+            reaction.setUserId(repoReaction.getUserId());
+
+            reactionService.update(reaction, currentUser, post);
+            return reaction;
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        }
+
+
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -175,7 +236,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}/comments/{commentId}")
-    public void deleteComment(@PathVariable long postId, @PathVariable long commentId){
+    public void deleteComment(@PathVariable long postId, @PathVariable long commentId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         try {
@@ -194,4 +255,25 @@ public class PostController {
         }
     }
 
+    @DeleteMapping("/{postId}/reactions/{reactionId}")
+    public void delete(@PathVariable long postId, @PathVariable long reactionId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        try {
+
+            User currentUser = userService.get(authentication.getName());
+            Reaction repoReaction = reactionService.get(reactionId);
+            Post post = repoReaction.getPostId();
+            if (post.getId() != postId) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reaction does not belong to the specified post");
+            }
+
+            reactionService.delete(reactionId, currentUser);
+
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        }
+    }
 }

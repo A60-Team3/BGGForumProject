@@ -67,6 +67,7 @@ public class SecurityConfig {
                     auth.requestMatchers("BGGForum/posts/{id}").authenticated();
                     auth.requestMatchers("BGGForum/posts/{id}/comments").authenticated();
                     auth.requestMatchers("BGGForum/posts/{postId}/comments/{commentId}").authenticated();
+                    auth.requestMatchers("BGGForum/posts/{id}/reactions").authenticated();
 //                    auth.anyRequest().permitAll();
                     auth.anyRequest().authenticated();
                 })

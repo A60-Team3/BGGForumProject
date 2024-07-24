@@ -1,5 +1,6 @@
 package com.example.bggforumproject.presentation.helpers;
 
+import com.example.bggforumproject.presentation.exceptions.AuthorizationException;
 import com.example.bggforumproject.presentation.exceptions.CustomAuthenticationException;
 import com.example.bggforumproject.presentation.exceptions.EntityNotFoundException;
 import org.springframework.http.HttpHeaders;
@@ -58,6 +59,13 @@ public class GlobalExceptionHandler {
         HttpHeaders headers = new HttpHeaders();
         headers.add("description", "Date provided is not valid.");
         return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<?> handleEntityNotFoundException(AuthorizationException ex) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("description", ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.FORBIDDEN);
     }
 //
 //    @ExceptionHandler(EntityDuplicateException.class)

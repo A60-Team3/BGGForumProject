@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "reactions")
 public class Reaction extends BaseEntity {
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "reaction_type", nullable = false)
     private ReactionType reactionType;
 
