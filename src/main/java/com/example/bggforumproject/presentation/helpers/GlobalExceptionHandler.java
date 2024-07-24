@@ -12,6 +12,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.time.DateTimeException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -49,6 +51,13 @@ public class GlobalExceptionHandler {
         HttpHeaders headers = new HttpHeaders();
         headers.add("description", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(DateTimeException.class)
+    public ResponseEntity<?> handleEntityNotFoundException(DateTimeException ex) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("description", "Date provided is not valid.");
+        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.BAD_REQUEST);
     }
 //
 //    @ExceptionHandler(EntityDuplicateException.class)

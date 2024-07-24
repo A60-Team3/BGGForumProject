@@ -55,7 +55,7 @@ public class AuthenticationServiceImplTwo implements AuthenticationService {
         User user = mapper.map(dto, User.class);
 
         user.setPassword(encodedPassword);
-        user.setRoles(Set.of(userRole));
+        user.setAuthorities(Set.of(userRole));
 
         User created = userRepository.create(user);
 

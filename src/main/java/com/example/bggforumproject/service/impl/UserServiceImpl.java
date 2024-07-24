@@ -1,29 +1,35 @@
 package com.example.bggforumproject.service.impl;
 
+import com.example.bggforumproject.persistance.models.Comment;
+import com.example.bggforumproject.persistance.models.Post;
 import com.example.bggforumproject.persistance.models.User;
+import com.example.bggforumproject.persistance.repositories.CommentRepository;
+import com.example.bggforumproject.persistance.repositories.PostRepository;
 import com.example.bggforumproject.persistance.repositories.UserRepository;
-import com.example.bggforumproject.presentation.dtos.UserOutDTO;
+import com.example.bggforumproject.presentation.helpers.CommentFilterOptions;
+import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
 import com.example.bggforumproject.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final ModelMapper mapper;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper mapper) {
+    public UserServiceImpl(UserRepository userRepository, PostRepository postRepository,
+                           CommentRepository commentRepository) {
         this.userRepository = userRepository;
-        this.mapper = mapper;
+        this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
-    public UserOutDTO get(long id) {
-        User user = userRepository.findById(id);
+    public User get(long id) {
+        return userRepository.findById(id);
 
-        return mapper.map(user, UserOutDTO.class);
     }
 
     @Override
@@ -34,5 +40,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public List<Post> getSpecificUserPosts(PostFilterOptions postFilterOptions) {
+        return postRepository.get(postFilterOptions);
+    }
+
+    @Override
+    public List<Comment> getSpecificUserComments(CommentFilterOptions commentFilterOptions) {
+        return commentRepository.get(commentFilterOptions);
     }
 }

@@ -47,7 +47,6 @@ public class User extends BaseEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> authorities;
 
-
     public String getFirstName() {
         return firstName;
     }
@@ -120,7 +119,7 @@ public class User extends BaseEntity implements UserDetails {
         return authorities;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setAuthorities(Set<Role> roles) {
         this.authorities = roles;
     }
 

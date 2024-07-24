@@ -5,34 +5,44 @@ import java.util.Optional;
 
 public class CommentFilterOptions {
 
-    private Optional<LocalDateTime> createdBefore;
-    private Optional<LocalDateTime> createdAfter;
-    private Optional<String> createdBy;
-    private Optional<String> sortBy;
-    private Optional<String> sortOrder;
+    private final Optional<String> content;
+    private final Optional<String> created;
+    private final Optional<String> updated;
+    private final Optional<Long> createdBy;
+    private final Optional<Long> commentedTo;
+    private final Optional<String> sortBy;
+    private final Optional<String> sortOrder;
 
-    public CommentFilterOptions(Optional<LocalDateTime> createdBefore,
-                                Optional<LocalDateTime> createdAfter,
-                                Optional<String> createdBy,
-                                Optional<String> sortBy,
-                                Optional<String> sortOrder) {
-        this.createdBefore = createdBefore;
-        this.createdAfter = createdAfter;
-        this.createdBy = createdBy;
-        this.sortBy = sortBy;
-        this.sortOrder = sortOrder;
+    public CommentFilterOptions(String content, String created, String updated,
+                                Long createdBy, Long commentedTo,
+                                String sortBy, String sortOrder) {
+        this.created = Optional.ofNullable(created);
+        this.updated = Optional.ofNullable(updated);
+        this.createdBy = Optional.ofNullable(createdBy);
+        this.sortBy = Optional.ofNullable(sortBy);
+        this.sortOrder = Optional.ofNullable(sortOrder);
+        this.content = Optional.ofNullable(content);
+        this.commentedTo = Optional.ofNullable(commentedTo);
     }
 
-    public Optional<LocalDateTime> getCreatedBefore() {
-        return createdBefore;
+    public Optional<String> getContent() {
+        return content;
     }
 
-    public Optional<LocalDateTime> getCreatedAfter() {
-        return createdAfter;
+    public Optional<String> getCreated() {
+        return created;
     }
 
-    public Optional<String> getCreatedBy() {
+    public Optional<String> getUpdated() {
+        return updated;
+    }
+
+    public Optional<Long> getCreatedBy() {
         return createdBy;
+    }
+
+    public Optional<Long> getCommentedTo() {
+        return commentedTo;
     }
 
     public Optional<String> getSortBy() {

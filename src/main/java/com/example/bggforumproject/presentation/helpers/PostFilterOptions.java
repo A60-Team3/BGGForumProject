@@ -1,17 +1,30 @@
 package com.example.bggforumproject.presentation.helpers;
 
+import com.example.bggforumproject.persistance.models.User;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class PostFilterOptions {
 
-    private Optional<String> title;
-    private Optional<Integer> tagId;
-    private Optional<String> sortBy;
-    private Optional<String> sortOrder;
+    private final Optional<String> title;
+    private final Optional<String> content;
+    private final Optional<Long> userId;
+    private final Optional<String> tags;
+    private final Optional<String> created;
+    private final Optional<String> updated;
+    private final Optional<String> sortBy;
+    private final Optional<String> sortOrder;
 
-    public PostFilterOptions(String title, Integer tagId, String sortBy, String sortOrder){
+    public PostFilterOptions(String title, String content, Long userId,
+                             String tags, String created, String updated,
+                             String sortBy, String sortOrder) {
         this.title = Optional.ofNullable(title);
-        this.tagId = Optional.ofNullable(tagId);
+        this.content = Optional.ofNullable(content);
+        this.userId = Optional.ofNullable(userId);
+        this.tags = Optional.ofNullable(tags);
+        this.created = Optional.ofNullable(created);
+        this.updated = Optional.ofNullable(updated);
         this.sortBy = Optional.ofNullable(sortBy);
         this.sortOrder = Optional.ofNullable(sortOrder);
     }
@@ -20,8 +33,24 @@ public class PostFilterOptions {
         return title;
     }
 
-    public Optional<Integer> getTagId() {
-        return tagId;
+    public Optional<String> getContent() {
+        return content;
+    }
+
+    public Optional<Long> getUserId() {
+        return userId;
+    }
+
+    public Optional<String> getTags() {
+        return tags;
+    }
+
+    public Optional<String> getCreated() {
+        return created;
+    }
+
+    public Optional<String> getUpdated() {
+        return updated;
     }
 
     public Optional<String> getSortBy() {

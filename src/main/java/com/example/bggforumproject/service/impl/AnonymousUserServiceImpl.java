@@ -24,6 +24,8 @@ public class AnonymousUserServiceImpl implements AnonymousUserService {
 
     @Override
     public long countPosts() {
-        return postRepository.get(new PostFilterOptions(null, null, null, null)).size();
+        return postRepository.get(
+                new PostFilterOptions(null, null, null, null, null, null, null, null))
+                .size();
     }
 }

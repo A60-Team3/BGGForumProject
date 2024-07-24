@@ -3,7 +3,9 @@ package com.example.bggforumproject.persistance.repositories.impl;
 import com.example.bggforumproject.persistance.models.Post;
 import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.persistance.repositories.PostRepository;
+import com.example.bggforumproject.persistance.repositories.UserRepository;
 import com.example.bggforumproject.presentation.exceptions.EntityNotFoundException;
+import com.example.bggforumproject.presentation.exceptions.InvalidFilterArgumentException;
 import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,18 +13,21 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class PostRepositoryImpl implements PostRepository {
 
+    private static final List<String> VALID_CONDITIONS = List.of("<", "<=", ">", ">=", "=", "<>");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     private final SessionFactory sessionFactory;
 
     @Autowired
-    public PostRepositoryImpl(SessionFactory sessionFactory) {
+    public PostRepositoryImpl(SessionFactory sessionFactory, UserRepository userRepository) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -31,21 +36,63 @@ public class PostRepositoryImpl implements PostRepository {
         try (Session session = sessionFactory.openSession()) {
 
             StringBuilder queryString = new StringBuilder("from Post p");
-            if (postFilterOptions.getTagId().isPresent()) {
+            if (postFilterOptions.getTags().isPresent()) {
                 queryString.append(" join p.tags t");
+            }
+
+            if (postFilterOptions.getUserId().isPresent()) {
+                queryString.append(" join p.userId u");
             }
 
             List<String> filters = new ArrayList<>();
             Map<String, Object> params = new HashMap<>();
+
+            postFilterOptions.getUserId().ifPresent(value -> {
+
+                filters.add("u.id = :userId");
+                params.put("userId", value);
+            });
 
             postFilterOptions.getTitle().ifPresent(value -> {
                 filters.add("p.title like :title");
                 params.put("title", String.format("%%%s%%", value));
             });
 
-            postFilterOptions.getTagId().ifPresent(value -> {
-                filters.add("t.id = :tagId");
-                params.put("tagId", value);
+            postFilterOptions.getContent().ifPresent(value -> {
+                filters.add("p.content like :content");
+                params.put("content", String.format("%%%s%%", value));
+            });
+
+            postFilterOptions.getTags().ifPresent(value -> {
+                List<Integer> tagIds = Arrays.stream(value.split(","))
+                        .map(Integer::parseInt).toList();
+
+                filters.add("t.id IN (:tagIds)");
+                params.put("tagIds", tagIds);
+            });
+
+            postFilterOptions.getCreated().ifPresent(value -> {
+                String condition = value.split(",")[0];
+                String date = value.split(",")[1];
+
+                if (VALID_CONDITIONS.contains(condition)) {
+                    filters.add(String.format("p.createdAt %s (:created)", condition));
+                    params.put("created", LocalDateTime.parse(date, FORMATTER));
+                } else {
+                    throw new InvalidFilterArgumentException("Filter condition not valid");
+                }
+            });
+
+            postFilterOptions.getUpdated().ifPresent(value -> {
+                String condition = value.split(",")[0];
+                String date = value.split(",")[1];
+
+                if (VALID_CONDITIONS.contains(condition)) {
+                    filters.add(String.format("p.updatedAt %s (:updated)", condition));
+                    params.put("updated", LocalDateTime.parse(date, FORMATTER));
+                } else {
+                    throw new InvalidFilterArgumentException("Filter condition not valid");
+                }
             });
 
             if (!filters.isEmpty()) {
@@ -88,8 +135,8 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getMostCommented(){
-        try(Session session = sessionFactory.openSession()){
+    public List<Post> getMostCommented() {
+        try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery("select p, count(c) as comment_count " +
                     "from Post p " +
                     "left join Comment c " +
@@ -104,7 +151,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getMostRecentlyCreated() {
-        try(Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery("from Post order by createdAt desc limit 10");
 
             return query.list();
@@ -145,15 +192,20 @@ public class PostRepositoryImpl implements PostRepository {
             return "";
         }
 
-        String orderBy = "";
-        switch (postFilterOptions.getSortBy().get()) {
-            case "title":
-                orderBy = "p.title";
-                break;
-            case "date":
-                orderBy = "p.created_at";
-                break;
-        }
+        String orderBy = switch (postFilterOptions.getSortBy().get()) {
+            case "title" -> "p.title";
+            case "content" -> "p.content";
+            case "user" -> "p.userId";
+            case "created" -> "p.createdAt";
+            case "yearCreated" -> "year(p.createdAt)";
+            case "monthCreated" -> "month(p.createdAt)";
+            case "dayCreated" -> "day(p.createdAt)";
+            case "updated" -> "p.updatedAt";
+            case "yearUpdated" -> "year(p.updatedAt)";
+            case "monthUpdated" -> "month(p.updatedAt)";
+            case "dayUpdated" -> "day(p.updatedAt)";
+            default -> "";
+        };
 
         orderBy = String.format(" order by %s", orderBy);
 

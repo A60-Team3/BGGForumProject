@@ -44,7 +44,7 @@ public class AuthenticationServiceImplOne implements AuthenticationService {
         Role role = roleRepository.findByAuthority(RoleType.USER.name());
 
         user.setPassword(passwordEncoder.encode(input.password()));
-        user.setRoles(Set.of(role));
+        user.setAuthorities(Set.of(role));
 
         return userRepository.create(user);
     }

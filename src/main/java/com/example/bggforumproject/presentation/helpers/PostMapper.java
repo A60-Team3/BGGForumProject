@@ -1,7 +1,7 @@
 package com.example.bggforumproject.presentation.helpers;
 
 import com.example.bggforumproject.persistance.models.Post;
-import com.example.bggforumproject.presentation.dtos.PostDTO;
+import com.example.bggforumproject.presentation.dtos.PostCreateDTO;
 import com.example.bggforumproject.service.PostService;
 import org.springframework.stereotype.Component;
 
@@ -15,14 +15,14 @@ public class PostMapper {
         this.postService = postService;
     }
 
-    public Post fromDto(PostDTO dto){
+    public Post fromDto(PostCreateDTO dto){
         Post post = new Post();
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
         return post;
     }
 
-    public Post fromDto(int id, PostDTO dto){
+    public Post fromDto(int id, PostCreateDTO dto){
         Post post = fromDto(dto);
         post.setId(id);
         Post repositoryPost = postService.get(id);
