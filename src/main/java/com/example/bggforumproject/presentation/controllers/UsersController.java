@@ -38,7 +38,7 @@ public class UsersController {
         this.mapper = mapper;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<UserOutDTO>> getAll(
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,

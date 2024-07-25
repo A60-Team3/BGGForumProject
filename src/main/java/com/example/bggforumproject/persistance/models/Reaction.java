@@ -12,11 +12,11 @@ public class Reaction extends BaseEntity {
     @Column(name = "reaction_type", nullable = false)
     private ReactionType reactionType;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "post_id", nullable = false)
     private Post postId;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "user_id", nullable = false)
     private User userId;
 

@@ -24,7 +24,7 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    public static final String DELETE_USER_ERROR_MESSAGE = "Only an admin can delete an user";
+    public static final String SUPER_USER_ERROR_MESSAGE = "Only an admin has access";
     public static final String BLOCK_USER_ERROR_MESSAGE = "Only user with admin rights can block people";
 
 
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User promote(long id, User currentUser) {
-        checkDeletePermissions(currentUser);
+        checkSuperAdminPermissions(currentUser);
 
         User userToPromote = userRepository.findById(id);
         Role role = roleRepository.findByAuthority(RoleType.MODERATOR.name());
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(User loggedUser, User user) {
 
-        if (loggedUser.getUsername().equals(user.getUsername())) {
+        if (!loggedUser.getUsername().equals(user.getUsername())) {
             throw new IllegalUsernameModificationException();
         }
 
@@ -115,14 +115,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(long id, User user) {
 
-        checkDeletePermissions(user);
+        checkSuperAdminPermissions(user);
 
         userRepository.delete(id);
     }
 
     @Override
     public void softDelete(long id, User currentUser) {
-        checkDeletePermissions(currentUser);
+        checkSuperAdminPermissions(currentUser);
 
         User userToArchive = userRepository.findById(id);
         userToArchive.setDeleted(true);
@@ -130,13 +130,13 @@ public class UserServiceImpl implements UserService {
         userRepository.update(userToArchive);
     }
 
-    private void checkDeletePermissions(User user) {
+    private void checkSuperAdminPermissions(User user) {
         boolean isAdmin = user.getRoles().stream()
                 .map(Role::getAuthority)
                 .anyMatch(authority -> authority.equals(RoleType.ADMIN.toString()));
 
         if (!isAdmin) {
-            throw new AuthorizationException(DELETE_USER_ERROR_MESSAGE);
+            throw new AuthorizationException(SUPER_USER_ERROR_MESSAGE);
         }
     }
 

@@ -1,10 +1,8 @@
 package com.example.bggforumproject.config;
 
-import com.example.bggforumproject.persistance.models.Post;
-import com.example.bggforumproject.persistance.models.Role;
-import com.example.bggforumproject.persistance.models.Tag;
-import com.example.bggforumproject.persistance.models.User;
+import com.example.bggforumproject.persistance.models.*;
 import com.example.bggforumproject.persistance.models.base.BaseEntity;
+import com.example.bggforumproject.presentation.dtos.CommentOutDTO;
 import com.example.bggforumproject.presentation.dtos.PostAnonymousOutDTO;
 import com.example.bggforumproject.presentation.dtos.PostOutFullDTO;
 import com.example.bggforumproject.presentation.dtos.UserOutDTO;
@@ -30,12 +28,28 @@ public class ApplicationConfig {
         modelMapper.getConfiguration().setSkipNullEnabled(true);
 
         TypeMap<User, UserOutDTO> userOutMap = modelMapper.createTypeMap(User.class, UserOutDTO.class);
-        TypeMap<Post, PostAnonymousOutDTO> postOutFullMap = modelMapper.createTypeMap(Post.class, PostAnonymousOutDTO.class);
+        TypeMap<Post, PostAnonymousOutDTO> postAnonymousOutDTOTypeMap = modelMapper.createTypeMap(Post.class, PostAnonymousOutDTO.class);
+        TypeMap<Post, PostOutFullDTO> postOutFullMap = modelMapper.createTypeMap(Post.class, PostOutFullDTO.class);
+        TypeMap<Comment, CommentOutDTO> commentOutDTOTypeMap = modelMapper.createTypeMap(Comment.class, CommentOutDTO.class);
+
+        commentOutDTOTypeMap.addMappings(mapper -> {
+            mapper.using(toCreatedOn).map(Comment::getCreatedAt, CommentOutDTO::setCreatedAt);
+            mapper.using(toCreatedOn).map(Comment::getUpdatedAt, CommentOutDTO::setUpdatedAt);
+        });
 
 
         postOutFullMap.addMappings(mapper -> {
+            mapper.using(toTags).map(Post::getTags, PostOutFullDTO::setTags);
+            mapper.using(toCreatedOn).map(Post::getCreatedAt, PostOutFullDTO::setCreatedAt);
+            mapper.using(toCreatedOn).map(Post::getUpdatedAt, PostOutFullDTO::setUpdatedAt);
+        });
+
+
+        postAnonymousOutDTOTypeMap.addMappings(mapper -> {
             mapper.using(toTags).map(Post::getTags, PostAnonymousOutDTO::setTags);
             mapper.using(toFullName).map(Post::getUserId, PostAnonymousOutDTO::setUserFullName);
+            mapper.using(toCreatedOn).map(Post::getCreatedAt, PostAnonymousOutDTO::setCreatedAt);
+            mapper.using(toCreatedOn).map(Post::getUpdatedAt, PostAnonymousOutDTO::setUpdatedAt);
         });
 
 
@@ -59,7 +73,7 @@ public class ApplicationConfig {
 
     Converter<LocalDateTime, String> toCreatedOn = new Converter<LocalDateTime, String>() {
         public String convert(MappingContext<LocalDateTime, String> context) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             return context.getSource().format(formatter);
         }
     };

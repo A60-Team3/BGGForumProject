@@ -62,9 +62,9 @@ public class SecurityConfig {
                     auth.requestMatchers("/BGGForum/main").permitAll();
                     auth.requestMatchers("/BGGForum/posts/most-commented").permitAll();
                     auth.requestMatchers("/BGGForum/posts/most-recently-created").permitAll();
+                    auth.requestMatchers("/BGGForum/users").hasAnyRole("ADMIN", "MODERATOR");
                     auth.requestMatchers("/BGGForum/admin/**").hasAnyRole("ADMIN", "MODERATOR");
                     auth.requestMatchers("/BGGForum/users/**").hasAnyRole("ADMIN", "MODERATOR", "USER");
-                    auth.requestMatchers("/BGGForum/users/").hasAnyRole("ADMIN", "MODERATOR");
                     auth.requestMatchers("/BGGForum/admin/admin/**").hasAnyRole("ADMIN");
 //                    auth.requestMatchers("BGGForum/posts/{id}").authenticated();
 //                    auth.requestMatchers("BGGForum/posts/{id}/comments").authenticated();

@@ -47,8 +47,8 @@ public class HibernateConfiguration {
 
     public Properties hibernateProperties(){
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("spring.jpa.show_sql", "true");
-        hibernateProperties.setProperty("spring.jpa.hibernate.ddl-auto", "validate");
+        hibernateProperties.setProperty("show_sql", "true");
+//        hibernateProperties.setProperty("spring.jpa.hibernate.ddl-auto", "validate");
         return hibernateProperties;
     }
 }

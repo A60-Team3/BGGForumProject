@@ -52,6 +52,10 @@ public class User extends BaseEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> authorities;
 
+    public User() {
+
+    }
+
     public String getFirstName() {
         return firstName;
     }

@@ -1,3 +1,5 @@
+CREATE DATABASE IF NOT EXISTS boardgames_forum;
+
 USE boardgames_forum;
 
 CREATE TABLE roles

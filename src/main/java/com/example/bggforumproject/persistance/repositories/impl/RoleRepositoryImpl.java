@@ -1,6 +1,7 @@
 package com.example.bggforumproject.persistance.repositories.impl;
 
 import com.example.bggforumproject.persistance.models.Role;
+import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.persistance.repositories.RoleRepository;
 import com.example.bggforumproject.presentation.exceptions.EntityNotFoundException;
 import org.hibernate.Session;
@@ -32,6 +33,22 @@ public class RoleRepositoryImpl implements RoleRepository {
             }
 
             return list.get(0);
+        }
+    }
+
+    @Override
+    public void create(Role role) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.persist(role);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public List<Role> findAll() {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery("from Role", Role.class).list();
         }
     }
 }
