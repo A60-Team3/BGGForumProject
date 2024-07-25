@@ -53,8 +53,7 @@ public class DataLoader implements CommandLineRunner {
             authenticationService.registerUser(new RegistrationDTO("Grace", "Moore", "grace.moore@example.com", "grace_moore", "password123"));
             authenticationService.registerUser(new RegistrationDTO("Hank", "Taylor", "hank.taylor@example.com", "hank_taylor", "password123"));
             authenticationService.registerUser(new RegistrationDTO("Ivylin", "Anderson", "ivy.anderson@example.com", "ivy_anderson", "password123"));
-            authenticationService.registerUser(new RegistrationDTO("Frank", "Wilson", "frank.wilson@example.com", "frank_wilson", "password123"));
-            authenticationService.registerUser(new RegistrationDTO("Frank", "Wilson", "frank.wilson@example.com", "frank_wilson", "password123"));
+
 
             Resource resource = new ClassPathResource("data.sql");
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);

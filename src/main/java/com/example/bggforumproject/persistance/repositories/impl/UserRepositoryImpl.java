@@ -12,10 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -143,8 +140,10 @@ public class UserRepositoryImpl implements UserRepository {
             });
 
             userFilterOptions.getAuthority().ifPresent(value -> {
-                filters.add("LOWER(r.authority) = :roleType");
-                params.put("roleType", value.trim());
+                List<String> roles = Arrays.stream(value.split(",")).toList();
+
+                filters.add("LOWER(r.authority) IN (:roleType");
+                params.put("roleType", roles);
             });
 
             if (!filters.isEmpty()) {
