@@ -10,6 +10,8 @@
 ### A crude implementation of [Flyway](https://flywaydb.org/) database version control. Only used for database creation.
 ### Database seeding is carried out automatically on first start of the application through a DataLoader class.
 ### Read the [Custom Enviroment Variables](https://github.com/A60-Team3/BGGForumProject/blob/main/.env.local) file and follow the instructions.
+## API documentation
+### Swagger project [URL](http://localhost:8080/swagger-ui/index.html)
 
 ## To Do
 * Full unit testing
