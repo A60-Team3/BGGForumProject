@@ -1,9 +1,9 @@
 package com.example.bggforumproject.config;
 
-import com.example.bggforumproject.persistance.models.*;
-import com.example.bggforumproject.persistance.models.enums.ReactionType;
-import com.example.bggforumproject.persistance.repositories.ReactionRepository;
-import com.example.bggforumproject.presentation.dtos.*;
+import com.example.bggforumproject.dtos.*;
+import com.example.bggforumproject.models.*;
+import com.example.bggforumproject.models.enums.ReactionType;
+import com.example.bggforumproject.repositories.contracts.ReactionRepository;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -12,7 +12,6 @@ import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;

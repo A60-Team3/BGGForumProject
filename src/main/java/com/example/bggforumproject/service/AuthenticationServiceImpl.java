@@ -1,0 +1,68 @@
+package com.example.bggforumproject.service;
+
+
+import com.example.bggforumproject.dtos.ResponseDTO;
+import com.example.bggforumproject.helpers.AuthorizationHelper;
+import com.example.bggforumproject.models.Role;
+import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.models.enums.RoleType;
+import com.example.bggforumproject.repositories.contracts.RoleRepository;
+import com.example.bggforumproject.repositories.contracts.UserRepository;
+import com.example.bggforumproject.security.TokenService;
+import com.example.bggforumproject.service.contacts.AuthenticationService;
+import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Set;
+
+@Service
+@Transactional
+public class AuthenticationServiceImpl implements AuthenticationService {
+
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
+    private final ModelMapper mapper;
+    private final AuthorizationHelper authorizationHelper;
+
+
+    public AuthenticationServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
+                                     PasswordEncoder passwordEncoder, TokenService tokenService,
+                                     ModelMapper mapper, AuthorizationHelper authorizationHelper) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
+        this.mapper = mapper;
+        this.authorizationHelper = authorizationHelper;
+    }
+
+    @Override
+    public ResponseDTO registerUser(User user) {
+
+        authorizationHelper.validateEmailIsUnique(user.getEmail());
+
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        Role userRole = roleRepository.findByAuthority(RoleType.USER.name());
+
+        user.setPassword(encodedPassword);
+        user.setRoles(Set.of(userRole));
+
+        User created = userRepository.create(user);
+
+        return mapper.map(created, ResponseDTO.class);
+    }
+
+    @Override
+    public ResponseDTO loginUser(Authentication auth) {
+
+        String token = tokenService.generateJwt(auth);
+        User user = (User) auth.getPrincipal();
+
+        return new ResponseDTO(user.getId(), user.getUsername(), token);
+    }
+}
