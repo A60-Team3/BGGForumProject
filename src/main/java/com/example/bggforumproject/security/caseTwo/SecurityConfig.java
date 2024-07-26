@@ -35,7 +35,7 @@ public class SecurityConfig {
 
     private final RSAKeyProperties keys;
 
-    public SecurityConfig(RSAKeyProperties keys, UserDetailsService userDetailsService) {
+    public SecurityConfig(RSAKeyProperties keys) {
         this.keys = keys;
     }
 
@@ -67,14 +67,11 @@ public class SecurityConfig {
                     auth.requestMatchers("/BGGForum/main").permitAll();
                     auth.requestMatchers("/BGGForum/posts/most-commented").permitAll();
                     auth.requestMatchers("/BGGForum/posts/most-recently-created").permitAll();
+                    auth.requestMatchers("/BGGForum/posts/tags/**").hasRole("ADMIN");
                     auth.requestMatchers("/BGGForum/users").hasAnyRole("ADMIN", "MODERATOR");
                     auth.requestMatchers("/BGGForum/admin/**").hasAnyRole("ADMIN", "MODERATOR");
                     auth.requestMatchers("/BGGForum/users/**").hasAnyRole("ADMIN", "MODERATOR", "USER");
-                    auth.requestMatchers("/BGGForum/admin/admin/**").hasAnyRole("ADMIN");
-//                    auth.requestMatchers("BGGForum/posts/{id}").authenticated();
-//                    auth.requestMatchers("BGGForum/posts/{id}/comments").authenticated();
-//                    auth.requestMatchers("BGGForum/posts/{postId}/comments/{commentId}").authenticated();
-//                    auth.requestMatchers("BGGForum/posts/{id}/reactions").authenticated();
+                    auth.requestMatchers("/BGGForum/admin/admin/**").hasRole("ADMIN");
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->

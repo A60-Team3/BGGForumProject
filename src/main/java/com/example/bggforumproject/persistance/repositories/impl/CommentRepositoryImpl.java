@@ -5,8 +5,6 @@ import com.example.bggforumproject.persistance.repositories.CommentRepository;
 import com.example.bggforumproject.presentation.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.presentation.exceptions.InvalidFilterArgumentException;
 import com.example.bggforumproject.presentation.helpers.CommentFilterOptions;
-import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
-import com.example.bggforumproject.presentation.helpers.UserFilterOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -108,8 +106,9 @@ public class CommentRepositoryImpl implements CommentRepository {
     public List<Comment> getCommentsForPost(long postId) {
         try(Session session = sessionFactory.openSession()){
             Query<Comment> query = session.createQuery("from Comment " +
-                    "where postId.id = :postId");
+                    "where postId.id = :postId", Comment.class);
             query.setParameter("postId", postId);
+
             return query.list();
         }
     }

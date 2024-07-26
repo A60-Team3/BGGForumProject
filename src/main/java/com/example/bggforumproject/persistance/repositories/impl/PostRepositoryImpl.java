@@ -1,13 +1,10 @@
 package com.example.bggforumproject.persistance.repositories.impl;
 
 import com.example.bggforumproject.persistance.models.Post;
-import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.persistance.repositories.PostRepository;
-import com.example.bggforumproject.persistance.repositories.UserRepository;
 import com.example.bggforumproject.presentation.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.presentation.exceptions.InvalidFilterArgumentException;
 import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
-import com.example.bggforumproject.presentation.helpers.UserFilterOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository
 public class PostRepositoryImpl implements PostRepository {
@@ -28,7 +24,7 @@ public class PostRepositoryImpl implements PostRepository {
     private final SessionFactory sessionFactory;
 
     @Autowired
-    public PostRepositoryImpl(SessionFactory sessionFactory, UserRepository userRepository) {
+    public PostRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -41,7 +37,9 @@ public class PostRepositoryImpl implements PostRepository {
                 queryString.append(" join p.tags t");
             }
 
-            if (postFilterOptions.getUserId().isPresent()) {
+            if (postFilterOptions.getUserId().isPresent() ||
+                    (postFilterOptions.getSortBy().isPresent()
+                            && postFilterOptions.getSortBy().get().equals("user"))) {
                 queryString.append(" join p.userId u");
             }
 
@@ -104,6 +102,11 @@ public class PostRepositoryImpl implements PostRepository {
 
             Query<Post> query = session.createQuery(queryString.toString(), Post.class);
             query.setProperties(params);
+
+            if (query.list().isEmpty()){
+                throw new EntityNotFoundException("No posts satisfy applied conditions");
+            }
+
             return query.list();
         }
     }
@@ -126,7 +129,7 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("title", title);
 
             List<Post> result = query.list();
-            if (result.size() == 0) {
+            if (result.isEmpty()) {
                 throw new EntityNotFoundException("Post", "title", title);
             }
 
@@ -137,13 +140,15 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> getMostCommented() {
         try (Session session = sessionFactory.openSession()) {
-            Query<Post> query = session.createQuery("select p, count(c) as comment_count " +
+            Query<Post> query = session.createQuery(
                     "from Post p " +
-                    "left join Comment c " +
-                    "on c.postId.id = p.id " +
-                    "group by p.id, p.title " +
-                    "order by comment_count desc " +
-                    "limit 10");
+                            "left join Comment c " +
+                            "on c.postId.id = p.id " +
+                            "group by p.id, p.title " +
+                            "order by count(c) desc " +
+                            "limit 10",
+                    Post.class
+            );
 
             return query.list();
         }
@@ -152,8 +157,9 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> getMostRecentlyCreated() {
         try (Session session = sessionFactory.openSession()) {
-            Query<Post> query = session.createQuery("from Post order by createdAt desc limit 10");
-
+            Query<Post> query = session.createQuery(
+                    "from Post order by createdAt desc limit 10",
+                    Post.class);
             return query.list();
         }
     }
@@ -195,7 +201,7 @@ public class PostRepositoryImpl implements PostRepository {
         String orderBy = switch (postFilterOptions.getSortBy().get().trim()) {
             case "title" -> "p.title";
             case "content" -> "p.content";
-            case "user" -> "p.userId";
+            case "user" -> "CONCAT_WS(u.firstName,' ', u.lastName)";
             case "created" -> "p.createdAt";
             case "yearCreated" -> "year(p.createdAt)";
             case "monthCreated" -> "month(p.createdAt)";

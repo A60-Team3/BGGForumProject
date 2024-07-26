@@ -1,7 +1,6 @@
 package com.example.bggforumproject.persistance.repositories.impl;
 
 import com.example.bggforumproject.persistance.models.Role;
-import com.example.bggforumproject.persistance.models.User;
 import com.example.bggforumproject.persistance.repositories.RoleRepository;
 import com.example.bggforumproject.presentation.exceptions.EntityNotFoundException;
 import org.hibernate.Session;

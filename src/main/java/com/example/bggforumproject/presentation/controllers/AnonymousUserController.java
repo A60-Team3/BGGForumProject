@@ -2,7 +2,6 @@ package com.example.bggforumproject.presentation.controllers;
 
 import com.example.bggforumproject.persistance.models.Post;
 import com.example.bggforumproject.presentation.dtos.PostAnonymousOutDTO;
-import com.example.bggforumproject.presentation.dtos.PostOutFullDTO;
 import com.example.bggforumproject.presentation.dtos.UnknownOutDTO;
 import com.example.bggforumproject.presentation.helpers.PostFilterOptions;
 import com.example.bggforumproject.service.AnonymousUserService;

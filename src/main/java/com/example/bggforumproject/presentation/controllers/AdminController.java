@@ -1,20 +1,14 @@
 package com.example.bggforumproject.presentation.controllers;
 
 import com.example.bggforumproject.persistance.models.User;
-import com.example.bggforumproject.persistance.repositories.UserRepository;
 import com.example.bggforumproject.presentation.dtos.BlockDTO;
 import com.example.bggforumproject.presentation.dtos.UserOutDTO;
-import com.example.bggforumproject.presentation.helpers.UserFilterOptions;
 import com.example.bggforumproject.service.UserService;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/BGGForum/admin")
@@ -52,7 +46,7 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
-         userService.softDelete(id, currentUser);
+        userService.softDelete(id, currentUser);
     }
 
     @DeleteMapping("/admin/{id}")

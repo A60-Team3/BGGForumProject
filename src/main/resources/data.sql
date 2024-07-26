@@ -1,7 +1,7 @@
-INSERT INTO roles (role_type)
-VALUES ('ADMIN'),
-       ('MODERATOR'),
-       ('USER');
+# INSERT INTO roles (role_type)
+# VALUES ('ADMIN'),
+#        ('MODERATOR'),
+#        ('USER');
 
 
 INSERT INTO users (first_name, last_name, email, username, password)

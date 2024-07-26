@@ -58,7 +58,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
         return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.UNAUTHORIZED);
     }
 
-
     @ExceptionHandler(AccountStatusException.class)
     public ResponseEntity<?> handleEntityNotFoundException(AccountStatusException ex) {
         HttpHeaders headers = new HttpHeaders();

@@ -155,6 +155,11 @@ public class UserRepositoryImpl implements UserRepository {
 
             Query<User> query = session.createQuery(queryString.toString(), User.class);
             query.setProperties(params);
+
+            if (query.list().isEmpty()){
+                throw new EntityNotFoundException("No users satisfy applied conditions");
+            }
+
             return query.list();
         }
     }

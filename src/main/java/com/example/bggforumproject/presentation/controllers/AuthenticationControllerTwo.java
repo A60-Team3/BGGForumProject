@@ -45,7 +45,6 @@ public class AuthenticationControllerTwo {
         } catch (AuthenticationException e) {
             throw new CustomAuthenticationException("Authentication failed!");
         }
-
     }
 
     @PostMapping("/logout")

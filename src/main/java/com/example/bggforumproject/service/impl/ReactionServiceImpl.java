@@ -3,6 +3,7 @@ package com.example.bggforumproject.service.impl;
 import com.example.bggforumproject.persistance.models.Post;
 import com.example.bggforumproject.persistance.models.Reaction;
 import com.example.bggforumproject.persistance.models.User;
+import com.example.bggforumproject.persistance.repositories.PostRepository;
 import com.example.bggforumproject.persistance.repositories.ReactionRepository;
 import com.example.bggforumproject.presentation.exceptions.AuthorizationException;
 import com.example.bggforumproject.presentation.exceptions.EntityDuplicateException;
@@ -19,14 +20,17 @@ public class ReactionServiceImpl implements ReactionService {
     private static final String MODIFY_REACTION_ERROR_MESSAGE = "Reactions can only be modified or removed by their creator!";
 
     private final ReactionRepository reactionRepository;
+    private final PostRepository postRepository;
 
     @Autowired
-    public ReactionServiceImpl(ReactionRepository reactionRepository) {
+    public ReactionServiceImpl(ReactionRepository reactionRepository, PostRepository postRepository) {
         this.reactionRepository = reactionRepository;
+        this.postRepository = postRepository;
     }
 
     @Override
     public List<Reaction> getAll(long postId) {
+        postRepository.get(postId);
         return reactionRepository.getAll(postId);
     }
 

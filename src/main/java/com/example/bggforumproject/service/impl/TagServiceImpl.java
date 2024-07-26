@@ -1,8 +1,10 @@
 package com.example.bggforumproject.service.impl;
 
 import com.example.bggforumproject.persistance.models.Post;
+import com.example.bggforumproject.persistance.models.Role;
 import com.example.bggforumproject.persistance.models.Tag;
 import com.example.bggforumproject.persistance.models.User;
+import com.example.bggforumproject.persistance.models.enums.RoleType;
 import com.example.bggforumproject.persistance.repositories.PostRepository;
 import com.example.bggforumproject.persistance.repositories.TagRepository;
 import com.example.bggforumproject.presentation.exceptions.AuthorizationException;
@@ -58,7 +60,7 @@ public class TagServiceImpl implements TagService {
         if (!post.getTags().contains(tagToAdd)) {
             post.getTags().add(tagToAdd);
             postRepository.update(post);
-        } else{
+        } else {
             throw new EntityDuplicateException("Tag", "name", tagToAdd.getName());
         }
     }
@@ -68,7 +70,7 @@ public class TagServiceImpl implements TagService {
         checkModifyPermissions(user);
 
         Tag tag = tagRepository.get(tagId);
-        if(post.getTags().contains(tag)){
+        if (post.getTags().contains(tag)) {
             post.getTags().remove(tag);
             postRepository.update(post);
         } else {
@@ -83,7 +85,8 @@ public class TagServiceImpl implements TagService {
     }*/
 
     @Override
-    public void create(Tag tag) {
+    public void
+    create(Tag tag) {
         boolean isDuplicate = true;
 
         try {
@@ -124,16 +127,26 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void delete(long id, User user) {
-        checkModifyPermissions(user);
+        checkSuperAdminPermissions(user);
 
         tagRepository.delete(id);
     }
 
-    private void checkModifyPermissions(User user) {
 
+    private void checkModifyPermissions(User user) {
         boolean isRegularUser = user.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("USER"));
+
         if (isRegularUser) {
+            throw new AuthorizationException(MODIFY_TAG_ERROR_MESSAGE);
+        }
+    }
+
+    private void checkSuperAdminPermissions(User user) {
+        boolean hasAdminRights = user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
+
+        if (!hasAdminRights) {
             throw new AuthorizationException(MODIFY_TAG_ERROR_MESSAGE);
         }
     }
