@@ -26,7 +26,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
-    private final ModelMapper mapper;
     private final AuthorizationHelper authorizationHelper;
 
 
@@ -37,13 +36,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
-        this.mapper = mapper;
         this.authorizationHelper = authorizationHelper;
     }
 
     @Override
-    public ResponseDTO registerUser(User user) {
-
+    public User registerUser(User user) {
         authorizationHelper.validateEmailIsUnique(user.getEmail());
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -52,9 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPassword(encodedPassword);
         user.setRoles(Set.of(userRole));
 
-        User created = userRepository.create(user);
-
-        return mapper.map(created, ResponseDTO.class);
+        return userRepository.create(user);
     }
 
     @Override

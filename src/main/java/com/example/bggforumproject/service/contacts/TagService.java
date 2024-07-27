@@ -16,7 +16,7 @@ public interface TagService {
 
     void addTagToPost(Tag tag, Post post);
 
-    void deleteTagFromPost(long tagId, Post post, User user);
+    void deleteTagFromPost(long tagId, long postId, User user);
 
     void create(Tag tag);
 

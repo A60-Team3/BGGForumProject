@@ -11,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -247,7 +249,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}/reactions/{reactionId}")
-    public void delete(@PathVariable long postId, @PathVariable long reactionId) {
+    public ResponseEntity<?> delete(@PathVariable long postId, @PathVariable long reactionId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User currentUser = userService.get(authentication.getName());
@@ -258,27 +260,29 @@ public class PostController {
         }
 
         reactionService.delete(reactionId, currentUser);
+
+        return ResponseEntity.ok("Tag removed from post successfully");
+
     }
 
     @DeleteMapping("/{postId}/tags/{tagId}")
-    public void deleteTagFromPost(@PathVariable long postId, @PathVariable long tagId) {
+    public ResponseEntity<?> deleteTagFromPost(@PathVariable long postId, @PathVariable long tagId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User currentUser = userService.get(authentication.getName());
-        Tag tag = tagService.get(tagId);
-        Post post = tag.getPosts().stream().filter(p -> p.getId() == postId).findFirst().orElseThrow();
-        if (post.getId() != postId) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong post");
-        }
 
-        tagService.deleteTagFromPost(tagId, post, currentUser);
+        tagService.deleteTagFromPost(tagId, tagId, currentUser);
+
+        return ResponseEntity.ok("Tag removed from post successfully");
     }
 
     @DeleteMapping("/tags/{id}")
-    public void deleteTag(@PathVariable long id) {
+    public ResponseEntity<?> deleteTag(@PathVariable long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User currentUser = userService.get(authentication.getName());
         tagService.delete(id, currentUser);
+
+        return ResponseEntity.ok("Tag removed from the system successfully");
     }
 }

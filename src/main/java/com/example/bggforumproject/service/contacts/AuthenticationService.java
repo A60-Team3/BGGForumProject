@@ -10,5 +10,5 @@ import org.springframework.security.core.Authentication;
 public interface AuthenticationService {
     ResponseDTO loginUser(Authentication auth);
 
-    ResponseDTO registerUser(User user);
+    User registerUser(User user);
 }

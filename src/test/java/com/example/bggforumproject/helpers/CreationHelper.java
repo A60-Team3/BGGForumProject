@@ -1,4 +1,4 @@
-package com.example.bggforumproject.services.helpers;
+package com.example.bggforumproject.helpers;
 
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Role;
@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class CreationHelper {
 
-    public static User createUser() {
+    public static User createMockUser() {
         User user = new User();
         user.setId(1);
         user.setLastName("last");
@@ -28,13 +28,13 @@ public class CreationHelper {
     }
 
     public static User createModerator(){
-        User user = createUser();
+        User user = createMockUser();
         user.setRoles(Set.of(new Role(RoleType.MODERATOR.name())));
         return user;
     }
 
     public static User createAdmin(){
-        User user = createUser();
+        User user = createMockUser();
         user.setRoles(Set.of(new Role(RoleType.ADMIN.name())));
         return user;
     }

@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static com.example.bggforumproject.services.helpers.CreationHelper.*;
+import static com.example.bggforumproject.helpers.CreationHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -33,7 +33,7 @@ public class AnonymousUserServiceTests {
 
     @Test
     public void countUsers_Should_Return_CountUsersInDatabase() {
-        List<User> users = List.of(createAdmin(), createModerator(), createUser());
+        List<User> users = List.of(createAdmin(), createModerator(), createMockUser());
 
         Mockito.when(userRepository.findAll()).thenReturn(users);
 
@@ -41,14 +41,28 @@ public class AnonymousUserServiceTests {
     }
 
     @Test
-    public void countPosts_Should_Return_CountPostsInDatabase() {
-        Post post = createPostWithTags();
+    public void countUsers_Should_CallRepositoryAndReturnUserCount() {
+        List<User> users = List.of(createAdmin(), createModerator(), createMockUser());
 
+        Mockito.when(userRepository.findAll()).thenReturn(users);
+
+        long countUsers = anonymousUserService.countUsers();
+
+        assertEquals(3, countUsers);
+        Mockito.verify(userRepository, Mockito.times(1)).findAll();
+    }
+
+    @Test
+    public void countPosts_Should_CallRepositoryAndReturnCountPosts() {
+        Post post = createPostWithTags();
         List<Post> posts = List.of(post);
 
         Mockito.when(postRepository.get()).thenReturn(posts);
 
-        assertEquals(1, anonymousUserService.countPosts());
+        long countPosts = anonymousUserService.countPosts();
+
+        assertEquals(1, countPosts);
+        Mockito.verify(postRepository, Mockito.times(1)).get();
     }
 
     @Test
@@ -61,6 +75,8 @@ public class AnonymousUserServiceTests {
         Mockito.when(postRepository.get(postFilterOptions)).thenReturn(posts);
 
         assertEquals(posts, anonymousUserService.getAllPosts(postFilterOptions));
+        Mockito.verify(postRepository, Mockito.times(1)).get(postFilterOptions);
+
     }
 
     @Test
@@ -74,6 +90,8 @@ public class AnonymousUserServiceTests {
         Mockito.when(postRepository.get(postFilterOptions)).thenReturn(List.of());
 
         assertEquals(0, anonymousUserService.getAllPosts(postFilterOptions).size());
+        Mockito.verify(postRepository, Mockito.times(1)).get(postFilterOptions);
+
     }
 
 

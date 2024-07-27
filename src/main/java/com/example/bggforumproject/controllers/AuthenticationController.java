@@ -33,11 +33,11 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseDTO registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
+    public ResponseEntity<ResponseDTO> registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
 
         User user = mapper.map(registrationDTO, User.class);
-
-        return authenticationService.registerUser(user);
+        User registered = authenticationService.registerUser(user);
+        return ResponseEntity.ok(mapper.map(registered, ResponseDTO.class));
     }
 
     @PostMapping("/login")
