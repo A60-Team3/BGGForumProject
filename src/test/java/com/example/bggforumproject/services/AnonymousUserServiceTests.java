@@ -33,28 +33,28 @@ public class AnonymousUserServiceTests {
 
     @Test
     public void countUsers_Should_Return_CountUsersInDatabase() {
-        List<User> users = List.of(createAdmin(), createModerator(), createMockUser());
+        List<User> users = List.of(createMockAdmin(), createMockModerator(), createMockUser());
 
-        Mockito.when(userRepository.findAll()).thenReturn(users);
+        Mockito.when(userRepository.getAll()).thenReturn(users);
 
         assertEquals(3, anonymousUserService.countUsers());
     }
 
     @Test
     public void countUsers_Should_CallRepositoryAndReturnUserCount() {
-        List<User> users = List.of(createAdmin(), createModerator(), createMockUser());
+        List<User> users = List.of(createMockAdmin(), createMockModerator(), createMockUser());
 
-        Mockito.when(userRepository.findAll()).thenReturn(users);
+        Mockito.when(userRepository.getAll()).thenReturn(users);
 
         long countUsers = anonymousUserService.countUsers();
 
         assertEquals(3, countUsers);
-        Mockito.verify(userRepository, Mockito.times(1)).findAll();
+        Mockito.verify(userRepository, Mockito.times(1)).getAll();
     }
 
     @Test
     public void countPosts_Should_CallRepositoryAndReturnCountPosts() {
-        Post post = createPostWithTags();
+        Post post = createMockPostWithTags();
         List<Post> posts = List.of(post);
 
         Mockito.when(postRepository.get()).thenReturn(posts);
@@ -67,7 +67,7 @@ public class AnonymousUserServiceTests {
 
     @Test
     public void getAllPosts_Should_Return_All_Posts_In_Database_With_No_Filters() {
-        Post post = createPostWithTags();
+        Post post = createMockPostWithTags();
         PostFilterOptions postFilterOptions = Mockito.mock(PostFilterOptions.class);
 
         List<Post> posts = List.of(post);

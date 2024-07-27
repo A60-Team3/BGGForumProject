@@ -1,5 +1,6 @@
 package com.example.bggforumproject.service;
 
+import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.exceptions.IllegalUsernameModificationException;
 import com.example.bggforumproject.helpers.AuthorizationHelper;
@@ -24,8 +25,8 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    public static final String BLOCK_USER_ERROR_MESSAGE = "Only user with admin rights can block people";
 
+    private static final String MODIFY_USER_ERROR_MESSAGE = " Only a user can modified his info!";
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
@@ -46,17 +47,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(long id) {
-        return userRepository.findById(id);
+        return userRepository.getById(id);
     }
 
     @Override
     public User get(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.getByUsername(username);
     }
 
     @Override
     public List<User> getAll(UserFilterOptions userFilterOptions) {
-        return userRepository.findAll(userFilterOptions);
+        return userRepository.getAll(userFilterOptions);
     }
 
     @Override
@@ -71,10 +72,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User promote(long id, User currentUser) {
-        authorizationHelper.checkPermissions(currentUser, "ADMIN", "MODERATOR");
+        authorizationHelper.checkPermissions(currentUser, "ADMIN");
 
-        User userToPromote = userRepository.findById(id);
-        Role role = roleRepository.findByAuthority(RoleType.MODERATOR.name());
+        User userToPromote = userRepository.getById(id);
+        Role role = roleRepository.getByAuthority(RoleType.MODERATOR.name());
 
         if (userToPromote.getRoles().contains(role)) {
             throw new EntityDuplicateException(userToPromote.getUsername(), "role", role.getAuthority());
@@ -88,9 +89,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User loggedUser, User user) {
+    public User update(long id, User loggedUser, User user) {
 
-        authorizationHelper.validateEmailIsUnique(user.getEmail());
+        if (loggedUser.getId() != id) {
+            throw new AuthorizationException(MODIFY_USER_ERROR_MESSAGE);
+        }
+
+        authorizationHelper.validateEmailIsUnique(loggedUser.getId(), user.getEmail());
 
         if (!loggedUser.getUsername().equals(user.getUsername())) {
             throw new IllegalUsernameModificationException();
@@ -102,33 +107,34 @@ public class UserServiceImpl implements UserService {
         loggedUser.setEmail(user.getEmail());
         userRepository.update(loggedUser);
 
-        return userRepository.findById(loggedUser.getId());
+        return userRepository.getById(loggedUser.getId());
     }
 
     @Override
     public void blockUser(long id, User currentUser, boolean isBlocked) {
         authorizationHelper.checkPermissions(currentUser, "ADMIN", "MODERATOR");
 
-        User user = userRepository.findById(id);
+        User user = userRepository.getById(id);
         user.setBlocked(isBlocked);
         userRepository.update(user);
-    }
-
-    @Override
-    public void delete(long id, User user) {
-
-        authorizationHelper.checkPermissions(user, "ADMIN", "MODERATOR");
-
-        userRepository.delete(id);
     }
 
     @Override
     public void softDelete(long id, User currentUser) {
         authorizationHelper.checkPermissions(currentUser, "ADMIN");
 
-        User userToArchive = userRepository.findById(id);
+        User userToArchive = userRepository.getById(id);
         userToArchive.setDeleted(true);
 
         userRepository.update(userToArchive);
+    }
+
+    @Override
+    public void delete(long id, User user) {
+        authorizationHelper.checkPermissions(user, "ADMIN");
+
+        User userToDelete = userRepository.getById(id);
+
+        userRepository.delete(userToDelete);
     }
 }

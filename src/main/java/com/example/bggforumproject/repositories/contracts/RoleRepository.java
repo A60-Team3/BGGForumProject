@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public interface RoleRepository {
-    Role findByAuthority(String role);
+    Role getByAuthority(String role);
 
     void create(Role role);
 

@@ -27,7 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public User getByUsername(String username) {
         try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User where username = :username", User.class);
             query.setParameter("username", username);
@@ -41,7 +41,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findByEmail(String email) {
+    public User getByEmail(String email) {
         try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User where email = :email", User.class);
             query.setParameter("email", email);
@@ -54,7 +54,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findById(long id) {
+    public User getById(long id) {
         try (Session session = sessionFactory.openSession()) {
             User user = session.get(User.class, id);
             if (user == null) {
@@ -65,14 +65,14 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> getAll() {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("from User ", User.class).list();
         }
     }
 
     @Override
-    public List<User> findAll(UserFilterOptions userFilterOptions) {
+    public List<User> getAll(UserFilterOptions userFilterOptions) {
         try (Session session = sessionFactory.openSession()) {
             StringBuilder queryString = new StringBuilder("from User u");
 
@@ -174,7 +174,7 @@ public class UserRepositoryImpl implements UserRepository {
             session.getTransaction().commit();
         }
 
-        return findByUsername(user.getUsername());
+        return getByUsername(user.getUsername());
     }
 
     @Override
@@ -187,8 +187,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void delete(long id) {
-        User userToDelete = findById(id);
+    public void delete(User userToDelete) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.remove(userToDelete);

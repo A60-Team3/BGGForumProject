@@ -22,7 +22,7 @@ public class AnonymousUserServiceImpl implements AnonymousUserService {
 
     @Override
     public long countUsers() {
-        return userRepository.findAll().size();
+        return userRepository.getAll().size();
     }
 
     @Override

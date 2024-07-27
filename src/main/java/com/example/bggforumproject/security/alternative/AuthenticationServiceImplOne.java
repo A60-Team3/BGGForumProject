@@ -6,12 +6,9 @@ import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.RoleRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
-import com.example.bggforumproject.dtos.ResponseDTO;
-import com.example.bggforumproject.service.contacts.AuthenticationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
@@ -39,7 +36,7 @@ public class AuthenticationServiceImplOne {
     public User registerUser(RegisterUserDTO input) {
         User user = mapper.map(input, User.class);
 
-        Role role = roleRepository.findByAuthority(RoleType.USER.name());
+        Role role = roleRepository.getByAuthority(RoleType.USER.name());
 
         user.setPassword(passwordEncoder.encode(input.password()));
         user.setRoles(Set.of(role));
@@ -55,7 +52,7 @@ public class AuthenticationServiceImplOne {
                 )
         );
 
-        return userRepository.findByEmail(input.email());
+        return userRepository.getByEmail(input.email());
     }
 
 

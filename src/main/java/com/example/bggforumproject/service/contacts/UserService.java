@@ -24,7 +24,7 @@ public interface UserService {
 
     void delete(long id, User user);
 
-    User update(User loggedUser, User user);
+    User update(long id, User loggedUser, User user);
 
     void softDelete(long id, User currentUser);
 

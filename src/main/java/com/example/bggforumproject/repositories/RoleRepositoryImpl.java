@@ -20,7 +20,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public Role findByAuthority(String authority) {
+    public Role getByAuthority(String authority) {
         try (Session session = sessionFactory.openSession()) {
 
             Query<Role> query = session.createQuery("from Role where authority = :authority", Role.class);

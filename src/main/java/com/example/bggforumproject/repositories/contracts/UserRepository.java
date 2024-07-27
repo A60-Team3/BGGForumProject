@@ -6,19 +6,19 @@ import com.example.bggforumproject.helpers.UserFilterOptions;
 import java.util.List;
 
 public interface UserRepository {
-    User findByUsername(String username);
+    List<User> getAll();
 
-    List<User> findAll();
+    List<User> getAll(UserFilterOptions userFilterOptions);
 
-    List<User> findAll(UserFilterOptions userFilterOptions);
+    User getById(long id);
+
+    User getByUsername(String username);
+
+    User getByEmail(String email);
 
     User create(User user);
 
-    User findByEmail(String email);
-
-    User findById(long id);
-
     void update(User user);
 
-    void delete(long id);
+    void delete(User user);
 }

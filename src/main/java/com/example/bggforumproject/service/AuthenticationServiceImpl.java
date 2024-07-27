@@ -41,10 +41,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public User registerUser(User user) {
-        authorizationHelper.validateEmailIsUnique(user.getEmail());
+        authorizationHelper.validateEmailIsUnique(user.getId(), user.getEmail());
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
-        Role userRole = roleRepository.findByAuthority(RoleType.USER.name());
+        Role userRole = roleRepository.getByAuthority(RoleType.USER.name());
 
         user.setPassword(encodedPassword);
         user.setRoles(Set.of(userRole));

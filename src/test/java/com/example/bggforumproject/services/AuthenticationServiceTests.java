@@ -47,7 +47,7 @@ public class AuthenticationServiceTests {
         Mockito
                 .doThrow(EntityDuplicateException.class)
                 .when(authorizationHelper)
-                .validateEmailIsUnique(Mockito.anyString());
+                .validateEmailIsUnique(Mockito.anyLong(), Mockito.anyString());
 
         Assertions.assertThrows(
                 EntityDuplicateException.class,
@@ -60,11 +60,16 @@ public class AuthenticationServiceTests {
         User user = createMockUser();
 
         Mockito
+                .doNothing()
+                .when(authorizationHelper)
+                .validateEmailIsUnique(Mockito.anyLong(), Mockito.anyString());
+
+        Mockito
                 .when(passwordEncoder.encode(Mockito.anyString()))
                 .thenReturn(user.getPassword());
 
         Mockito
-                .when(roleRepository.findByAuthority(Mockito.anyString()))
+                .when(roleRepository.getByAuthority(Mockito.anyString()))
                 .thenReturn(new Role(RoleType.USER.name()));
 
         service.registerUser(user);

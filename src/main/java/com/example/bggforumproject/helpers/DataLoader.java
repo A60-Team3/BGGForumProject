@@ -42,7 +42,7 @@ public class DataLoader implements CommandLineRunner {
             }
         }
 
-        if (userRepository.findAll().isEmpty()) {
+        if (userRepository.getAll().isEmpty()) {
             authenticationService.registerUser(new User("John", "Doeson", "john.doe@example.com", "john_doe", "password123"));
             authenticationService.registerUser(new User("Jane", "Smith", "jane.smith@example.com", "jane_smith", "password123"));
             authenticationService.registerUser(new User("Alice", "Johnson", "jalice.johnson@example.com", "alice_johnson", "password123"));

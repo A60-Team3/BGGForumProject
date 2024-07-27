@@ -27,10 +27,12 @@ public class AuthorizationHelper {
         this.userRepository = userRepository;
     }
 
-    public void validateEmailIsUnique(String email) {
+    public void validateEmailIsUnique(long id, String email) {
         try {
-            userRepository.findByEmail(email);
-            throw new EntityDuplicateException("User", "email", email);
+            User user = userRepository.getByEmail(email);
+            if (user.getId() != id) {
+                throw new EntityDuplicateException("User", "email", email);
+            }
         } catch (EntityNotFoundException ignored) {
         }
     }

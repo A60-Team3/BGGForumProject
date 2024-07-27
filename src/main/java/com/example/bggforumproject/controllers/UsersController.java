@@ -134,18 +134,10 @@ public class UsersController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
-        checkModifyPermissions(currentUser.getId(), id);
-
         User user = mapper.map(dto, User.class);
 
-        User updatedUser = userService.update(currentUser, user);
+        User updatedUser = userService.update(id, currentUser, user);
 
         return ResponseEntity.ok(mapper.map(updatedUser, UserOutDTO.class));
-    }
-
-    private void checkModifyPermissions(long currentUser, long requestUser) {
-        if (currentUser != requestUser) {
-            throw new AuthorizationException(MODIFY_USER_ERROR_MESSAGE);
-        }
     }
 }
