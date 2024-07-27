@@ -1,13 +1,13 @@
 package com.example.bggforumproject.repositories.contracts;
 
-import com.example.bggforumproject.models.Post;
+import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Tag;
 
 import java.util.List;
 
 public interface TagRepository {
 
-    List<Tag> get();
+    List<Tag> get(TagFilterOptions tagFilterOptions);
 
     Tag get(long id);
 

@@ -1,7 +1,7 @@
 package com.example.bggforumproject.repositories.contracts;
 
 import com.example.bggforumproject.models.Post;
-import com.example.bggforumproject.helpers.PostFilterOptions;
+import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 
 import java.util.List;
 

@@ -2,6 +2,7 @@ package com.example.bggforumproject.service;
 
 import com.example.bggforumproject.exceptions.PostMismatchException;
 import com.example.bggforumproject.helpers.AuthorizationHelper;
+import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.models.User;
@@ -13,11 +14,9 @@ import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.service.contacts.TagService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -36,8 +35,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> get() {
-        return tagRepository.get();
+    public List<Tag> get(TagFilterOptions tagFilterOptions) {
+        return tagRepository.get(tagFilterOptions);
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
-import com.example.bggforumproject.helpers.PostFilterOptions;
+import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.service.AnonymousUserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,5 +1,8 @@
 package com.example.bggforumproject.repositories;
 
+import com.example.bggforumproject.exceptions.InvalidFilterArgumentException;
+import com.example.bggforumproject.helpers.filters.PostFilterOptions;
+import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.repositories.contracts.TagRepository;
@@ -10,7 +13,8 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Repository
 public class TagRepositoryImpl implements TagRepository {
@@ -21,11 +25,47 @@ public class TagRepositoryImpl implements TagRepository {
     public TagRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
-
+    //TODO remove bidirectional with posts
     @Override
-    public List<Tag> get() {
+    public List<Tag> get(TagFilterOptions tagFilterOptions) {
         try (Session session = sessionFactory.openSession()) {
-            Query<Tag> query = session.createQuery("from Tag", Tag.class);
+            StringBuilder queryString = new StringBuilder("from Tag t");
+
+            if (tagFilterOptions.getPostIds().isPresent()) {
+                queryString.append(" join t.posts p");
+            }
+
+            List<String> filters = new ArrayList<>();
+            Map<String, Object> params = new HashMap<>();
+
+            tagFilterOptions.getTagId().ifPresent(value -> {
+                filters.add("t.id = :tagId");
+                params.put("tagId", value);
+            });
+
+            tagFilterOptions.getName().ifPresent(value -> {
+                filters.add("t.name like :name");
+                params.put("name", String.format("%%%s%%", value.trim().toLowerCase()));
+            });
+
+            tagFilterOptions.getPostIds().ifPresent(value -> {
+                List<Long> postIds = Arrays.stream(value.split(","))
+                        .map(Long::parseLong).toList();
+
+                filters.add("p.id IN (:postIds)");
+                params.put("postIds", postIds);
+            });
+
+            if (!filters.isEmpty()) {
+                queryString.append(" where ")
+                        .append(String.join(" and ", filters));
+            }
+
+            queryString.append(generateOrderBy(tagFilterOptions));
+
+            Query<Tag> query = session.createQuery(queryString.toString(), Tag.class);
+            query.setProperties(params);
+
             return query.list();
         }
     }
@@ -96,5 +136,21 @@ public class TagRepositoryImpl implements TagRepository {
             session.remove(tagToDelete);
             session.getTransaction().commit();
         }
+    }
+
+    private String generateOrderBy(TagFilterOptions tagFilterOptions) {
+
+        String orderBy = tagFilterOptions.getSortBy().isEmpty() ? "t.id" : "t.name";
+        String sortOrder = determineSortOrder(tagFilterOptions);
+
+        return String.format(" order by %s %s", orderBy, sortOrder);
+    }
+
+    private String determineSortOrder(TagFilterOptions tagFilterOptions) {
+        if (tagFilterOptions.getSortOrder().isPresent() &&
+                tagFilterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
+            return "desc";
+        }
+        return "";
     }
 }

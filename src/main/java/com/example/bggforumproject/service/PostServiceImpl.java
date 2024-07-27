@@ -5,7 +5,7 @@ import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
-import com.example.bggforumproject.helpers.PostFilterOptions;
+import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.service.contacts.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

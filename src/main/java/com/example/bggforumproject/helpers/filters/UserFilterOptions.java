@@ -1,4 +1,4 @@
-package com.example.bggforumproject.helpers;
+package com.example.bggforumproject.helpers.filters;
 
 import java.util.Optional;
 

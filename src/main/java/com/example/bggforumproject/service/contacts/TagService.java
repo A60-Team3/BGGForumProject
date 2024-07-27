@@ -1,5 +1,6 @@
 package com.example.bggforumproject.service.contacts;
 
+import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.models.User;
@@ -8,7 +9,7 @@ import java.util.List;
 
 public interface TagService {
 
-    List<Tag> get();
+    List<Tag> get(TagFilterOptions tagFilterOptions);
 
     Tag get(long id);
 

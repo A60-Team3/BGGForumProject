@@ -7,6 +7,8 @@ import com.example.bggforumproject.dtos.ResponseDTO;
 import com.example.bggforumproject.exceptions.CustomAuthenticationException;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.service.contacts.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +16,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin("*")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -58,4 +61,5 @@ public class AuthenticationController {
     @PostMapping("/logout")
     public void logoutUser() {
     }
+
 }

@@ -3,7 +3,6 @@ package com.example.bggforumproject.config;
 import com.example.bggforumproject.dtos.*;
 import com.example.bggforumproject.models.*;
 import com.example.bggforumproject.models.enums.ReactionType;
-import com.example.bggforumproject.repositories.contracts.ReactionRepository;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -20,10 +19,9 @@ import java.util.stream.Collectors;
 @Configuration
 public class MapperConfig {
 
-    private final ReactionRepository reactionRepository;
 
-    public MapperConfig(ReactionRepository reactionRepository) {
-        this.reactionRepository = reactionRepository;
+    public MapperConfig() {
+
     }
 
     @Bean
@@ -36,7 +34,12 @@ public class MapperConfig {
         TypeMap<Post, PostOutFullDTO> postOutFullMap = modelMapper.createTypeMap(Post.class, PostOutFullDTO.class);
         TypeMap<Comment, CommentOutDTO> commentOutDTOTypeMap = modelMapper.createTypeMap(Comment.class, CommentOutDTO.class);
         TypeMap<Reaction, ReactionOutDTO> reactionOutDTOTypeMap = modelMapper.createTypeMap(Reaction.class, ReactionOutDTO.class);
+        TypeMap<Tag, TagsOutDTO> tagsOutDTOTypeMap = modelMapper.createTypeMap(Tag.class, TagsOutDTO.class);
 //        TypeMap<TagDTO, Tag> dtoTagTypeMap = modelMapper.createTypeMap(TagDTO.class, Tag.class);
+
+        tagsOutDTOTypeMap.addMappings(mapper -> {
+            mapper.using(toPost).map(Tag::getPosts, TagsOutDTO::setPosts);
+        });
 
         reactionOutDTOTypeMap.addMappings(mapper -> {
             mapper.using(toFullName).map(Reaction::getUserId, ReactionOutDTO::setReactionMakerFullName);
@@ -103,6 +106,12 @@ public class MapperConfig {
     Converter<Set<Tag>, Set<String>> toTags = new Converter<Set<Tag>, Set<String>>() {
         public Set<String> convert(MappingContext<Set<Tag>, Set<String>> context) {
             return context.getSource().stream().map(Tag::getName).collect(Collectors.toSet());
+        }
+    };
+
+    Converter<Set<Post>, Set<String>> toPost = new Converter<Set<Post>, Set<String>>() {
+        public Set<String> convert(MappingContext<Set<Post>, Set<String>> context) {
+            return context.getSource().stream().map(Post::getTitle).collect(Collectors.toSet());
         }
     };
 

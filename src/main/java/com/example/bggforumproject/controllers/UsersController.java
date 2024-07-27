@@ -7,10 +7,9 @@ import com.example.bggforumproject.dtos.CommentOutDTO;
 import com.example.bggforumproject.dtos.PostOutFullDTO;
 import com.example.bggforumproject.dtos.UserOutDTO;
 import com.example.bggforumproject.dtos.UserUpdateDTO;
-import com.example.bggforumproject.exceptions.AuthorizationException;
-import com.example.bggforumproject.helpers.CommentFilterOptions;
-import com.example.bggforumproject.helpers.PostFilterOptions;
-import com.example.bggforumproject.helpers.UserFilterOptions;
+import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
+import com.example.bggforumproject.helpers.filters.PostFilterOptions;
+import com.example.bggforumproject.helpers.filters.UserFilterOptions;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/BGGForum/users")
-@CrossOrigin("*")
 public class UsersController {
 
     private static final String MODIFY_USER_ERROR_MESSAGE = " Only a user can modified his info!";

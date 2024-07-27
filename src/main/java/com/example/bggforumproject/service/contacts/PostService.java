@@ -2,7 +2,7 @@ package com.example.bggforumproject.service.contacts;
 
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.User;
-import com.example.bggforumproject.helpers.PostFilterOptions;
+import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 
 import java.util.List;
 

@@ -1,6 +1,7 @@
 package com.example.bggforumproject.security;
 
 
+import com.example.bggforumproject.security.alternative.CustomLogoutFilter;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -61,9 +62,9 @@ public class SecurityConfig {
                     auth.requestMatchers("/auth/register").permitAll();
                     /*SWAGGER*/
                     auth.requestMatchers("/v2/api-docs", "v3/api-docs", "v3/api-docs/**",
-                            "/swagger-resources","/swagger-resources/**",
-                            "/configuration/ui","configuration/security",
-                            "/swagger-ui/**","/webjars/**","/swagger-ui.html").permitAll();
+                            "/swagger-resources", "/swagger-resources/**",
+                            "/configuration/ui", "configuration/security",
+                            "/swagger-ui/**", "/webjars/**", "/swagger-ui.html").permitAll();
                     auth.requestMatchers("/BGGForum/main").permitAll();
                     auth.requestMatchers("/BGGForum/posts/most-commented").permitAll();
                     auth.requestMatchers("/BGGForum/posts/most-recently-created").permitAll();
@@ -79,9 +80,12 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(logout -> logout
-                        .logoutUrl("/auth/logout")
-                        .addLogoutHandler(new SecurityContextLogoutHandler())
-                        .logoutSuccessHandler(logoutSuccessHandler()));
+                                .logoutUrl("/auth/logout")
+                                .addLogoutHandler(new SecurityContextLogoutHandler())
+                                .logoutSuccessHandler(logoutSuccessHandler())
+//                                .deleteCookies("JSESSIONID")
+                                .permitAll()
+                );
 
         return http.build();
     }

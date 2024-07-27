@@ -1,5 +1,8 @@
 package com.example.bggforumproject.helpers;
 
+import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
+import com.example.bggforumproject.helpers.filters.PostFilterOptions;
+import com.example.bggforumproject.helpers.filters.UserFilterOptions;
 import com.example.bggforumproject.models.*;
 import com.example.bggforumproject.models.enums.RoleType;
 

@@ -4,7 +4,7 @@ import com.example.bggforumproject.models.Comment;
 import com.example.bggforumproject.repositories.contracts.CommentRepository;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.exceptions.InvalidFilterArgumentException;
-import com.example.bggforumproject.helpers.CommentFilterOptions;
+import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;

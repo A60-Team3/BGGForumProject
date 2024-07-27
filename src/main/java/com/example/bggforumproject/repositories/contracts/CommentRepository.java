@@ -1,7 +1,7 @@
 package com.example.bggforumproject.repositories.contracts;
 
 import com.example.bggforumproject.models.Comment;
-import com.example.bggforumproject.helpers.CommentFilterOptions;
+import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 
 import java.util.List;
 

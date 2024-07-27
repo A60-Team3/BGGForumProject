@@ -4,7 +4,7 @@ import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.exceptions.InvalidFilterArgumentException;
-import com.example.bggforumproject.helpers.PostFilterOptions;
+import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -102,10 +102,6 @@ public class PostRepositoryImpl implements PostRepository {
 
             Query<Post> query = session.createQuery(queryString.toString(), Post.class);
             query.setProperties(params);
-
-            if (query.list().isEmpty()){
-                throw new EntityNotFoundException("No posts satisfy applied conditions");
-            }
 
             return query.list();
         }

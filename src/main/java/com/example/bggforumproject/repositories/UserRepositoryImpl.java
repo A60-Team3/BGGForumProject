@@ -4,7 +4,7 @@ import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.exceptions.InvalidFilterArgumentException;
-import com.example.bggforumproject.helpers.UserFilterOptions;
+import com.example.bggforumproject.helpers.filters.UserFilterOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -155,10 +155,6 @@ public class UserRepositoryImpl implements UserRepository {
 
             Query<User> query = session.createQuery(queryString.toString(), User.class);
             query.setProperties(params);
-
-            if (query.list().isEmpty()){
-                throw new EntityNotFoundException("No users satisfy applied conditions");
-            }
 
             return query.list();
         }

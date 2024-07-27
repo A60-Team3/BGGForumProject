@@ -3,7 +3,7 @@ package com.example.bggforumproject.service;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
-import com.example.bggforumproject.helpers.PostFilterOptions;
+import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.service.contacts.AnonymousUserService;
 import org.springframework.stereotype.Service;
 
