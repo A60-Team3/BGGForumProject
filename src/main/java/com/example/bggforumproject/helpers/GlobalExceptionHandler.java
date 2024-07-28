@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -33,70 +33,86 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
                 .getGlobalErrors()
                 .forEach(objectError -> errors.add(objectError.getObjectName() + ": " + objectError.getDefaultMessage()));
 
-        ApiErrorResponseDTO apiErrorResponseDTO = new ApiErrorResponseDTO(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+        ApiErrorResponseDTO apiErrorResponseDTO = new ApiErrorResponseDTO(HttpStatus.BAD_REQUEST, ex.getMessage(), errors);
         return new ResponseEntity<>(apiErrorResponseDTO, headers, status);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("description", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.NOT_FOUND);
+        ApiErrorResponseDTO apiErrorResponseDTO =
+                new ApiErrorResponseDTO(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), List.of(ex.getMessage()));
+
+        return new ResponseEntity<>(apiErrorResponseDTO, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EntityDuplicateException.class)
-    public ResponseEntity<?> handleEntityNotFoundException(EntityDuplicateException ex) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("description", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.CONFLICT);
+    public ResponseEntity<?> handleEntityDuplicateException(EntityDuplicateException ex) {
+        ApiErrorResponseDTO apiErrorResponseDTO =
+                new ApiErrorResponseDTO(HttpStatus.CONFLICT, ex.getLocalizedMessage(), List.of(ex.getMessage()));
+
+        return new ResponseEntity<>(apiErrorResponseDTO, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<?> handleEntityNotFoundException(BadCredentialsException ex) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("description", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException ex) {
+        ApiErrorResponseDTO apiErrorResponseDTO =
+                new ApiErrorResponseDTO(HttpStatus.UNAUTHORIZED, ex.getLocalizedMessage(), List.of(ex.getMessage()));
+        return new ResponseEntity<>(apiErrorResponseDTO, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccountStatusException.class)
-    public ResponseEntity<?> handleEntityNotFoundException(AccountStatusException ex) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("description", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.FORBIDDEN);
+    public ResponseEntity<?> handleAccountStatusException(AccountStatusException ex) {
+        ApiErrorResponseDTO apiErrorResponseDTO =
+                new ApiErrorResponseDTO(HttpStatus.FORBIDDEN, ex.getLocalizedMessage(), List.of(ex.getMessage()));
+        return new ResponseEntity<>(apiErrorResponseDTO, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler({CustomAuthenticationException.class})
-    public ResponseEntity<?> handleAccessControlExceptions(CustomAuthenticationException ex) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<?> handleCustomAuthenticationException(CustomAuthenticationException ex) {
+        ApiErrorResponseDTO apiErrorResponseDTO =
+                new ApiErrorResponseDTO(HttpStatus.UNAUTHORIZED, ex.getLocalizedMessage(), List.of(ex.getMessage()));
+        return new ResponseEntity<>(apiErrorResponseDTO, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<?> handleEntityNotFoundException(AccessDeniedException ex) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("description", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.FORBIDDEN);
+    public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException ex) {
+        ApiErrorResponseDTO apiErrorResponseDTO =
+                new ApiErrorResponseDTO(HttpStatus.FORBIDDEN, ex.getLocalizedMessage(), List.of(ex.getMessage()));
+        return new ResponseEntity<>(apiErrorResponseDTO, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(DateTimeException.class)
-    public ResponseEntity<?> handleEntityNotFoundException(DateTimeException ex) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("description", "Date provided is not valid.");
-        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> handleDateTimeException(DateTimeException ex) {
+        ApiErrorResponseDTO apiErrorResponseDTO =
+                new ApiErrorResponseDTO(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), List.of(ex.getMessage()));
+        return new ResponseEntity<>(apiErrorResponseDTO, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PostMismatchException.class)
+    public ResponseEntity<?> handleDateTimeException(PostMismatchException ex) {
+        ApiErrorResponseDTO apiErrorResponseDTO =
+                new ApiErrorResponseDTO(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), List.of(ex.getMessage()));
+        return new ResponseEntity<>(apiErrorResponseDTO, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidFilterArgumentException.class)
+    public ResponseEntity<?> handleDateTimeException(InvalidFilterArgumentException ex) {
+        ApiErrorResponseDTO apiErrorResponseDTO =
+                new ApiErrorResponseDTO(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), List.of(ex.getMessage()));
+        return new ResponseEntity<>(apiErrorResponseDTO, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<?> handleEntityNotFoundException(AuthorizationException ex) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("description", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.FORBIDDEN);
+    public ResponseEntity<?> handleAuthorizationException(AuthorizationException ex) {
+        ApiErrorResponseDTO apiErrorResponseDTO =
+                new ApiErrorResponseDTO(HttpStatus.FORBIDDEN, ex.getLocalizedMessage(), List.of(ex.getMessage()));
+        return new ResponseEntity<>(apiErrorResponseDTO, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(IllegalUsernameModificationException.class)
-    public ResponseEntity<?> handleEntityNotFoundException(IllegalUsernameModificationException ex) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("description", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity<?> handleIllegalUsernameModificationException(IllegalUsernameModificationException ex) {
+        ApiErrorResponseDTO apiErrorResponseDTO =
+                new ApiErrorResponseDTO(HttpStatus.NOT_ACCEPTABLE, ex.getLocalizedMessage(), List.of(ex.getMessage()));
+        return new ResponseEntity<>(apiErrorResponseDTO, HttpStatus.NOT_ACCEPTABLE);
     }
 }

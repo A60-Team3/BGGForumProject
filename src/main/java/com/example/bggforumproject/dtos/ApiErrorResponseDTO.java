@@ -1,11 +1,12 @@
 package com.example.bggforumproject.dtos;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-
+@Schema(description = "This DTO holds the information about errors that happen during the runtime of the application.", allowableValues = {"status", "message", "errors"})
 public class ApiErrorResponseDTO {
 
     private HttpStatus status;
@@ -42,5 +43,8 @@ public class ApiErrorResponseDTO {
         this.status = status;
         this.message = message;
         this.errors = errors;
+    }
+
+    public ApiErrorResponseDTO() {
     }
 }

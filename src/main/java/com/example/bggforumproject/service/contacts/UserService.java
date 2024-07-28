@@ -16,9 +16,9 @@ public interface UserService {
 
     List<User> getAll(UserFilterOptions userFilterOptions);
 
-    List<Post> getSpecificUserPosts(PostFilterOptions postFilterOptions);
+    List<Post> getSpecificUserPosts(long id, PostFilterOptions postFilterOptions);
 
-    List<Comment> getSpecificUserComments(CommentFilterOptions commentFilterOptions);
+    List<Comment> getSpecificUserComments(long id, CommentFilterOptions commentFilterOptions);
 
     User promote(long id, User currentUser);
 
@@ -28,6 +28,6 @@ public interface UserService {
 
     void softDelete(long id, User currentUser);
 
-    void blockUser(long id, User currentUser, boolean dto);
+    User blockUser(long id, User currentUser, boolean dto);
 }
 

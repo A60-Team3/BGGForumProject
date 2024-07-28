@@ -1,14 +1,14 @@
 package com.example.bggforumproject.dtos;
 
-import java.time.LocalDateTime;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Set;
 
+@Schema(description = "This DTO holds the public information about posts.", allowableValues = {"title", "createdAt", "userFullName", "tags"})
 public class PostAnonymousOutDTO {
     private String title;
 
     private String createdAt;
-
-    private String updatedAt;
 
     private String userFullName;
 
@@ -28,14 +28,6 @@ public class PostAnonymousOutDTO {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public String getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public String getUserFullName() {

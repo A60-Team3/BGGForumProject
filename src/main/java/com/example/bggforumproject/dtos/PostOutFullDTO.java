@@ -1,8 +1,12 @@
 package com.example.bggforumproject.dtos;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Set;
 
+@Schema(description = "This DTO holds post info available to authenticated users.",
+        allowableValues = {"title", "content", "createdAt", "updatedAt", "publisherName", "tags"})
 public class PostOutFullDTO {
     private String title;
 

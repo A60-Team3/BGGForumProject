@@ -12,7 +12,7 @@ public class CustomLogoutFilter extends SecurityContextLogoutHandler implements 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 
-        /* TODO authentication is empty find why*/
+        /* TODO authentication is empty find why, update logout method*/
 //        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 //
 //        if (auth == null) {

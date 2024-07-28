@@ -1,5 +1,9 @@
 package com.example.bggforumproject.dtos;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "This DTO holds comment info available to authenticated users.",
+        allowableValues = {"content", "createdAt", "updatedAt", "userId", "postId"})
 public class CommentOutDTO {
     private String content;
 
@@ -7,9 +11,9 @@ public class CommentOutDTO {
 
     private String updatedAt;
 
-    private long userId;
+    private String userFullName;
 
-    private long postId;
+    private String postTitle;
 
     public String getContent() {
         return content;
@@ -35,19 +39,19 @@ public class CommentOutDTO {
         this.updatedAt = updatedAt;
     }
 
-    public long getUserId() {
-        return userId;
+    public String getUserFullName() {
+        return userFullName;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setUserFullName(String userFullName) {
+        this.userFullName = userFullName;
     }
 
-    public long getPostId() {
-        return postId;
+    public String getPostTitle() {
+        return postTitle;
     }
 
-    public void setPostId(long postId) {
-        this.postId = postId;
+    public void setPostTitle(String postTitle) {
+        this.postTitle = postTitle;
     }
 }

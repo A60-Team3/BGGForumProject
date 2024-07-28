@@ -1,6 +1,7 @@
 package com.example.bggforumproject.models;
 
 import com.example.bggforumproject.models.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -136,11 +137,6 @@ public class User extends BaseEntity implements UserDetails {
         isDeleted = deleted;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
     public void setRoles(Set<Role> roles) {
         this.authorities = roles;
     }
@@ -150,21 +146,31 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return !isDeleted();
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return !isBlocked();
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return !isBlocked();
     }

@@ -26,6 +26,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
@@ -80,11 +81,10 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(logout -> logout
-                                .logoutUrl("/auth/logout")
-                                .addLogoutHandler(new SecurityContextLogoutHandler())
-                                .logoutSuccessHandler(logoutSuccessHandler())
-//                                .deleteCookies("JSESSIONID")
-                                .permitAll()
+                        .logoutUrl("/auth/logout")
+                        .addLogoutHandler(new SecurityContextLogoutHandler())
+                        .logoutSuccessHandler(logoutSuccessHandler())
+                        .deleteCookies("JSESSIONID")
                 );
 
         return http.build();

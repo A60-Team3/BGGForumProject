@@ -73,7 +73,8 @@ public class TagServiceImpl implements TagService {
         Tag tag = tagRepository.get(tagId);
         Post post = tag.getPosts().stream()
                 .filter(p -> p.getId() == postId)
-                .findFirst().orElseThrow(() -> new PostMismatchException("tag",tag.getName()));
+                .findFirst()
+                .orElseThrow(() -> new PostMismatchException("tag",tag.getName()));
 
         try {
             authorizationHelper.checkPermissionsAndOwnership(post.getId(), user, postRepository, "ADMIN", "MODERATOR");

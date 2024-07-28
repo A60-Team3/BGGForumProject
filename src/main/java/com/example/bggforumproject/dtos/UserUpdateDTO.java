@@ -1,9 +1,10 @@
 package com.example.bggforumproject.dtos;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
+@Schema(description = "The DTO holds the info the front end must provide to update the user's info")
 public record UserUpdateDTO(
 
         @Size(min = 4, max = 32, message = "First name must be between 4 and 32 characters")

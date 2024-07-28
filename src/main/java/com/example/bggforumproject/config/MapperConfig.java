@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,12 +31,24 @@ public class MapperConfig {
         modelMapper.getConfiguration().setSkipNullEnabled(true);
 
         TypeMap<User, UserOutDTO> userOutMap = modelMapper.createTypeMap(User.class, UserOutDTO.class);
+        TypeMap<User, UserBlockOutDTO> userBlockOutDTOTypeMap = modelMapper.createTypeMap(User.class, UserBlockOutDTO.class);
         TypeMap<Post, PostAnonymousOutDTO> postAnonymousOutDTOTypeMap = modelMapper.createTypeMap(Post.class, PostAnonymousOutDTO.class);
         TypeMap<Post, PostOutFullDTO> postOutFullMap = modelMapper.createTypeMap(Post.class, PostOutFullDTO.class);
         TypeMap<Comment, CommentOutDTO> commentOutDTOTypeMap = modelMapper.createTypeMap(Comment.class, CommentOutDTO.class);
         TypeMap<Reaction, ReactionOutDTO> reactionOutDTOTypeMap = modelMapper.createTypeMap(Reaction.class, ReactionOutDTO.class);
         TypeMap<Tag, TagsOutDTO> tagsOutDTOTypeMap = modelMapper.createTypeMap(Tag.class, TagsOutDTO.class);
-//        TypeMap<TagDTO, Tag> dtoTagTypeMap = modelMapper.createTypeMap(TagDTO.class, Tag.class);
+
+        userBlockOutDTOTypeMap.addMappings(mapper -> {
+            mapper.using(toFullName).map(src -> src, UserBlockOutDTO::setFullName);
+        });
+
+        userOutMap.addMappings(mapper -> {
+            mapper.using(toFullName).map(src -> src, UserOutDTO::setFullName);
+            mapper.using(toCreatedOn).map(User::getRegisteredAt, UserOutDTO::setRegisteredAt);
+            mapper.using(toCreatedOn).map(User::getUpdatedAt, UserOutDTO::setUpdatedAt);
+            mapper.using(toRole).map(User::getRoles, UserOutDTO::setRoles);
+
+        });
 
         tagsOutDTOTypeMap.addMappings(mapper -> {
             mapper.using(toPost).map(Tag::getPosts, TagsOutDTO::setPosts);
@@ -45,15 +58,12 @@ public class MapperConfig {
             mapper.using(toFullName).map(Reaction::getUserId, ReactionOutDTO::setReactionMakerFullName);
         });
 
-//        dtoTagTypeMap.addMappings(mapper -> {
-//            mapper.using(toLowerCase).map(TagDTO::getName, Tag::setName);
-//        });
-
         commentOutDTOTypeMap.addMappings(mapper -> {
+            mapper.using(toSinglePost).map(Comment::getPostId, CommentOutDTO::setPostTitle);
+            mapper.using(toFullName).map(Comment::getUserId, CommentOutDTO::setUserFullName);
             mapper.using(toCreatedOn).map(Comment::getCreatedAt, CommentOutDTO::setCreatedAt);
             mapper.using(toCreatedOn).map(Comment::getUpdatedAt, CommentOutDTO::setUpdatedAt);
         });
-
 
         postOutFullMap.addMappings(mapper -> {
             mapper.using(toTags).map(Post::getTags, PostOutFullDTO::setTags);
@@ -63,22 +73,12 @@ public class MapperConfig {
 
         });
 
-
         postAnonymousOutDTOTypeMap.addMappings(mapper -> {
             mapper.using(toTags).map(Post::getTags, PostAnonymousOutDTO::setTags);
             mapper.using(toFullName).map(Post::getUserId, PostAnonymousOutDTO::setUserFullName);
             mapper.using(toCreatedOn).map(Post::getCreatedAt, PostAnonymousOutDTO::setCreatedAt);
-            mapper.using(toCreatedOn).map(Post::getUpdatedAt, PostAnonymousOutDTO::setUpdatedAt);
         });
 
-
-        userOutMap.addMappings(mapper -> {
-            mapper.using(toFullName).map(src -> src, UserOutDTO::setFullName);
-            mapper.using(toCreatedOn).map(User::getRegisteredAt, UserOutDTO::setRegisteredAt);
-            mapper.using(toCreatedOn).map(User::getUpdatedAt, UserOutDTO::setUpdatedAt);
-            mapper.using(toRole).map(User::getRoles, UserOutDTO::setRoles);
-
-        });
 
         return modelMapper.registerModule(new RecordModule());
     }
@@ -89,12 +89,6 @@ public class MapperConfig {
             return user.getFirstName() + " " + user.getLastName();
         }
     };
-
-//    Converter<String, String> toLowerCase = new Converter<String, String>() {
-//        public String convert(MappingContext<String, String> context) {
-//            return context.getSource().toLowerCase();
-//        }
-//    };
 
     Converter<LocalDateTime, String> toCreatedOn = new Converter<LocalDateTime, String>() {
         public String convert(MappingContext<LocalDateTime, String> context) {
@@ -109,9 +103,15 @@ public class MapperConfig {
         }
     };
 
-    Converter<Set<Post>, Set<String>> toPost = new Converter<Set<Post>, Set<String>>() {
-        public Set<String> convert(MappingContext<Set<Post>, Set<String>> context) {
-            return context.getSource().stream().map(Post::getTitle).collect(Collectors.toSet());
+    Converter<Set<Post>, List<String>> toPost = new Converter<Set<Post>, List<String>>() {
+        public List<String> convert(MappingContext<Set<Post>, List<String>> context) {
+            return context.getSource().stream().map(Post::getTitle).collect(Collectors.toList());
+        }
+    };
+
+    Converter<Post, String> toSinglePost = new Converter<Post, String>() {
+        public String convert(MappingContext<Post, String> context) {
+            return context.getSource().getTitle();
         }
     };
 

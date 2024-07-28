@@ -1,4 +1,14 @@
 package com.example.bggforumproject.dtos;
 
 
-public record LoginDTO(String username, String password) { }
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginDTO
+        (
+                @NotBlank(message = "Username is mandatory")
+                String username,
+
+                @NotBlank(message = "Password is mandatory")
+                String password
+        ) {
+}

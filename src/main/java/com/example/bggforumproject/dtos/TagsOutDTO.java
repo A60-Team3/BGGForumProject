@@ -1,12 +1,12 @@
 package com.example.bggforumproject.dtos;
 
-import java.util.Set;
+import java.util.List;
 
 public class TagsOutDTO {
 
     private String name;
 
-    private Set<String> posts;
+    private List<String> posts;
 
     public String getName() {
         return name;
@@ -16,11 +16,11 @@ public class TagsOutDTO {
         this.name = name;
     }
 
-    public Set<String> getPosts() {
+    public List<String> getPosts() {
         return posts;
     }
 
-    public void setPosts(Set<String> posts) {
+    public void setPosts(List<String> posts) {
         this.posts = posts;
     }
 }

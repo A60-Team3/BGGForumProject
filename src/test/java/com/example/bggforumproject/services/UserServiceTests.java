@@ -105,10 +105,15 @@ public class UserServiceTests {
         Mockito.when(postRepository.get(mockPostFilterOptions))
                 .thenReturn(null);
 
-        userService.getSpecificUserPosts(mockPostFilterOptions);
+        Mockito.when(userRepository.getById(Mockito.anyLong()))
+                .thenReturn(Mockito.any(User.class));
+
+        userService.getSpecificUserPosts(1, mockPostFilterOptions);
 
         Mockito.verify(postRepository, Mockito.times(1))
                 .get(mockPostFilterOptions);
+        Mockito.verify(userRepository, Mockito.times(1))
+                .getById(1);
     }
 
     @Test
@@ -118,10 +123,15 @@ public class UserServiceTests {
         Mockito.when(commentRepository.get(mockCommentFilterOptions))
                 .thenReturn(null);
 
-        userService.getSpecificUserComments(mockCommentFilterOptions);
+        Mockito.when(userRepository.getById(Mockito.anyLong()))
+                .thenReturn(Mockito.any(User.class));
+
+        userService.getSpecificUserComments(1, mockCommentFilterOptions);
 
         Mockito.verify(commentRepository, Mockito.times(1))
                 .get(mockCommentFilterOptions);
+        Mockito.verify(userRepository, Mockito.times(1))
+                .getById(1);
     }
 
     @Test
@@ -390,7 +400,7 @@ public class UserServiceTests {
         Mockito
                 .doThrow(AuthorizationException.class)
                 .when(authorizationHelper)
-                .checkPermissions(Mockito.any(),  Mockito.anyString());
+                .checkPermissions(Mockito.any(), Mockito.anyString());
 
         Assertions.assertThrows(
                 AuthorizationException.class,
@@ -404,7 +414,7 @@ public class UserServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissions(Mockito.any(),  Mockito.anyString());
+                .checkPermissions(Mockito.any(), Mockito.anyString());
 
         Mockito
                 .when(userRepository.getById(Mockito.anyLong()))

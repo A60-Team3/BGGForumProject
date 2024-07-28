@@ -2,6 +2,8 @@ package com.example.bggforumproject.service;
 
 
 import com.example.bggforumproject.dtos.ResponseDTO;
+import com.example.bggforumproject.exceptions.EntityDuplicateException;
+import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.helpers.AuthorizationHelper;
 import com.example.bggforumproject.models.Role;
 import com.example.bggforumproject.models.User;
@@ -31,7 +33,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public AuthenticationServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
                                      PasswordEncoder passwordEncoder, TokenService tokenService,
-                                     ModelMapper mapper, AuthorizationHelper authorizationHelper) {
+                                     AuthorizationHelper authorizationHelper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -42,6 +44,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public User registerUser(User user) {
         authorizationHelper.validateEmailIsUnique(user.getId(), user.getEmail());
+
+        try{
+            userRepository.getByUsername(user.getUsername());
+            throw new EntityDuplicateException("User","username", user.getUsername());
+        } catch (EntityNotFoundException ignored){
+
+        }
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         Role userRole = roleRepository.getByAuthority(RoleType.USER.name());

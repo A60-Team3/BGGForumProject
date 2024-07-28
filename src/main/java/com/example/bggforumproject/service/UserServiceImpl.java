@@ -1,8 +1,6 @@
 package com.example.bggforumproject.service;
 
-import com.example.bggforumproject.exceptions.AuthorizationException;
-import com.example.bggforumproject.exceptions.EntityDuplicateException;
-import com.example.bggforumproject.exceptions.IllegalUsernameModificationException;
+import com.example.bggforumproject.exceptions.*;
 import com.example.bggforumproject.helpers.AuthorizationHelper;
 import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
@@ -61,12 +59,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Post> getSpecificUserPosts(PostFilterOptions postFilterOptions) {
+    public List<Post> getSpecificUserPosts(long id, PostFilterOptions postFilterOptions) {
+        userRepository.getById(id);
+
         return postRepository.get(postFilterOptions);
     }
 
     @Override
-    public List<Comment> getSpecificUserComments(CommentFilterOptions commentFilterOptions) {
+    public List<Comment> getSpecificUserComments(long id, CommentFilterOptions commentFilterOptions) {
+        userRepository.getById(id);
+
         return commentRepository.get(commentFilterOptions);
     }
 
@@ -75,10 +77,13 @@ public class UserServiceImpl implements UserService {
         authorizationHelper.checkPermissions(currentUser, "ADMIN");
 
         User userToPromote = userRepository.getById(id);
+
         Role role = roleRepository.getByAuthority(RoleType.MODERATOR.name());
 
         if (userToPromote.getRoles().contains(role)) {
-            throw new EntityDuplicateException(userToPromote.getUsername(), "role", role.getAuthority());
+            throw new EntityDuplicateException(
+                    String.format("User with id %d is already %s", id, role.getAuthority())
+            );
         }
 
         userToPromote.getRoles().add(role);
@@ -111,12 +116,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void blockUser(long id, User currentUser, boolean isBlocked) {
+    public User blockUser(long id, User currentUser, boolean isBlocked) {
         authorizationHelper.checkPermissions(currentUser, "ADMIN", "MODERATOR");
 
-        User user = userRepository.getById(id);
+        User user= userRepository.getById(id);
+
+        if (user.isBlocked() == isBlocked) {
+            throw new EntityDuplicateException(
+                    String.format("Block status of user with id %d already set to %s", id, isBlocked)
+            );
+        }
+
         user.setBlocked(isBlocked);
         userRepository.update(user);
+
+        return user;
     }
 
     @Override
@@ -124,6 +138,13 @@ public class UserServiceImpl implements UserService {
         authorizationHelper.checkPermissions(currentUser, "ADMIN");
 
         User userToArchive = userRepository.getById(id);
+
+        if (userToArchive.isBlocked()) {
+            throw new EntityDuplicateException(
+                    String.format("User with id %d already archived", id)
+            );
+        }
+
         userToArchive.setDeleted(true);
 
         userRepository.update(userToArchive);

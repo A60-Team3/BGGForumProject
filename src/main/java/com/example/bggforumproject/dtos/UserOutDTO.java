@@ -1,7 +1,10 @@
 package com.example.bggforumproject.dtos;
 
-import java.util.Set;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.Set;
+@Schema(description = "This DTO holds concise user information.",
+        allowableValues = {"fullName", "email", "registeredAt","updatedAt", "roles"})
 public class UserOutDTO {
 
     private String fullName;
