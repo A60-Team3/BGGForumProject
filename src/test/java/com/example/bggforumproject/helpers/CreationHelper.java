@@ -4,6 +4,7 @@ import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.UserFilterOptions;
 import com.example.bggforumproject.models.*;
+import com.example.bggforumproject.models.enums.ReactionType;
 import com.example.bggforumproject.models.enums.RoleType;
 
 import java.time.LocalDateTime;
@@ -51,6 +52,15 @@ public class CreationHelper {
         post.setUpdatedAt(LocalDateTime.now());
 
         return post;
+    }
+
+    public static Reaction createMockReaction() {
+        Reaction reaction = new Reaction();
+        reaction.setId(1);
+        reaction.setReactionType(ReactionType.LIKE);
+        reaction.setPostId(createMockPost());
+        reaction.setUserId(createMockAdmin());
+        return reaction;
     }
 
     public static Tag createMockTag() {

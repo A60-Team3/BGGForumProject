@@ -59,12 +59,11 @@ public class TagServiceImpl implements TagService {
             create(tag);
         }
 
-        Tag tagToAdd = tagRepository.get(tag.getName());
-        if (!post.getTags().contains(tagToAdd)) {
-            post.getTags().add(tagToAdd);
+        if (!post.getTags().contains(tag)) {
+            post.getTags().add(tag);
             postRepository.update(post);
         } else {
-            throw new EntityDuplicateException("Tag", "name", tagToAdd.getName());
+            throw new EntityDuplicateException("Tag", "name", tag.getName());
         }
     }
 
