@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -39,8 +38,12 @@ public class AuthenticationController {
     }
 
     @Operation(summary = "Register account.",
-            description = "Allows the user to register an account.",
+            description = "Allows the user to register an account. Creates new user",
             tags = {"free"},
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "User details for registering",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = RegistrationDTO.class))
+            ),
             responses = {
                     @ApiResponse(responseCode = "201",
                             description = "Successfully signed up an account.",
@@ -63,6 +66,10 @@ public class AuthenticationController {
     @Operation(summary = "Login into the application.",
             description = "Allows the user to login to existing account.",
             tags = {"free"},
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Username and password",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = LoginDTO.class))
+            ),
             responses = {
                     @ApiResponse(responseCode = "200",
                             description = "Successfully logged in with the account.",
@@ -75,7 +82,7 @@ public class AuthenticationController {
                             content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
     @PostMapping("/login")
-    public ResponseEntity<ResponseDTO> loginUser(@RequestBody LoginDTO body) {
+    public ResponseEntity<ResponseDTO> loginUser(@Valid @RequestBody LoginDTO body) {
         //TODO login must throw when user already logged in
         try {
             Authentication auth = authenticationManager.authenticate(
@@ -86,7 +93,7 @@ public class AuthenticationController {
             return ResponseEntity.ok(dto);
 
         } catch (AuthenticationException e) {
-            throw new CustomAuthenticationException("Authentication failed!");
+            throw new CustomAuthenticationException("Invalid username or password");
         }
     }
 

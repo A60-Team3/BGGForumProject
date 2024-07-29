@@ -1,5 +1,7 @@
 package com.example.bggforumproject.config;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -11,6 +13,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@OpenAPIDefinition(
+        tags = {
+                @Tag(name = "tags", description = "Tag related endpoints. Authentication required."),
+                @Tag(name = "users", description = "User related endpoints. Authentication required.")
+        }
+)
 public class SwaggerConfig {
 
     @Bean

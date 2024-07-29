@@ -9,7 +9,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "roles")
 public class Role extends BaseEntity implements GrantedAuthority {
-
+    //TODO return enum type
     @Column(name = "role_type")
     private String authority;
 

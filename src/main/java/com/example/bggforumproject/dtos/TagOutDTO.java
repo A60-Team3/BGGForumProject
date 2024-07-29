@@ -2,7 +2,7 @@ package com.example.bggforumproject.dtos;
 
 import java.util.List;
 
-public class TagsOutDTO {
+public class TagOutDTO {
 
     private String name;
 

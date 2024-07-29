@@ -69,7 +69,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/BGGForum/main").permitAll();
                     auth.requestMatchers("/BGGForum/posts/most-commented").permitAll();
                     auth.requestMatchers("/BGGForum/posts/most-recently-created").permitAll();
-                    auth.requestMatchers("/BGGForum/posts/tags/**").hasRole("ADMIN");
+                    auth.requestMatchers("/BGGForum/posts/tags/**").hasAnyRole("ADMIN", "MODERATOR");
                     auth.requestMatchers("/BGGForum/users").hasAnyRole("ADMIN", "MODERATOR");
                     auth.requestMatchers("/BGGForum/admin/**").hasAnyRole("ADMIN", "MODERATOR");
                     auth.requestMatchers("/BGGForum/users/**").hasAnyRole("ADMIN", "MODERATOR", "USER");
@@ -83,8 +83,8 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
                         .addLogoutHandler(new SecurityContextLogoutHandler())
-                        .logoutSuccessHandler(logoutSuccessHandler())
                         .deleteCookies("JSESSIONID")
+                        .logoutSuccessHandler(logoutSuccessHandler())
                 );
 
         return http.build();

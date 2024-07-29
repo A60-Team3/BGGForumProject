@@ -28,6 +28,6 @@ public interface UserService {
 
     void softDelete(long id, User currentUser);
 
-    User blockUser(long id, User currentUser, boolean dto);
+    User blockUser(long id, User currentUser, boolean isBlocked);
 }
 

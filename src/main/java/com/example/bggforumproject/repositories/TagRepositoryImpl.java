@@ -1,9 +1,6 @@
 package com.example.bggforumproject.repositories;
 
-import com.example.bggforumproject.exceptions.InvalidFilterArgumentException;
-import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
-import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.repositories.contracts.TagRepository;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
@@ -13,7 +10,6 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
@@ -129,8 +125,7 @@ public class TagRepositoryImpl implements TagRepository {
 
 
     @Override
-    public void delete(long id) {
-        Tag tagToDelete = get(id);
+    public void delete(Tag tagToDelete) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.remove(tagToDelete);
@@ -140,7 +135,16 @@ public class TagRepositoryImpl implements TagRepository {
 
     private String generateOrderBy(TagFilterOptions tagFilterOptions) {
 
-        String orderBy = tagFilterOptions.getSortBy().isEmpty() ? "t.id" : "t.name";
+        if (tagFilterOptions.getSortBy().isEmpty()) {
+            return String.format(" order by t.id %s", determineSortOrder(tagFilterOptions));
+        }
+
+        String orderBy = switch (tagFilterOptions.getSortBy().get().trim()) {
+            case "name" -> "t.name";
+            case "postId" -> "p.id";
+            default -> "t.id";
+        };
+
         String sortOrder = determineSortOrder(tagFilterOptions);
 
         return String.format(" order by %s %s", orderBy, sortOrder);

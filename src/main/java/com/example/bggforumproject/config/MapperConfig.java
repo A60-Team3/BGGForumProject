@@ -36,7 +36,7 @@ public class MapperConfig {
         TypeMap<Post, PostOutFullDTO> postOutFullMap = modelMapper.createTypeMap(Post.class, PostOutFullDTO.class);
         TypeMap<Comment, CommentOutDTO> commentOutDTOTypeMap = modelMapper.createTypeMap(Comment.class, CommentOutDTO.class);
         TypeMap<Reaction, ReactionOutDTO> reactionOutDTOTypeMap = modelMapper.createTypeMap(Reaction.class, ReactionOutDTO.class);
-        TypeMap<Tag, TagsOutDTO> tagsOutDTOTypeMap = modelMapper.createTypeMap(Tag.class, TagsOutDTO.class);
+        TypeMap<Tag, TagOutDTO> tagsOutDTOTypeMap = modelMapper.createTypeMap(Tag.class, TagOutDTO.class);
 
         userBlockOutDTOTypeMap.addMappings(mapper -> {
             mapper.using(toFullName).map(src -> src, UserBlockOutDTO::setFullName);
@@ -51,7 +51,7 @@ public class MapperConfig {
         });
 
         tagsOutDTOTypeMap.addMappings(mapper -> {
-            mapper.using(toPost).map(Tag::getPosts, TagsOutDTO::setPosts);
+            mapper.using(toPost).map(Tag::getPosts, TagOutDTO::setPosts);
         });
 
         reactionOutDTOTypeMap.addMappings(mapper -> {

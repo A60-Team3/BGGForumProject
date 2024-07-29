@@ -15,7 +15,7 @@ public interface TagService {
 
     Tag get(String name);
 
-    void addTagToPost(Tag tag, Post post);
+    Post addTagToPost(long id, String tag, User user);
 
     void deleteTagFromPost(long tagId, long postId, User user);
 

@@ -1,8 +1,8 @@
 package com.example.bggforumproject.services;
 
 import com.example.bggforumproject.exceptions.AuthorizationException;
-import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.helpers.AuthorizationHelper;
+import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.models.Comment;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.User;
@@ -37,12 +37,13 @@ public class CommentServiceTests {
     @Test
     public void getCommentsForPost_Should_CallRepository() {
         Post post = createMockPost();
+        CommentFilterOptions mockCommentFilterOptions = createMockCommentFilterOptions();
 
         Mockito.when(postRepository.get(post.getId())).thenReturn(post);
-        commentService.getCommentsForPost(post.getId());
+        commentService.getCommentsForPost(post.getId(), mockCommentFilterOptions);
 
         Mockito.verify(commentRepository, Mockito.times(1))
-                .getCommentsForPost(post.getId());
+                .get(mockCommentFilterOptions);
     }
 
     @Test
@@ -70,10 +71,14 @@ public class CommentServiceTests {
 
     @Test
     public void create_Should_CreateComment_When_Valid() {
+        Post post = createMockPost();
         Comment comment = createMockComment();
         User user = createMockUser();
 
-        commentService.create(comment, user);
+        Mockito.when(postRepository.get(Mockito.anyLong()))
+                .thenReturn(post);
+
+        commentService.create(post.getId(), comment, user);
 
         Mockito.verify(commentRepository, Mockito.times(1))
                 .create(comment);
@@ -83,15 +88,23 @@ public class CommentServiceTests {
     public void update_Should_UpdateComment_When_UserIsCreator() {
         Comment comment = createMockComment();
         User user = createMockUser();
+        Post post = createMockPost();
+
 
         comment.setUserId(user);
+
+        Mockito.when(postRepository.get(Mockito.anyLong()))
+                .thenReturn(post);
+
+        Mockito.when(commentRepository.get(Mockito.anyLong()))
+                .thenReturn(comment);
 
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
                 .checkOwnership(comment.getId(), user, commentRepository);
 
-        commentService.update(comment, user);
+        commentService.update(comment.getId(), post.getId(), comment.getContent(), user);
 
         Mockito.verify(commentRepository, Mockito.times(1))
                 .update(comment);
@@ -100,6 +113,7 @@ public class CommentServiceTests {
     @Test
     public void update_Should_Throw_When_UserIsNotCreator(){
         Comment comment = createMockComment();
+        Post post = createMockPost();
         User user = createMockUser();
         User notCreator = createMockUser();
         notCreator.setId(2);
@@ -112,12 +126,13 @@ public class CommentServiceTests {
                 .checkOwnership(comment.getId(), notCreator, commentRepository);
 
         Assertions.assertThrows(AuthorizationException.class,
-                () -> commentService.update(comment, notCreator));
+                () -> commentService.update(comment.getId(), post.getId(), comment.getContent(), notCreator));
     }
 
     @Test
     public void delete_Should_DeleteComment_When_UserIsCreatorOrAdminOrModerator(){
         Comment comment = createMockComment();
+        Post post = createMockPost();
         User user = createMockUser();
 
         comment.setUserId(user);
@@ -127,7 +142,7 @@ public class CommentServiceTests {
                 .when(authorizationHelper)
                 .checkPermissionsAndOwnership(comment.getId(), user, commentRepository, "ADMIN", "MODERATOR");
 
-        commentService.delete(comment.getId(), user);
+        commentService.delete(comment.getId(), post.getId(), user);
 
         Mockito.verify(commentRepository, Mockito.times(1))
                 .delete(comment.getId());
@@ -136,6 +151,7 @@ public class CommentServiceTests {
     @Test
     public void delete_Should_Throw_When_UserIsNotCreatorOrAdminOrModerator(){
         Comment comment = createMockComment();
+        Post post = createMockPost();
         User user = createMockUser();
         User notCreator = createMockUser();
         notCreator.setId(2);
@@ -148,6 +164,6 @@ public class CommentServiceTests {
                 .checkPermissionsAndOwnership(comment.getId(), notCreator, commentRepository, "ADMIN", "MODERATOR");
 
         Assertions.assertThrows(AuthorizationException.class,
-                () -> commentService.delete(comment.getId(), notCreator));
+                () -> commentService.delete(comment.getId(), post.getId(), notCreator));
     }
 }

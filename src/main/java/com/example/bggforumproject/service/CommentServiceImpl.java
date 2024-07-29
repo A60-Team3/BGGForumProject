@@ -1,11 +1,14 @@
 package com.example.bggforumproject.service;
 
+import com.example.bggforumproject.exceptions.AuthorizationException;
+import com.example.bggforumproject.exceptions.PostMismatchException;
 import com.example.bggforumproject.helpers.AuthorizationHelper;
+import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.models.Comment;
+import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.repositories.contracts.CommentRepository;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
-import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.service.contacts.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,12 +30,15 @@ public class CommentServiceImpl implements CommentService {
         this.postRepository = postRepository;
         this.authorizationHelper = authorizationHelper;
     }
-
+    @Override
+    public List<Comment> getAll(CommentFilterOptions commentFilterOptions) {
+        return commentRepository.get(commentFilterOptions);
+    }
 
     @Override
-    public List<Comment> getCommentsForPost(long postId) {
+    public List<Comment> getCommentsForPost(long postId, CommentFilterOptions commentFilterOptions) {
         postRepository.get(postId);
-        return commentRepository.getCommentsForPost(postId);
+        return commentRepository.get(commentFilterOptions);
     }
 
     @Override
@@ -41,20 +47,43 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void create(Comment comment, User user) {
+    public Comment create(long id, Comment comment, User user) {
+        Post post = postRepository.get(id);
+        comment.setPostId(post);
         comment.setUserId(user);
+
         commentRepository.create(comment);
+
+        return comment;
     }
 
     @Override
-    public void update(Comment comment, User user) {
-        authorizationHelper.checkOwnership(comment.getId(), user, commentRepository);
+    public Comment update(long commentId, long postId, String updatedContent, User user) {
+        Comment repoComment = commentRepository.get(commentId);
+        Post post = postRepository.get(postId);
 
-        commentRepository.update(comment);
+        if (!repoComment.getPostId().equals(post)) {
+            throw new PostMismatchException( "Comment does not belong to the specified post");
+        }
+
+        authorizationHelper.checkOwnership(repoComment.getId(), user, commentRepository);
+
+        repoComment.setContent(updatedContent);
+
+        commentRepository.update(repoComment);
+
+        return repoComment;
     }
 
     @Override
-    public void delete(long id, User user) {
+    public void delete(long id, long postId, User user) {
+        Comment repoComment = commentRepository.get(id);
+        Post post = postRepository.get(postId);
+
+        if (!repoComment.getPostId().equals(post)) {
+            throw new PostMismatchException( "Comment does not belong to the specified post");
+        }
+
         try {
             authorizationHelper.checkPermissionsAndOwnership(id, user, commentRepository, "ADMIN", "MODERATOR");
         } catch (AuthorizationException e) {

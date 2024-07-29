@@ -51,41 +51,54 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
-    public void addTagToPost(Tag tag, Post post) {
+    public Post addTagToPost(long id, String tagName, User user) {
+
+        Post post = postRepository.get(id);
+
+        authorizationHelper.checkOwnership(id, user, postRepository);
 
         try {
-            tagRepository.get(tag.getName());
+            tagRepository.get(tagName);
         } catch (EntityNotFoundException e) {
-            create(tag);
+            Tag tag = new Tag();
+            tag.setName(tagName);
+            tagRepository.create(tag);
         }
 
-        if (!post.getTags().contains(tag)) {
-            post.getTags().add(tag);
+        Tag persistedTag = tagRepository.get(tagName);
+        if (!post.getTags().contains(persistedTag)) {
+            post.getTags().add(persistedTag);
             postRepository.update(post);
         } else {
-            throw new EntityDuplicateException("Tag", "name", tag.getName());
+            throw new EntityDuplicateException("Tag", "name", tagName);
         }
+
+        return postRepository.get(id);
     }
 
     @Override
     public void deleteTagFromPost(long tagId, long postId, User user) {
+
+        try {
+            authorizationHelper.checkPermissionsAndOwnership(postId, user, postRepository, "ADMIN", "MODERATOR");
+        } catch (AuthorizationException e) {
+            throw new AuthorizationException(DELETE_TAG_ERROR_MESSAGE);
+        }
+
         Tag tag = tagRepository.get(tagId);
+
         Post post = tag.getPosts().stream()
                 .filter(p -> p.getId() == postId)
                 .findFirst()
                 .orElseThrow(() -> new PostMismatchException("tag",tag.getName()));
 
-        try {
-            authorizationHelper.checkPermissionsAndOwnership(post.getId(), user, postRepository, "ADMIN", "MODERATOR");
-        } catch (AuthorizationException e) {
-            throw new AuthorizationException(DELETE_TAG_ERROR_MESSAGE);
-        }
+        // TODO remove bidirectional, rework this stuff here
 
         if (post.getTags().contains(tag)) {
             post.getTags().remove(tag);
             postRepository.update(post);
         } else {
-            throw new EntityNotFoundException("Tag", "name", tag.getName());
+            throw new PostMismatchException("Tag", tag.getName());
         }
 
     }
@@ -114,7 +127,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void update(Tag tag, User user) {
-        //TODO if implement check for ownership, must receive postID but not from tag
+        //TODO implement - check for ownership, must receive postID but not from tag
         boolean hasPermission = true;
         try {
             authorizationHelper.checkPermissions(user, "ADMIN", "MODERATOR");
@@ -151,6 +164,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public void delete(long id, User user) {
         authorizationHelper.checkPermissions(user, "ADMIN", "MODERATOR");
-        tagRepository.delete(id);
+        Tag tagToDelete = tagRepository.get(id);
+        tagRepository.delete(tagToDelete);
     }
 }

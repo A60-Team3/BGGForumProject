@@ -19,6 +19,6 @@ public interface TagRepository {
 
     void update(Tag tag);
 
-    void delete(long id);
+    void delete(Tag id);
 
 }

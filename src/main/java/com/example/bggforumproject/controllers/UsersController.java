@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/BGGForum/users")
-@Tag(name = "users", description = "User related endpoints. For logged in visitors")
+//@Tag(name = "users", description = "User related endpoints. For logged in visitors")
 public class UsersController {
 
     private static final String MODIFY_USER_ERROR_MESSAGE = " Only a user can modified his info!";
@@ -47,7 +47,7 @@ public class UsersController {
             tags = {"admins"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully displayed all users.", content = @Content(schema = @Schema(implementation = UserOutDTO.class))),
-                    @ApiResponse(responseCode = "400", description = "Wrong inserted date filters.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Wrong inserted date filters.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
     @GetMapping("")
     public ResponseEntity<List<UserOutDTO>> getAll(
@@ -91,12 +91,12 @@ public class UsersController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "User found successfully.", content = @Content(schema = @Schema(implementation = UserOutDTO.class))),
                     @ApiResponse(responseCode = "401", description = "Unauthorized.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
-                    @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
-    @GetMapping("/{id}")
-    public ResponseEntity<UserOutDTO> getById(@Parameter(description = "Needed user id") @PathVariable long id) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserOutDTO> getById(@Parameter(description = "Needed user id") @PathVariable long userId) {
 
-        UserOutDTO dto = mapper.map(userService.get(id), UserOutDTO.class);
+        UserOutDTO dto = mapper.map(userService.get(userId), UserOutDTO.class);
 
         return ResponseEntity.ok(dto);
     }
@@ -108,7 +108,7 @@ public class UsersController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "User found successfully.", content = @Content(schema = @Schema(implementation = UserOutDTO.class))),
                     @ApiResponse(responseCode = "401", description = "Unauthorized.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
-                    @ApiResponse(responseCode = "404", description = "No such user", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "No such user", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
     @GetMapping("/me")
     public ResponseEntity<User> authenticatedUser() {
@@ -126,10 +126,12 @@ public class UsersController {
                     @ApiResponse(responseCode = "200", description = "User found successfully.", content = @Content(schema = @Schema(implementation = PostOutFullDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Wrong inserted date filters.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "401", description = "Unauthorized.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
-                    @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
-    @GetMapping("/{id}/posts")
-    public ResponseEntity<List<PostOutFullDTO>> getUserPosts(@Parameter(description = "Partial or full title")
+    @GetMapping("/{userId}/posts")
+    public ResponseEntity<List<PostOutFullDTO>> getUserPosts(@Parameter(description = "Target User ID", required = true)
+                                                             @PathVariable long userId,
+                                                             @Parameter(description = "Partial or full title")
                                                              @RequestParam(required = false) String title,
                                                              @Parameter(description = "Partial or full words")
                                                              @RequestParam(required = false) String content,
@@ -141,15 +143,14 @@ public class UsersController {
                                                              @RequestParam(required = false) String updated,
                                                              @Parameter(description = "Options - all field names and (year/month/day)Created/Updated")
                                                              @RequestParam(required = false) String sortBy,
-                                                             @RequestParam(required = false) String sortOrder,
-                                                             @Parameter(description = "Target User ID", required = true)
-                                                             @PathVariable long id) {
+                                                             @RequestParam(required = false) String sortOrder
+    ) {
 
 
         PostFilterOptions postFilterOptions =
-                new PostFilterOptions(title, content, id, tags, created, updated, sortBy, sortOrder);
+                new PostFilterOptions(title, content, userId, tags, created, updated, sortBy, sortOrder);
 
-        List<Post> filteredPosts = userService.getSpecificUserPosts(id, postFilterOptions);
+        List<Post> filteredPosts = userService.getSpecificUserPosts(userId, postFilterOptions);
 
         List<PostOutFullDTO> postOutFullDTOS = filteredPosts.stream()
                 .map(post -> mapper.map(post, PostOutFullDTO.class))
@@ -165,10 +166,12 @@ public class UsersController {
                     @ApiResponse(responseCode = "200", description = "User found successfully.", content = @Content(schema = @Schema(implementation = CommentOutDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Wrong inserted date filters.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "401", description = "Unauthorized.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
-                    @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
-    @GetMapping("/{id}/comments")
-    public ResponseEntity<List<CommentOutDTO>> getUserComments(@Parameter(description = "Partial or full words")
+    @GetMapping("/{userId}/comments")
+    public ResponseEntity<List<CommentOutDTO>> getUserComments(@Parameter(description = "Target User ID", required = true)
+                                                               @PathVariable long userId,
+                                                               @Parameter(description = "Partial or full words")
                                                                @RequestParam(required = false) String content,
                                                                @Parameter(description = "Parent post id")
                                                                @RequestParam(required = false) Long commentedTo,
@@ -178,14 +181,12 @@ public class UsersController {
                                                                @RequestParam(required = false) String updated,
                                                                @Parameter(description = "Options - all field names and (year/month/day)Created/Updated")
                                                                @RequestParam(required = false) String sortBy,
-                                                               @RequestParam(required = false) String sortOrder,
-                                                               @Parameter(description = "Target User ID", required = true)
-                                                               @PathVariable long id) {
+                                                               @RequestParam(required = false) String sortOrder) {
 
         CommentFilterOptions commentFilterOptions =
-                new CommentFilterOptions(content, created, updated, id, commentedTo, sortBy, sortOrder);
+                new CommentFilterOptions(content, created, updated, userId, commentedTo, sortBy, sortOrder);
 
-        List<Comment> filteredComments = userService.getSpecificUserComments(id, commentFilterOptions);
+        List<Comment> filteredComments = userService.getSpecificUserComments(userId, commentFilterOptions);
 
         List<CommentOutDTO> commentOutDTOS = filteredComments.stream()
                 .map(comment -> mapper.map(comment, CommentOutDTO.class))
@@ -195,7 +196,11 @@ public class UsersController {
     }
 
     @Operation(summary = "Update user's info",
-            description = "Possible only for logged user info. Cannot change username",
+            description = "Can change only personal info. Cannot change username",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "User details for updating a logged user",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = UserUpdateDTO.class))
+            ),
             tags = {"users"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "User updated.", content = @Content(schema = @Schema(implementation = UserOutDTO.class))),
@@ -204,9 +209,9 @@ public class UsersController {
                     @ApiResponse(responseCode = "406", description = "Username cannot change", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "409", description = "Provided email is taken", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
-    @PutMapping("/{id}")
+    @PutMapping("/{userId}")
     public ResponseEntity<UserOutDTO> update(@Parameter(description = "Target user ID", required = true)
-                                             @PathVariable long id,
+                                             @PathVariable long userId,
                                              @Parameter(description = "Updated user info", required = true)
                                              @Valid @RequestBody UserUpdateDTO dto) {
 
@@ -215,7 +220,7 @@ public class UsersController {
 
         User user = mapper.map(dto, User.class);
 
-        User updatedUser = userService.update(id, currentUser, user);
+        User updatedUser = userService.update(userId, currentUser, user);
 
         return ResponseEntity.ok(mapper.map(updatedUser, UserOutDTO.class));
     }

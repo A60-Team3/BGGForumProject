@@ -1,8 +1,12 @@
 package com.example.bggforumproject.dtos;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+
+@Schema(description = "This DTO holds the information necessary to create new comment.",
+        allowableValues = {"content"})
 public class CommentDTO {
 
     @NotNull(message = "Content cannot be empty!")

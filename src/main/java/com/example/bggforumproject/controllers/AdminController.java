@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/BGGForum/admin")
-@Tag(name = "admins", description = "The Admin Privileges API")
+@Tag(name = "admins", description = "The Admin Privileges Only API")
 public class AdminController {
     private final UserService userService;
     private final ModelMapper mapper;
@@ -40,16 +40,16 @@ public class AdminController {
                     @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "409", description = "The user block status is the same.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
-    @PutMapping("/{id}")
+    @PutMapping("/{userId}")
     public ResponseEntity<UserBlockOutDTO> blockUser(
             @Parameter(description = "Target user id", required = true)
-            @PathVariable long id,
+            @PathVariable long userId,
             @Parameter(description = "Updated block status", required = true)
-            @NotNull @RequestBody boolean isBlocked) {
+            @NotBlank @RequestParam boolean isBlocked) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
-        User blocked = userService.blockUser(id, currentUser, isBlocked);
+        User blocked = userService.blockUser(userId, currentUser, isBlocked);
 
         return ResponseEntity.ok(mapper.map(blocked, UserBlockOutDTO.class));
     }
@@ -64,13 +64,13 @@ public class AdminController {
                     @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "409", description = "The user is already a moderator.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
-    @PutMapping("/admin/{id}")
+    @PutMapping("/admin/{userId}")
     public ResponseEntity<UserOutDTO> promoteUser(@Parameter(description = "Promoted user id", required = true)
-                                                  @PathVariable long id) {
+                                                  @PathVariable long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
-        User user = userService.promote(id, currentUser);
+        User user = userService.promote(userId, currentUser);
         UserOutDTO dto = mapper.map(user, UserOutDTO.class);
 
         return ResponseEntity.ok(dto);
@@ -86,13 +86,13 @@ public class AdminController {
                     @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "409", description = "The user is already a moderator.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
-    @PutMapping("/admin/{id}/archive")
+    @PutMapping("/admin/{userId}/archive")
     public void archiveUser(@Parameter(description = "Deleted user id", required = true)
-                            @PathVariable long id) {
+                            @PathVariable long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
-        userService.softDelete(id, currentUser);
+        userService.softDelete(userId, currentUser);
     }
 
     @Operation(summary = "User termination. Admin only.",
@@ -104,12 +104,12 @@ public class AdminController {
                     @ApiResponse(responseCode = "403", description = "Forbidden. Admins only", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
             })
-    @DeleteMapping("/admin/{id}")
+    @DeleteMapping("/admin/{userId}")
     public void deleteUser(@Parameter(description = "Terminated user id", required = true)
-                           @PathVariable long id) {
+                           @PathVariable long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
-        userService.delete(id, currentUser);
+        userService.delete(userId, currentUser);
     }
 }

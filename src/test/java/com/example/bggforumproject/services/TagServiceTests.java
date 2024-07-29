@@ -90,6 +90,7 @@ public class TagServiceTests {
 
     @Test
     public void addTagToPost_Should_AddTagToPost_When_PostHasNoSuchTag() {
+        User user = createMockUser();
         Tag tag = createMockTag();
         Tag tag2 = createMockTag();
         tag2.setName("mock tag");
@@ -98,9 +99,10 @@ public class TagServiceTests {
         Set<Tag> tags = new HashSet<>();
         tags.add(tag);
         post.setTags(tags);
+        post.setUserId(user);
 
         Mockito.when(tagRepository.get(tag2.getName())).thenThrow(EntityNotFoundException.class);
-        tagService.addTagToPost(tag2, post);
+        tagService.addTagToPost(post.getId(), tag2.getName(), user);
 
         Mockito.verify(postRepository, Mockito.times(1))
                 .update(post);
@@ -109,6 +111,7 @@ public class TagServiceTests {
 
     @Test
     public void addTagToPost_Should_Throw_When_PostAlreadyHasSameTag(){
+        User user = createMockUser();
         Tag tag = createMockTag();
         Post post = createMockPost();
 
@@ -116,9 +119,10 @@ public class TagServiceTests {
         Set<Tag> tags = new HashSet<>();
         tags.add(tag);
         post.setTags(tags);
+        post.setUserId(user);
 
         Assertions.assertThrows(EntityDuplicateException.class,
-                () -> tagService.addTagToPost(tag, post));
+                () -> tagService.addTagToPost(post.getId(), tag.getName(), user));
     }
 
     @Test
@@ -220,7 +224,7 @@ public class TagServiceTests {
         tagService.delete(tag.getId(), user);
 
         Mockito.verify(tagRepository, Mockito.times(1))
-                .delete(tag.getId());
+                .delete(tag);
     }
 
     @Test

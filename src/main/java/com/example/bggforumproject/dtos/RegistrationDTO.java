@@ -1,9 +1,12 @@
 package com.example.bggforumproject.dtos;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+@Schema(description = "This DTO holds user registration details.",
+        allowableValues = {"firstName", "lastName", "email", "username", "password"})
 public record RegistrationDTO(
 
         @NotBlank(message = "First name is mandatory")

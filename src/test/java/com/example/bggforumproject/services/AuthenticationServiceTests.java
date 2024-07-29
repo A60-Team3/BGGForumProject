@@ -2,6 +2,7 @@ package com.example.bggforumproject.services;
 
 import com.example.bggforumproject.dtos.ResponseDTO;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
+import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.helpers.AuthorizationHelper;
 import com.example.bggforumproject.models.Role;
 import com.example.bggforumproject.models.User;
@@ -56,6 +57,24 @@ public class AuthenticationServiceTests {
     }
 
     @Test
+    public void registerUser_Should_Throw_When_UsernameIsNotUnique() {
+        User user = createMockUser();
+
+        Mockito
+                .doNothing()
+                .when(authorizationHelper)
+                .validateEmailIsUnique(Mockito.anyLong(), Mockito.anyString());
+
+        Mockito.when(userRepository.getByUsername(Mockito.anyString()))
+                        .thenReturn(user);
+
+        Assertions.assertThrows(
+                EntityDuplicateException.class,
+                () -> service.registerUser(user)
+        );
+    }
+
+    @Test
     public void registerUser_Should_Return_RegisteredUser() {
         User user = createMockUser();
 
@@ -63,6 +82,9 @@ public class AuthenticationServiceTests {
                 .doNothing()
                 .when(authorizationHelper)
                 .validateEmailIsUnique(Mockito.anyLong(), Mockito.anyString());
+
+        Mockito.when(userRepository.getByUsername(Mockito.anyString()))
+                .thenThrow(EntityNotFoundException.class);
 
         Mockito
                 .when(passwordEncoder.encode(Mockito.anyString()))

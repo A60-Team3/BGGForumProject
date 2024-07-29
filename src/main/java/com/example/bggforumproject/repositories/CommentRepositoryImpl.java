@@ -39,11 +39,15 @@ public class CommentRepositoryImpl implements CommentRepository {
             List<String> filters = new ArrayList<>();
             Map<String, Object> params = new HashMap<>();
 
-            if (commentFilterOptions.getCommentedTo().isPresent()) {
+            if (commentFilterOptions.getCommentedTo().isPresent() ||
+                    (commentFilterOptions.getSortBy().isPresent()
+                            && commentFilterOptions.getSortBy().get().equals("commentedTo"))) {
                 queryString.append(" join c.postId p");
             }
 
-            if (commentFilterOptions.getCreatedBy().isPresent()) {
+            if (commentFilterOptions.getCreatedBy().isPresent()||
+                    (commentFilterOptions.getSortBy().isPresent()
+                            && commentFilterOptions.getSortBy().get().equals("user"))) {
                 queryString.append(" join c.userId u");
             }
 
@@ -104,7 +108,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public List<Comment> getCommentsForPost(long postId) {
-        try(Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             Query<Comment> query = session.createQuery("from Comment " +
                     "where postId.id = :postId", Comment.class);
             query.setParameter("postId", postId);
@@ -117,7 +121,6 @@ public class CommentRepositoryImpl implements CommentRepository {
     public Comment get(long id) {
         try (Session session = sessionFactory.openSession()) {
             Comment comment = session.get(Comment.class, id);
-
 
             if (comment == null) {
                 throw new EntityNotFoundException("Comment", id);
@@ -162,7 +165,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
         String orderBy = switch (commentFilterOptions.getSortBy().get().trim()) {
             case "content" -> "c.content";
-            case "user" -> "c.userId";
+            case "user" -> "CONCAT_WS(u.firstName,' ', u.lastName)";
             case "created" -> "c.createdAt";
             case "yearCreated" -> "year(c.createdAt)";
             case "monthCreated" -> "month(c.createdAt)";

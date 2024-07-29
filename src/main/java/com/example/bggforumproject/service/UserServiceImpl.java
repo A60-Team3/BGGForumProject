@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
 
         User userToArchive = userRepository.getById(id);
 
-        if (userToArchive.isBlocked()) {
+        if (userToArchive.isDeleted()) {
             throw new EntityDuplicateException(
                     String.format("User with id %d already archived", id)
             );

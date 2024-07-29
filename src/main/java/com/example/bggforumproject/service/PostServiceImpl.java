@@ -58,7 +58,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void update(Post post, User user) throws EntityNotFoundException{
+    public void update(Post post, User user) {
         checkModifyPermissions(post.getId(), user);
 
         postRepository.update(post);
