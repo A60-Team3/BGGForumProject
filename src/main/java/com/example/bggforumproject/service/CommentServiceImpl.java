@@ -1,6 +1,7 @@
 package com.example.bggforumproject.service;
 
 import com.example.bggforumproject.exceptions.AuthorizationException;
+import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.exceptions.PostMismatchException;
 import com.example.bggforumproject.helpers.AuthorizationHelper;
 import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
@@ -66,7 +67,11 @@ public class CommentServiceImpl implements CommentService {
             throw new PostMismatchException( "Comment does not belong to the specified post");
         }
 
-        authorizationHelper.checkOwnership(repoComment.getId(), user, commentRepository);
+        authorizationHelper.checkOwnership(repoComment, user);
+
+        if (repoComment.getContent().equals(updatedContent)) {
+            throw new EntityDuplicateException("Comment content must be different");
+        }
 
         repoComment.setContent(updatedContent);
 
@@ -85,7 +90,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         try {
-            authorizationHelper.checkPermissionsAndOwnership(id, user, commentRepository, "ADMIN", "MODERATOR");
+            authorizationHelper.checkPermissionsAndOwnership(repoComment, user, "ADMIN", "MODERATOR");
         } catch (AuthorizationException e) {
             throw new AuthorizationException(DELETE_COMMENT_ERROR_MESSAGE);
         }

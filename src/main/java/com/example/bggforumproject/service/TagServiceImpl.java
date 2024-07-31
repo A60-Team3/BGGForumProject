@@ -55,7 +55,7 @@ public class TagServiceImpl implements TagService {
 
         Post post = postRepository.get(id);
 
-        authorizationHelper.checkOwnership(id, user, postRepository);
+        authorizationHelper.checkOwnership(post, user);
 
         try {
             tagRepository.get(tagName);
@@ -78,19 +78,17 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void deleteTagFromPost(long tagId, long postId, User user) {
-
-        try {
-            authorizationHelper.checkPermissionsAndOwnership(postId, user, postRepository, "ADMIN", "MODERATOR");
-        } catch (AuthorizationException e) {
-            throw new AuthorizationException(DELETE_TAG_ERROR_MESSAGE);
-        }
-
         Tag tag = tagRepository.get(tagId);
 
         Post post = tag.getPosts().stream()
                 .filter(p -> p.getId() == postId)
                 .findFirst()
                 .orElseThrow(() -> new PostMismatchException("tag",tag.getName()));
+        try {
+            authorizationHelper.checkPermissionsAndOwnership(post, user,  "ADMIN", "MODERATOR");
+        } catch (AuthorizationException e) {
+            throw new AuthorizationException(DELETE_TAG_ERROR_MESSAGE);
+        }
 
         // TODO remove bidirectional, rework this stuff here
 
@@ -137,7 +135,8 @@ public class TagServiceImpl implements TagService {
 
         if (!hasPermission) {
             try {
-                authorizationHelper.checkOwnership(tag.getId(), user, postRepository);
+                Post post = new Post(); /* remove when acquire real post*/
+                authorizationHelper.checkOwnership(post /*must be post*/, user);
             } catch (AuthorizationException e) {
                 throw new AuthorizationException(DELETE_TAG_ERROR_MESSAGE);
             }

@@ -6,7 +6,6 @@ import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.models.contracts.Ownable;
 import com.example.bggforumproject.models.Role;
 import com.example.bggforumproject.models.User;
-import com.example.bggforumproject.repositories.contracts.OwnerRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,6 @@ public class AuthorizationHelper {
 
     public static final String ACCESS_ERROR_MESSAGE = "Only %s has access to this feature";
     public static final String OWNER_ERROR_MESSAGE = "You are not the owner of this %s";
-
 
     private final UserRepository userRepository;
 
@@ -51,21 +49,17 @@ public class AuthorizationHelper {
         }
     }
 
-    public <T extends Ownable> void checkOwnership(long id, User user, OwnerRepository<T> repository) {
-        T entity = repository.get(id);
+    public <T extends Ownable> void checkOwnership(T entity, User user) {
         if (entity.getUserId().getId() != user.getId()) {
             throw new AuthorizationException(String.format(OWNER_ERROR_MESSAGE, entity.getClass().getSimpleName()));
         }
     }
 
-    public void checkPermissionsAndOwnership(long id,
-                                             User user,
-                                             OwnerRepository<? extends Ownable> repository,
-                                             String... roles) {
+    public <T extends Ownable> void checkPermissionsAndOwnership(T entity, User user, String... roles) {
         try {
             checkPermissions(user, roles);
         } catch (AuthorizationException e) {
-            checkOwnership(id, user, repository);
+            checkOwnership(entity, user);
         }
     }
 

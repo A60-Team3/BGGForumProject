@@ -16,6 +16,6 @@ public interface ReactionRepository extends OwnerRepository<Reaction> {
 
     void update(Reaction reaction);
 
-    void delete(long id);
+    void delete(Reaction id);
 
 }

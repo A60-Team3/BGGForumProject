@@ -110,7 +110,7 @@ public class TagServiceTests {
     }
 
     @Test
-    public void addTagToPost_Should_Throw_When_PostAlreadyHasSameTag(){
+    public void addTagToPost_Should_Throw_When_PostAlreadyHasSameTag() {
         User user = createMockUser();
         Tag tag = createMockTag();
         Post post = createMockPost();
@@ -126,7 +126,7 @@ public class TagServiceTests {
     }
 
     @Test
-    public void deleteTagFromPost_Should_RemoveTagFromPost_When_UserIsPostCreator(){
+    public void deleteTagFromPost_Should_RemoveTagFromPost_When_UserIsPostCreator() {
         Tag tag = createMockTag();
         Post post = createMockPost();
         Set<Post> posts = new HashSet<>();
@@ -142,7 +142,7 @@ public class TagServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissionsAndOwnership(post.getId(), user, postRepository, "ADMIN", "MODERATOR");
+                .checkPermissionsAndOwnership(post, user, "ADMIN", "MODERATOR");
 
         tagService.deleteTagFromPost(tag.getId(), post.getId(), user);
         Mockito.verify(postRepository, Mockito.times(1))
@@ -150,7 +150,7 @@ public class TagServiceTests {
     }
 
     @Test
-    public void deleteTagFromPost_Should_Throw_When_UserIsNotPostCreator(){
+    public void deleteTagFromPost_Should_Throw_When_UserIsNotPostCreator() {
         Tag tag = createMockTag();
         Post post = createMockPost();
         Set<Post> posts = new HashSet<>();
@@ -169,14 +169,14 @@ public class TagServiceTests {
         Mockito
                 .doThrow(AuthorizationException.class)
                 .when(authorizationHelper)
-                .checkPermissionsAndOwnership(post.getId(), notCreator, postRepository, "ADMIN", "MODERATOR");
+                .checkPermissionsAndOwnership(post, notCreator, "ADMIN", "MODERATOR");
 
         Assertions.assertThrows(AuthorizationException.class,
                 () -> tagService.deleteTagFromPost(tag.getId(), post.getId(), notCreator));
     }
 
     @Test
-    public void deleteTagFromPost_Should_Throw_When_PostHasNoSuchTag(){
+    public void deleteTagFromPost_Should_Throw_When_PostHasNoSuchTag() {
         Tag tag = createMockTag();
         Post post = createMockPost();
         User user = createMockUser();
@@ -192,7 +192,7 @@ public class TagServiceTests {
     }
 
     @Test
-    public void create_Should_CreateTag_When_NotDuplicate(){
+    public void create_Should_CreateTag_When_NotDuplicate() {
         Tag tag = createMockTag();
 
         Mockito.when(tagRepository.get(tag.getName())).thenThrow(EntityNotFoundException.class);
@@ -203,7 +203,7 @@ public class TagServiceTests {
     }
 
     @Test
-    public void create_Should_Throw_When_DuplicateExists(){
+    public void create_Should_Throw_When_DuplicateExists() {
         Tag tag = createMockTag();
 
         Mockito.when(tagRepository.get(tag.getName())).thenReturn(tag);
@@ -213,7 +213,7 @@ public class TagServiceTests {
     }
 
     @Test
-    public void delete_Should_DeleteTag_When_UserIsAdminOrModerator(){
+    public void delete_Should_DeleteTag_When_UserIsAdminOrModerator() {
         Tag tag = createMockTag();
         User user = createMockUser();
         Mockito
@@ -228,7 +228,7 @@ public class TagServiceTests {
     }
 
     @Test
-    public void delete_Should_Throw_When_UserIsRegularUser(){
+    public void delete_Should_Throw_When_UserIsRegularUser() {
         Tag tag = createMockTag();
         User user = createMockUser();
         Role role = new Role("USER");

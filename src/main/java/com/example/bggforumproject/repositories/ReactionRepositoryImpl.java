@@ -84,8 +84,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
     }
 
     @Override
-    public void delete(long id) {
-        Reaction reactionToDelete = get(id);
+    public void delete(Reaction reactionToDelete) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.remove(reactionToDelete);

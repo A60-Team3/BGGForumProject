@@ -110,7 +110,9 @@ public class CommentController {
                     @ApiResponse(responseCode = "200", description = "Successfully updated a comment.", content = @Content(schema = @Schema(implementation = CommentOutDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Post-comment mismatch", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "403", description = "Modifying other user info", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
-                    @ApiResponse(responseCode = "404", description = "Post/Comment with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
+                    @ApiResponse(responseCode = "404", description = "Post/Comment with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
+                    @ApiResponse(responseCode = "409", description = "Content not updated.",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
     @PutMapping("/{postId}/comments/{commentId}")
     public ResponseEntity<CommentOutDTO> update(

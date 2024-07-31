@@ -1,8 +1,8 @@
 package com.example.bggforumproject.service.contacts;
 
-import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Reaction;
 import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.models.enums.ReactionType;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ public interface ReactionService {
 
         Reaction get(long id);
 
-        void create(Reaction reaction, User user, Post post);
+        void create(Reaction reaction, User user, long postId);
 
-        void update(Reaction reaction, User user, Post post);
+        Reaction update(long reactionId, User user, long postId, ReactionType reactionType);
 
-        void delete(long id, User user);
+        void delete(long id, User user, long postId);
 }

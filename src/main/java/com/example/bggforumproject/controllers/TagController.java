@@ -1,6 +1,8 @@
 package com.example.bggforumproject.controllers;
 
-import com.example.bggforumproject.dtos.*;
+import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
+import com.example.bggforumproject.dtos.PostOutFullDTO;
+import com.example.bggforumproject.dtos.TagOutDTO;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;
@@ -13,7 +15,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -29,13 +30,11 @@ import java.util.List;
 public class TagController {
 
     private final TagService tagService;
-    private final PostService postService;
     private final UserService userService;
     private final ModelMapper mapper;
 
-    public TagController(TagService tagService, PostService postService, UserService userService, ModelMapper mapper) {
+    public TagController(TagService tagService, UserService userService, ModelMapper mapper) {
         this.tagService = tagService;
-        this.postService = postService;
         this.userService = userService;
         this.mapper = mapper;
     }
