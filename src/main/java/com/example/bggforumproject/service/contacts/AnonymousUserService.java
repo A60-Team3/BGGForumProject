@@ -11,4 +11,8 @@ public interface AnonymousUserService {
     long countPosts();
 
     List<Post> getAllPosts(PostFilterOptions postFilterOptions);
+
+    List<Post> getMostCommented();
+
+    List<Post> getMostRecentlyCreated();
 }

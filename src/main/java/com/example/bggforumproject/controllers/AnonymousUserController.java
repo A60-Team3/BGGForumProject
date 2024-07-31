@@ -1,10 +1,11 @@
 package com.example.bggforumproject.controllers;
 
-import com.example.bggforumproject.dtos.*;
-import com.example.bggforumproject.models.Post;
+import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
+import com.example.bggforumproject.dtos.PostAnonymousOutDTO;
+import com.example.bggforumproject.dtos.UnknownOutDTO;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
+import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.service.contacts.AnonymousUserService;
-import com.example.bggforumproject.service.contacts.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,12 +26,10 @@ import java.util.List;
 @Tag(name = "free", description = "The Free Access API")
 public class AnonymousUserController {
     private final AnonymousUserService anonymousUserService;
-    private final PostService postService;
     private final ModelMapper mapper;
 
-    public AnonymousUserController(AnonymousUserService anonymousUserService, PostService postService, ModelMapper mapper) {
+    public AnonymousUserController(AnonymousUserService anonymousUserService, ModelMapper mapper) {
         this.anonymousUserService = anonymousUserService;
-        this.postService = postService;
         this.mapper = mapper;
     }
 
@@ -80,7 +79,7 @@ public class AnonymousUserController {
             })
     @GetMapping("/posts/most-commented")
     public ResponseEntity<List<PostAnonymousOutDTO>> getMostCommented() {
-        List<Post> mostCommented = postService.getMostCommented();
+        List<Post> mostCommented = anonymousUserService.getMostCommented();
 
         List<PostAnonymousOutDTO> postAnonymousOutDTOS = mostCommented.stream()
                 .map(post -> mapper.map(post, PostAnonymousOutDTO.class))
@@ -98,7 +97,7 @@ public class AnonymousUserController {
             })
     @GetMapping("/posts/most-recently-created")
     public ResponseEntity<List<PostAnonymousOutDTO>> getMostRecentlyCreated() {
-        List<Post> mostRecentlyCreated = postService.getMostRecentlyCreated();
+        List<Post> mostRecentlyCreated = anonymousUserService.getMostRecentlyCreated();
 
         List<PostAnonymousOutDTO> postAnonymousOutDTOS = mostRecentlyCreated.stream()
                 .map(post -> mapper.map(post, PostAnonymousOutDTO.class))

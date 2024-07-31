@@ -34,4 +34,14 @@ public class AnonymousUserServiceImpl implements AnonymousUserService {
     public List<Post> getAllPosts(PostFilterOptions postFilterOptions) {
         return postRepository.get(postFilterOptions);
     }
+
+    @Override
+    public List<Post> getMostCommented() {
+        return postRepository.getMostCommented();
+    }
+
+    @Override
+    public List<Post> getMostRecentlyCreated() {
+        return postRepository.getMostRecentlyCreated();
+    }
 }

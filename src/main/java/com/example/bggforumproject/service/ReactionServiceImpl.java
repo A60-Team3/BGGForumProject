@@ -1,5 +1,7 @@
 package com.example.bggforumproject.service;
 
+import com.example.bggforumproject.exceptions.EntityDuplicateException;
+import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.exceptions.PostMismatchException;
 import com.example.bggforumproject.helpers.AuthorizationHelper;
 import com.example.bggforumproject.models.Post;
@@ -8,9 +10,6 @@ import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.models.enums.ReactionType;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.repositories.contracts.ReactionRepository;
-import com.example.bggforumproject.exceptions.AuthorizationException;
-import com.example.bggforumproject.exceptions.EntityDuplicateException;
-import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.service.contacts.ReactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

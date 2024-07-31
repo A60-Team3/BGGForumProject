@@ -18,7 +18,7 @@ public interface PostRepository extends OwnerRepository<Post>{
 
     void update(Post post);
 
-    void delete(long id);
+    void delete(Post post);
 
     List<Post> getMostCommented();
 

@@ -1,8 +1,11 @@
 package com.example.bggforumproject.dtos;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@Schema(description = "This DTO holds information necessary to create new post.",
+        allowableValues = {"title", "content"})
 public class PostCreateDTO {
 
     @NotNull(message = "Title cannot be empty!")

@@ -114,7 +114,7 @@ public class PostServiceTests {
 
         Mockito.when(postRepository.get(1)).thenReturn(post);
 
-        postService.update(post, user);
+        postService.update(postId, post, user);
         Mockito.verify(postRepository, Mockito.times(1))
                 .update(post);
     }
@@ -131,7 +131,7 @@ public class PostServiceTests {
         Mockito.when(postRepository.get(1)).thenReturn(post);
 
         Assertions.assertThrows(AuthorizationException.class,
-                () -> postService.update(post, notCreator));
+                () -> postService.update(postId, post, notCreator));
     }
 
     @Test

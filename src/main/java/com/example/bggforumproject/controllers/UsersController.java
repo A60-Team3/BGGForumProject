@@ -94,7 +94,7 @@ public class UsersController {
                     @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
     @GetMapping("/{userId}")
-    public ResponseEntity<UserOutDTO> getById(@Parameter(description = "Needed user id") @PathVariable long userId) {
+    public ResponseEntity<UserOutDTO> getById(@Parameter(description = "Wanted user id") @PathVariable long userId) {
 
         UserOutDTO dto = mapper.map(userService.get(userId), UserOutDTO.class);
 

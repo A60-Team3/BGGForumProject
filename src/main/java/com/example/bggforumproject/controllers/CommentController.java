@@ -46,6 +46,8 @@ public class CommentController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully returned all comments.", content = @Content(schema = @Schema(implementation = CommentOutDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Wrong inserted date filters.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized.",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "404", description = "Post with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
     @GetMapping("/{postId}/comments")
@@ -84,6 +86,8 @@ public class CommentController {
             ),
             responses = {
                     @ApiResponse(responseCode = "201", description = "Comment successfully created.", content = @Content(schema = @Schema(implementation = CommentDTO.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized.",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "404", description = "Post with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
     @PostMapping("/{postId}/comments")
@@ -109,6 +113,8 @@ public class CommentController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully updated a comment.", content = @Content(schema = @Schema(implementation = CommentOutDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Post-comment mismatch", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized.",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "403", description = "Modifying other user info", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "404", description = "Post/Comment with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "409", description = "Content not updated.",
@@ -138,6 +144,8 @@ public class CommentController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully deleted a comment."),
                     @ApiResponse(responseCode = "400", description = "Post-comment mismatch", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized.",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "403", description = "Not the creator or an admin", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
                     @ApiResponse(responseCode = "404", description = "Post/Comment with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
