@@ -16,7 +16,7 @@ public interface UserRepository {
 
     User getByEmail(String email);
 
-    User create(User user);
+    void create(User user);
 
     void update(User user);
 

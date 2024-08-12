@@ -40,8 +40,8 @@ public class AuthenticationServiceImplOne {
 
         user.setPassword(passwordEncoder.encode(input.password()));
         user.setRoles(Set.of(role));
-
-        return userRepository.create(user);
+        userRepository.create(user);
+        return userRepository.getByUsername(user.getUsername());
     }
 
     public User loginUser(LoginUserDTO input) {

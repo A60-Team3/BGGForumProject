@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<form th:replace="~{BeerForm.html :: head('Admin Portal')}"></form>
+<body>
+<form th:replace="~{BeerForm.html :: header}"></form>
+<div class="body-content">
+    <h2 th:text="#{admin.welcome}">Welcome (design)!</h2>
+    <h2 th:text="${session.currentUser}" th:if="${isAuthenticated}"></h2>
+    <img src="../static/images/logo.png" th:src="@{/images/logo.png}" alt="BeerTag logo"/>
+    <p>A beer a day keeps the doctor away!</p>
+</div>
+
+<form th:replace="~{BeerForm.html :: footer}"></form>
+</body>
+</html>

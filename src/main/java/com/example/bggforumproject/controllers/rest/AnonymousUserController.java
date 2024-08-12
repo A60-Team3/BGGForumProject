@@ -1,4 +1,4 @@
-package com.example.bggforumproject.controllers;
+package com.example.bggforumproject.controllers.rest;
 
 import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
 import com.example.bggforumproject.dtos.PostAnonymousOutDTO;
@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/BGGForum")
+//@RestController
+//@RequestMapping("/BGGForum")
 @Tag(name = "free", description = "The Free Access API")
 public class AnonymousUserController {
     private final AnonymousUserService anonymousUserService;

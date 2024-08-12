@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<header th:fragment="header">
+    <div>
+        <h3>
+            <a href="#" th:href="@{/}" th:text="#{navigation.home} + ' | '">Home</a>
+            <a href="#" th:href="@{/beers}" th:text="#{navigation.all-beers} + ' | '">Browse all beers</a>
+            <a href="#" th:if="${isAuthenticated}" th:href="@{/beers/new}"
+               th:text="#{navigation.create-beer} + ' | '">Create Beer</a>
+            <a href="#" th:href="@{/about}" th:text="#{navigation.about} + ' | '">About</a>
+            <a href="#" th:if="${isAuthenticated && session.isAdmin}" th:href="@{/admin}">Admin Portal</a>
+            <a href="#" th:unless="${isAuthenticated}" th:href="@{/auth/login}">Login | </a>
+            <a href="#" th:unless="${isAuthenticated}" th:href="@{/auth/register}">Register</a>
+            <a href="#" th:if="${isAuthenticated}" th:href="@{/auth/logout}">Logout</a>
+        </h3>
+    </div>
+</header>
+<div th:fragment="beer-form(title)">
+    <h2 th:text="${title}">Title</h2>
+
+    <form action="#" th:action="@{__${requestURI}__}" th:object="${beer}" method="post">
+        <label th:text="#{beer.label.name}">Beer</label>
+        <br/>
+        <input type="text" th:field="*{name}"/>
+        <label class="error" th:errors="*{name}">Name error placeholder</label>
+        <br/><br/>
+
+        <label th:text="#{beer.label.abv}">ABV</label>
+        <br/>
+        <input type="text" th:field="*{abv}"/>
+        <label class="error" th:errors="*{abv}">ABV error placeholder</label>
+        <br/><br/>
+
+        <label th:text="#{beer.label.style}">Style</label>
+        <br/>
+        <select th:field="*{styleId}">
+            <option th:each="style : ${styles}"
+                    th:value="${style.id}"
+                    th:text="${style.name}">
+                BeerStyleOne
+            </option>
+        </select>
+        <label class="error" th:errors="*{styleId}">Style error placeholder</label>
+        <br/><br/>
+
+        <input type="submit" value="Save"/>
+    </form>
+</div>
+
+<footer th:fragment="footer">
+    <small th:text="${'© Copyright ' + #dates.year(#dates.createNow()) + ' BeerTag'}">BeerTag</small>
+</footer>

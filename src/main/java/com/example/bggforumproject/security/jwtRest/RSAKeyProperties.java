@@ -1,4 +1,4 @@
-package com.example.bggforumproject.security;
+package com.example.bggforumproject.security.jwtRest;
 
 import org.springframework.stereotype.Component;
 
@@ -6,7 +6,7 @@ import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
-@Component
+//@Component
 public class RSAKeyProperties {
 
     private RSAPublicKey publicKey;

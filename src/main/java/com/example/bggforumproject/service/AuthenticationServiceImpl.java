@@ -10,10 +10,9 @@ import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.RoleRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
-import com.example.bggforumproject.security.TokenService;
+import com.example.bggforumproject.security.jwtRest.TokenService;
 import com.example.bggforumproject.service.contacts.AuthenticationService;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,17 +26,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
     private final AuthorizationHelper authorizationHelper;
 
 
     public AuthenticationServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
-                                     PasswordEncoder passwordEncoder, TokenService tokenService,
+                                     PasswordEncoder passwordEncoder,
                                      AuthorizationHelper authorizationHelper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.tokenService = tokenService;
         this.authorizationHelper = authorizationHelper;
     }
 
@@ -57,16 +54,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         user.setPassword(encodedPassword);
         user.setRoles(Set.of(userRole));
+        userRepository.create(user);
 
-        return userRepository.create(user);
+        return userRepository.getByUsername(user.getUsername());
     }
 
     @Override
     public ResponseDTO loginUser(Authentication auth) {
 
-        String token = tokenService.generateJwt(auth);
-        User user = (User) auth.getPrincipal();
-
-        return new ResponseDTO(user.getId(), user.getUsername(), token);
+//        String token = tokenService.generateJwt(auth);
+//        User user = (User) auth.getPrincipal();
+//
+//        return new ResponseDTO(user.getId(), user.getUsername(), token);
+        return null;
     }
 }

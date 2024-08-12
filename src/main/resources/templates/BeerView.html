@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<form th:replace="~{BeerForm.html :: head(${beer.name})}"></form>
+<body>
+<form th:replace="~{BeerForm.html :: header}"></form>
+
+<div class="body-content">
+    <h2 th:text="${beer.name}">Beer Name</h2>
+    <div th:style="text-align">
+        <p class="margin12" th:text="#{beer.label.abv}  + ': ' +       ${beer.abv}">4.5</p>
+        <p class="margin12" th:text="#{beer.label.style} + ': ' +      ${beer.style.name}">Porter</p>
+        <p class="margin12" th:text="#{beer.label.createdBy}  + ': ' + ${beer.createdBy.email}">user@mail.com</p>
+    </div>
+    <h3>
+        <!--    <a href="#" th:href="@{/beers/{id}/update(id=${beer.id})}">Update</a>-->
+        <!--    <a href="#" th:href="@{/beers/{id}/delete(id=${beer.id})}">Delete</a>-->
+        <a href="#" th:href="@{__${requestURI}__/update}">Update</a>
+        <a href="#" th:href="@{__${requestURI}__/delete}">Delete</a>
+    </h3>
+</div>
+
+<form th:replace="~{BeerForm.html :: footer}"></form>
+</body>
+</html>

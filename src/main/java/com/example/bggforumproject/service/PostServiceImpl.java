@@ -1,6 +1,5 @@
 package com.example.bggforumproject.service;
 
-import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.helpers.AuthorizationHelper;
@@ -16,9 +15,6 @@ import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
-
-    private static final String MODIFY_POST_ERROR_MESSAGE = "Posts can only be modified by their creator!";
-    private static final String DELETE_POST_ERROR_MESSAGE = "Posts can only be deleted by their creator, moderators or admins!";
 
     private final PostRepository postRepository;
     private final AuthorizationHelper authorizationHelper;
@@ -45,12 +41,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getMostCommented(){
+    public List<Post> getMostCommented() {
         return postRepository.getMostCommented();
     }
 
     @Override
-    public List<Post> getMostRecentlyCreated(){
+    public List<Post> getMostRecentlyCreated() {
         return postRepository.getMostRecentlyCreated();
     }
 
@@ -105,7 +101,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void delete(long id, User user) {
         Post post = postRepository.get(id);
-        authorizationHelper.checkPermissionsAndOwnership(post,user,"ADMIN", "MODERATOR");
+        authorizationHelper.checkPermissionsAndOwnership(post, user, "ADMIN", "MODERATOR");
 
         postRepository.delete(post);
     }

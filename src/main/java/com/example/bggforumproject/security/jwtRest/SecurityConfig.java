@@ -1,7 +1,6 @@
-package com.example.bggforumproject.security;
+package com.example.bggforumproject.security.jwtRest;
 
 
-import com.example.bggforumproject.security.alternative.CustomLogoutFilter;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -9,7 +8,6 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -26,13 +24,12 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
 
-@Configuration
+//@Configuration
 public class SecurityConfig {
 
     private final RSAKeyProperties keys;
@@ -41,12 +38,12 @@ public class SecurityConfig {
         this.keys = keys;
     }
 
-    @Bean
+//    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+//    @Bean
     public AuthenticationManager authManager(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
         daoProvider.setUserDetailsService(userDetailsService);
@@ -54,7 +51,7 @@ public class SecurityConfig {
         return new ProviderManager(daoProvider);
     }
 
-    @Bean
+//    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -90,19 +87,19 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
+//    @Bean
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(keys.getPublicKey()).build();
     }
 
-    @Bean
+//    @Bean
     public JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(keys.getPublicKey()).privateKey(keys.getPrivateKey()).build();
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
     }
 
-    @Bean
+//    @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
@@ -112,7 +109,7 @@ public class SecurityConfig {
         return jwtConverter;
     }
 
-    @Bean
+//    @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
         SimpleUrlLogoutSuccessHandler successHandler = new SimpleUrlLogoutSuccessHandler();
         successHandler.setDefaultTargetUrl("/BGGForum/main");

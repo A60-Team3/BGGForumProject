@@ -1,4 +1,4 @@
-package com.example.bggforumproject.controllers;
+package com.example.bggforumproject.controllers.rest;
 
 import com.example.bggforumproject.dtos.*;
 import com.example.bggforumproject.models.Comment;
@@ -8,7 +8,6 @@ import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.UserFilterOptions;
 import com.example.bggforumproject.service.contacts.UserService;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,9 +24,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/BGGForum/users")
-//@Tag(name = "users", description = "User related endpoints. For logged in visitors")
+//@RestController
+//@RequestMapping("/BGGForum/users")
+@Tag(name = "users", description = "User related endpoints. For logged in visitors")
 public class UsersController {
 
     private static final String MODIFY_USER_ERROR_MESSAGE = " Only a user can modified his info!";

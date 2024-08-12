@@ -1,4 +1,4 @@
-package com.example.bggforumproject.security;
+package com.example.bggforumproject.security.jwtRest;
 
 import java.time.Instant;
 import java.util.stream.Collectors;
@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 public class TokenServiceImpl implements TokenService {
 
     private final JwtEncoder jwtEncoder;

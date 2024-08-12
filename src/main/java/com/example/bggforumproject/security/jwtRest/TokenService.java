@@ -1,4 +1,4 @@
-package com.example.bggforumproject.security;
+package com.example.bggforumproject.security.jwtRest;
 
 import org.springframework.security.core.Authentication;
 

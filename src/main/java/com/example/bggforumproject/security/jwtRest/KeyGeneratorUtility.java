@@ -1,4 +1,4 @@
-package com.example.bggforumproject.security;
+package com.example.bggforumproject.security.jwtRest;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

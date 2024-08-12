@@ -1,4 +1,4 @@
-package com.example.bggforumproject.controllers;
+package com.example.bggforumproject.controllers.rest;
 
 import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
 import com.example.bggforumproject.dtos.PostOutFullDTO;
@@ -7,7 +7,6 @@ import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.models.User;
-import com.example.bggforumproject.service.contacts.PostService;
 import com.example.bggforumproject.service.contacts.TagService;
 import com.example.bggforumproject.service.contacts.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,8 +24,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/BGGForum/posts")
+//@RestController
+//@RequestMapping("/BGGForum/posts")
 public class TagController {
 
     private final TagService tagService;

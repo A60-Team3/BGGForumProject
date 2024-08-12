@@ -1,4 +1,4 @@
-package com.example.bggforumproject.controllers;
+package com.example.bggforumproject.controllers.rest;
 
 import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
 import com.example.bggforumproject.dtos.UserBlockOutDTO;
@@ -18,8 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/BGGForum/admin")
+////@RestController
+//@RequestMapping("/BGGForum/admin")
 @Tag(name = "admins", description = "The Admin Privileges Only API")
 public class AdminController {
     private final UserService userService;

@@ -1,4 +1,4 @@
-package com.example.bggforumproject.controllers;
+package com.example.bggforumproject.controllers.rest;
 
 
 import com.example.bggforumproject.dtos.*;
@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/auth")
+//@RestController
+//@RequestMapping("/auth")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;

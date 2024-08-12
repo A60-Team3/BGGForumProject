@@ -1,4 +1,4 @@
-package com.example.bggforumproject.controllers;
+package com.example.bggforumproject.controllers.rest;
 
 import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
 import com.example.bggforumproject.dtos.CommentDTO;
@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/BGGForum/posts")
+//@RestController
+//@RequestMapping("/BGGForum/posts")
 @Tag(name = "reactions", description = "Reactions related endpoints. Authentication required.")
 public class ReactionController {
 

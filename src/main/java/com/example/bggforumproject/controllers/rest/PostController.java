@@ -1,9 +1,14 @@
-package com.example.bggforumproject.controllers;
+package com.example.bggforumproject.controllers.rest;
 
-import com.example.bggforumproject.dtos.*;
+import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
+import com.example.bggforumproject.dtos.PostCreateDTO;
+import com.example.bggforumproject.dtos.PostOutFullDTO;
+import com.example.bggforumproject.dtos.PostUpdateDTO;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
-import com.example.bggforumproject.models.*;
-import com.example.bggforumproject.service.contacts.*;
+import com.example.bggforumproject.models.Post;
+import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.service.contacts.PostService;
+import com.example.bggforumproject.service.contacts.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,8 +26,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/BGGForum/posts")
+//@RestController
+//@RequestMapping("/BGGForum/posts")
 @Tag(name = "posts", description = "Post related endpoints. For logged in visitors")
 public class PostController {
 
@@ -165,7 +170,8 @@ public class PostController {
                     @ApiResponse(responseCode = "404", description = "Post with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
             })
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> delete(@PathVariable long postId) {
+    public ResponseEntity<?> delete(@Parameter(description = "Post to delete ID", required = true)
+                                    @PathVariable long postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 

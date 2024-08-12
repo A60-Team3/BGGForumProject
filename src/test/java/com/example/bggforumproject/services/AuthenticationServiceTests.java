@@ -9,7 +9,7 @@ import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.RoleRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
-import com.example.bggforumproject.security.TokenService;
+import com.example.bggforumproject.security.jwtRest.TokenService;
 import com.example.bggforumproject.service.AuthenticationServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
