@@ -5,6 +5,7 @@ import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.service.contacts.AnonymousUserService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,8 +32,8 @@ public class AnonymousUserServiceImpl implements AnonymousUserService {
     }
 
     @Override
-    public List<Post> getAllPosts(PostFilterOptions postFilterOptions) {
-        return postRepository.get(postFilterOptions);
+    public Page<Post> getAllPosts(PostFilterOptions postFilterOptions, int pageIndex, int pageSize) {
+        return postRepository.get(postFilterOptions, pageIndex, pageSize);
     }
 
     @Override

@@ -9,37 +9,37 @@
         <label th:text="#{user.label.username}">Username</label>
         <br/>
         <input type="text" th:field="*{username}"/>
-        <label class="label-error" th:errors="*{username}">Username error placeholder</label>
+        <small class="label-error" th:errors="*{username}">Username error placeholder</small>
         <br/><br/>
 
         <label th:text="#{user.label.password}">Password</label>
         <br/>
         <input type="password" th:field="*{password}"/>
-        <label class="label-error" th:errors="*{password}">Password error placeholder</label>
+        <small class="label-error" th:errors="*{password}">Password error placeholder</small>
         <br/><br/>
 
         <label th:text="#{user.label.password-confirm}">Confirm Password</label>
         <br/>
         <input type="password" th:field="*{passwordConfirm}"/>
-        <label class="label-error" th:errors="*{passwordConfirm}">Password confirm error placeholder</label>
+        <small class="label-error" th:errors="*{passwordConfirm}">Password confirm error placeholder</small>
         <br/><br/>
 
         <label th:text="#{user.label.first-name}">First Name</label>
         <br/>
         <input type="text" th:field="*{firstName}"/>
-        <label class="label-error" th:errors="*{firstName}">First name error placeholder</label>
+        <small class="label-error" th:errors="*{firstName}">First name error placeholder</small>
         <br/><br/>
 
         <label th:text="#{user.label.last-name}">Last Name</label>
         <br/>
         <input type="text" th:field="*{lastName}"/>
-        <label class="label-error" th:errors="*{lastName}">Last name error placeholder</label>
+        <small class="label-error" th:errors="*{lastName}">Last name error placeholder</small>
         <br/><br/>
 
         <label th:text="#{user.label.email}">Email</label>
         <br/>
         <input type="text" th:field="*{email}"/>
-        <label class="label-error" th:errors="*{email}">Email error placeholder</label>
+        <small class="label-error" th:errors="*{email}">Email error placeholder</small>
         <br/><br/>
 
         <input type="submit" value="Register"/>

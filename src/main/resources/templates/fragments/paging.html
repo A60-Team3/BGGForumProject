@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<a th:fragment="paging(pageNum, label, tooltip)" class="page-link"
+   th:href="@{'/BGGForum/main?' + ${postFilterOptions.title != null ? 'title=' + postFilterOptions.title + '&' : ''}
+                        + ${postFilterOptions.content != null ? 'content=' + postFilterOptions.content + '&' : ''}
+                        + ${postFilterOptions.createCondition != null ? 'createCondition=' + postFilterOptions.createCondition + '&' : ''}
+                        + ${postFilterOptions.created != null ? 'created=' + postFilterOptions.created + '&' : ''}
+                        + ${postFilterOptions.updateCondition != null ? 'updateCondition=' + postFilterOptions.updateCondition + '&' : ''}
+                        + ${postFilterOptions.updated != null ? 'updated=' + postFilterOptions.updated + '&' : ''}
+                        + 'pageIndex=' + ${pageNum} + '&pageSize=' + ${pageSize}}"
+   th:title="${tooltip}" rel="tooltip">
+    [[${label}]]
+</a>
+</html>

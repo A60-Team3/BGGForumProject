@@ -15,6 +15,7 @@ import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.repositories.contracts.RoleRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
 import com.example.bggforumproject.service.contacts.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -59,10 +60,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Post> getSpecificUserPosts(long id, PostFilterOptions postFilterOptions) {
+    public Page<Post> getSpecificUserPosts(long id, PostFilterOptions postFilterOptions, int pageIndex, int pageSize) {
         userRepository.getById(id);
 
-        return postRepository.get(postFilterOptions);
+        return postRepository.get(postFilterOptions, pageIndex, pageSize);
     }
 
     @Override

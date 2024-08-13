@@ -2,6 +2,7 @@ package com.example.bggforumproject.service.contacts;
 
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface AnonymousUserService {
 
     long countPosts();
 
-    List<Post> getAllPosts(PostFilterOptions postFilterOptions);
+    Page<Post> getAllPosts(PostFilterOptions postFilterOptions, int pageIndex, int pageSize);
 
     List<Post> getMostCommented();
 

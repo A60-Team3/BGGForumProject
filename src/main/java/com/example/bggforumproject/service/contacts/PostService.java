@@ -3,12 +3,13 @@ package com.example.bggforumproject.service.contacts;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface PostService {
 
-    List<Post> get(PostFilterOptions postFilterOptions);
+    Page<Post> get(PostFilterOptions postFilterOptions, int pageIndex, int pageSize);
 
     Post get(long id);
 

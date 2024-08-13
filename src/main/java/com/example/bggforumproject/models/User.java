@@ -51,6 +51,14 @@ public class User extends BaseEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> authorities;
 
+    @OneToOne
+    @JoinColumn(name = "id")
+    private ProfilePicture photoUrl;
+
+    @OneToOne
+    @JoinColumn(name = "id")
+    private PhoneNumber phoneNumber;
+
     public User() {
 
     }
@@ -143,6 +151,22 @@ public class User extends BaseEntity implements UserDetails {
 
     public Set<Role> getRoles(){
         return authorities;
+    }
+
+    public ProfilePicture getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(ProfilePicture photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public PhoneNumber getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(PhoneNumber phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override

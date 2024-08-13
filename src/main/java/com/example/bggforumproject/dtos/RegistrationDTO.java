@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 @Schema(description = "This DTO holds user registration details.",
         allowableValues = {"firstName", "lastName", "email", "username", "password"})
@@ -30,7 +31,9 @@ public record RegistrationDTO(
         String password,
 
         @NotBlank(message = "This field is mandatory")
-        String passwordConfirm
+        String passwordConfirm,
+
+        MultipartFile profilePicture
 ) {
 
         public static final String emailRegex = "^[a-zA-Z0-9]+([._-][0-9a-zA-Z]+)*@[a-zA-Z0-9]+([.-][0-9a-zA-Z]+)*\\.[a-zA-Z]{2,}$";

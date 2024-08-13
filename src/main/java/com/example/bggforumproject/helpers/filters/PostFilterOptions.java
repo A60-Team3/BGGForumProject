@@ -1,5 +1,7 @@
 package com.example.bggforumproject.helpers.filters;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public class PostFilterOptions {
@@ -7,20 +9,24 @@ public class PostFilterOptions {
     private final Optional<String> title;
     private final Optional<String> content;
     private final Optional<Long> userId;
-    private final Optional<String> tags;
-    private final Optional<String> created;
-    private final Optional<String> updated;
+    private final Optional<List<Long>> tags;
+    private final Optional<String> createdCondition;
+    private final Optional<LocalDateTime> created;
+    private final Optional<String> updatedCondition;
+    private final Optional<LocalDateTime> updated;
     private final Optional<String> sortBy;
     private final Optional<String> sortOrder;
 
     public PostFilterOptions(String title, String content, Long userId,
-                             String tags, String created, String updated,
+                             List<Long> tags, String createdCondition, LocalDateTime created, String updatedCondition, LocalDateTime updated,
                              String sortBy, String sortOrder) {
         this.title = Optional.ofNullable(title);
         this.content = Optional.ofNullable(content);
         this.userId = Optional.ofNullable(userId);
         this.tags = Optional.ofNullable(tags);
+        this.createdCondition = Optional.ofNullable(createdCondition);
         this.created = Optional.ofNullable(created);
+        this.updatedCondition = Optional.ofNullable(updatedCondition);
         this.updated = Optional.ofNullable(updated);
         this.sortBy = Optional.ofNullable(sortBy);
         this.sortOrder = Optional.ofNullable(sortOrder);
@@ -38,15 +44,15 @@ public class PostFilterOptions {
         return userId;
     }
 
-    public Optional<String> getTags() {
+    public Optional<List<Long>> getTags() {
         return tags;
     }
 
-    public Optional<String> getCreated() {
+    public Optional<LocalDateTime> getCreated() {
         return created;
     }
 
-    public Optional<String> getUpdated() {
+    public Optional<LocalDateTime> getUpdated() {
         return updated;
     }
 
@@ -58,4 +64,11 @@ public class PostFilterOptions {
         return sortOrder;
     }
 
+    public Optional<String> getCreatedCondition() {
+        return createdCondition;
+    }
+
+    public Optional<String> getUpdatedCondition() {
+        return updatedCondition;
+    }
 }

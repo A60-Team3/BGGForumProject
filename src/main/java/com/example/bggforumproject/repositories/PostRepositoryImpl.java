@@ -9,6 +9,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -29,7 +33,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> get(PostFilterOptions postFilterOptions) {
+    public Page<Post> get(PostFilterOptions postFilterOptions, int pageIndex, int pageSize) {
         try (Session session = sessionFactory.openSession()) {
 
             StringBuilder queryString = new StringBuilder("from Post p");
@@ -62,32 +66,26 @@ public class PostRepositoryImpl implements PostRepository {
             });
 
             postFilterOptions.getTags().ifPresent(value -> {
-                List<Integer> tagIds = Arrays.stream(value.split(","))
-                        .map(Integer::parseInt).toList();
-
                 filters.add("t.id IN (:tagIds)");
-                params.put("tagIds", tagIds);
+                params.put("tagIds", value);
             });
 
             postFilterOptions.getCreated().ifPresent(value -> {
-                String condition = value.split(",")[0];
-                String date = value.split(",")[1];
-
-                if (VALID_CONDITIONS.contains(condition)) {
-                    filters.add(String.format("p.createdAt %s (:created)", condition));
-                    params.put("created", LocalDateTime.parse(date.trim(), FORMATTER));
+                if (postFilterOptions.getCreatedCondition().isPresent()) {
+                    filters.add(String.format("p.createdAt %s (:created)",
+                            postFilterOptions.getCreatedCondition().get()));
+                    params.put("created", value);
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
                 }
             });
 
             postFilterOptions.getUpdated().ifPresent(value -> {
-                String condition = value.split(",")[0];
-                String date = value.split(",")[1];
 
-                if (VALID_CONDITIONS.contains(condition)) {
-                    filters.add(String.format("p.updatedAt %s (:updated)", condition));
-                    params.put("updated", LocalDateTime.parse(date.trim(), FORMATTER));
+                if (postFilterOptions.getUpdatedCondition().isPresent()) {
+                    filters.add(String.format("p.updatedAt %s (:updated)",
+                            postFilterOptions.getUpdatedCondition().get()));
+                    params.put("updated", value);
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
                 }
@@ -103,7 +101,13 @@ public class PostRepositoryImpl implements PostRepository {
             Query<Post> query = session.createQuery(queryString.toString(), Post.class);
             query.setProperties(params);
 
-            return query.list();
+            Pageable pageable = PageRequest.of(pageIndex, pageSize);
+            int totalEntries = query.list().size();
+
+            query.setFirstResult((int) pageable.getOffset());
+            query.setMaxResults(pageable.getPageSize());
+
+            return new PageImpl<>(query.list(), pageable,totalEntries);
         }
     }
 

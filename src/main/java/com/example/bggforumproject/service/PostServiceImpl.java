@@ -9,6 +9,7 @@ import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.service.contacts.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,8 +27,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> get(PostFilterOptions postFilterOptions) {
-        return postRepository.get(postFilterOptions);
+    public Page<Post> get(PostFilterOptions postFilterOptions, int pageIndex, int pageSize) {
+        return postRepository.get(postFilterOptions, pageIndex, pageSize);
     }
 
     @Override

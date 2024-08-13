@@ -6,6 +6,7 @@ import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.UserFilterOptions;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface UserService {
 
     List<User> getAll(UserFilterOptions userFilterOptions);
 
-    List<Post> getSpecificUserPosts(long id, PostFilterOptions postFilterOptions);
+    Page<Post> getSpecificUserPosts(long id, PostFilterOptions postFilterOptions, int pageIndex, int pageSize);
 
     List<Comment> getSpecificUserComments(long id, CommentFilterOptions commentFilterOptions);
 

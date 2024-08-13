@@ -21,11 +21,11 @@
 
     <div class="body-content">
         <h3>Not yet registered?
-        <a th:href="@{/auth/register}" th:text="#{user.label.register-link}">Register</a>
+            <a th:href="@{/auth/register}" th:text="#{user.label.register-link}">Register</a>
         </h3>
     </div>
 </div>
 
-</div>
+<div th:replace="~{/fragments/footer.html :: footer}"></div>
 </body>
 </html>

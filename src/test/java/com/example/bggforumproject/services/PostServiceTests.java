@@ -29,13 +29,13 @@ public class PostServiceTests {
     public void get_Should_CallRepository(){
         PostFilterOptions mockPostFilterOptions = createMockPostFilterOptions();
 
-        Mockito.when(postRepository.get(mockPostFilterOptions))
+        Mockito.when(postRepository.get(mockPostFilterOptions, pageIndex, pageSize))
                 .thenReturn(null);
 
-        postService.get(mockPostFilterOptions);
+        postService.get(mockPostFilterOptions, pageIndex, pageSize);
 
         Mockito.verify(postRepository, Mockito.times(1))
-                .get(mockPostFilterOptions);
+                .get(mockPostFilterOptions, pageIndex, pageSize);
     }
 
     @Test

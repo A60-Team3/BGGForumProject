@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 
@@ -71,11 +72,14 @@ public class AnonymousUserServiceTests {
         PostFilterOptions postFilterOptions = Mockito.mock(PostFilterOptions.class);
 
         List<Post> posts = List.of(post);
+        int pageIndex = 0;
+        int pageSize = 0;
 
-        Mockito.when(postRepository.get(postFilterOptions)).thenReturn(posts);
+        Mockito.when(postRepository.get(postFilterOptions, pageIndex, pageSize))
+                .thenReturn(new PageImpl<>(posts));
 
-        assertEquals(posts, anonymousUserService.getAllPosts(postFilterOptions));
-        Mockito.verify(postRepository, Mockito.times(1)).get(postFilterOptions);
+        assertEquals(posts, anonymousUserService.getAllPosts(postFilterOptions, pageIndex, pageSize));
+        Mockito.verify(postRepository, Mockito.times(1)).get(postFilterOptions, pageIndex, pageSize);
 
     }
 
@@ -87,12 +91,15 @@ public class AnonymousUserServiceTests {
                         null, null, null, null
                 );
 
-        Mockito.when(postRepository.get(postFilterOptions)).thenReturn(List.of());
+        int pageIndex = 0;
+        int pageSize = 0;
 
-        assertEquals(0, anonymousUserService.getAllPosts(postFilterOptions).size());
-        Mockito.verify(postRepository, Mockito.times(1)).get(postFilterOptions);
+        Mockito.when(postRepository.get(postFilterOptions, pageIndex, pageSize))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        assertEquals(0, anonymousUserService.getAllPosts(postFilterOptions, pageIndex, pageSize).getTotalElements());
+        Mockito.verify(postRepository, Mockito.times(1)).get(postFilterOptions, pageIndex, pageSize);
 
     }
-
 
 }

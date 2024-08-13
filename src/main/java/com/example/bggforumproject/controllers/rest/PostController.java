@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,27 +56,34 @@ public class PostController {
                             content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class))),
             })
     @GetMapping
-    public ResponseEntity<List<PostOutFullDTO>> get(@Parameter(description = "Partial or full title")
+    public ResponseEntity<List<PostOutFullDTO>> get(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+                                                    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                                    @Parameter(description = "Partial or full title")
                                                     @RequestParam(required = false) String title,
                                                     @Parameter(description = "Partial or full content")
                                                     @RequestParam(required = false) String content,
                                                     @Parameter(description = "Creator id")
                                                     @RequestParam(required = false) Long userId,
                                                     @Parameter(description = "Pattern - tagId1,tagId2,tagId3")
-                                                    @RequestParam(required = false) String tags,
-                                                    @Parameter(description = "Pattern - [</>/<=/>=/<>/=],YYYY-MM-DD HH:mm:ss")
-                                                    @RequestParam(required = false) String created,
-                                                    @Parameter(description = "Pattern - [</>/<=/>=/<>/=],YYYY-MM-DD HH:mm:ss")
-                                                    @RequestParam(required = false) String updated,
+                                                    @RequestParam(required = false) List<Long> tags,
+                                                    @Parameter(description = "Pattern - [</>/<=/>=/<>/=]")
+                                                        @RequestParam(required = false) String createdCondition,
+                                                    @Parameter(description = "Pattern - YYYY-MM-DD HH:mm:ss")
+                                                    @RequestParam(required = false) LocalDateTime created,
+                                                    @Parameter(description = "Pattern - [</>/<=/>=/<>/=]")
+                                                        @RequestParam(required = false) String updatedCondition,
+                                                    @Parameter(description = "Pattern - YYYY-MM-DD HH:mm:ss")
+                                                    @RequestParam(required = false) LocalDateTime updated,
                                                     @Parameter(description = "Options - all field names and (year/month/day)Created/Updated")
                                                     @RequestParam(required = false) String sortBy,
                                                     @RequestParam(required = false) String sortOrder
     ) {
 
         PostFilterOptions postFilterOptions =
-                new PostFilterOptions(title, content, userId, tags, created, updated, sortBy, sortOrder);
+                new PostFilterOptions(title, content, userId, tags,
+                        createdCondition, created, updatedCondition, updated, sortBy, sortOrder);
 
-        return ResponseEntity.ok(postService.get(postFilterOptions)
+        return ResponseEntity.ok(postService.get(postFilterOptions, pageIndex, pageSize)
                 .stream()
                 .map(post -> mapper.map(post, PostOutFullDTO.class))
                 .collect(Collectors.toList()));

@@ -101,17 +101,19 @@ public class UserServiceTests {
     @Test
     public void getSpecificUserPosts_Should_CallRepository() {
         PostFilterOptions mockPostFilterOptions = createMockPostFilterOptions();
+        int pageIndex = 0;
+        int pageSize = 10;
 
-        Mockito.when(postRepository.get(mockPostFilterOptions))
+        Mockito.when(postRepository.get(mockPostFilterOptions, pageIndex, pageSize))
                 .thenReturn(null);
 
         Mockito.when(userRepository.getById(Mockito.anyLong()))
                 .thenReturn(Mockito.any(User.class));
 
-        userService.getSpecificUserPosts(1, mockPostFilterOptions);
+        userService.getSpecificUserPosts(1, mockPostFilterOptions, pageIndex, pageSize);
 
         Mockito.verify(postRepository, Mockito.times(1))
-                .get(mockPostFilterOptions);
+                .get(mockPostFilterOptions, pageIndex, pageSize);
         Mockito.verify(userRepository, Mockito.times(1))
                 .getById(1);
     }

@@ -13,12 +13,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 //@RestController
@@ -44,24 +44,32 @@ public class AnonymousUserController {
                             content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
     @GetMapping("/main")
-    public UnknownOutDTO mainPage(@Parameter(description = "Partly or full title")
+    public UnknownOutDTO mainPage(@Parameter(description = "Page number, default is 0.")
+                                  @RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+                                  @Parameter(description = "Page size, default is 10.")
+                                  @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                  @Parameter(description = "Partly or full title")
                                   @RequestParam(required = false) String title,
-                                  @Parameter(description = "Pattern - [</>/<=/>=/<>/=],YYYY-MM-DD HH:mm:ss")
-                                  @RequestParam(required = false) String created,
+                                  @Parameter(description = "Pattern - [</>/<=/>=/<>/=]")
+                                      @RequestParam(required = false) String createdCondition,
+                                  @Parameter(description = "Pattern - YYYY-MM-DD HH:mm:ss")
+                                  @RequestParam(required = false) LocalDateTime created,
                                   @Parameter(description = "Pattern - tagId1,tagId2,tagId3")
-                                  @RequestParam(required = false) String tags,
+                                  @RequestParam(required = false) List<Long> tags,
                                   @Parameter(description = "Options - title/created")
                                   @RequestParam(required = false) String sortBy,
                                   @RequestParam(required = false) String sortOrder) {
 
         PostFilterOptions postFilterOptions =
                 new PostFilterOptions(
-                        title, null, null, tags, created, null, sortBy, sortOrder
+                        title, null, null, tags,
+                        createdCondition, created, null, null,
+                        sortBy, sortOrder
                 );
         long users = anonymousUserService.countUsers();
         long posts = anonymousUserService.countPosts();
 
-        List<Post> filteredPosts = anonymousUserService.getAllPosts(postFilterOptions);
+        Page<Post> filteredPosts = anonymousUserService.getAllPosts(postFilterOptions, pageIndex, pageSize);
 
         List<PostAnonymousOutDTO> postAnonymousOutDTOS = filteredPosts.stream()
                 .map(post -> mapper.map(post, PostAnonymousOutDTO.class))
