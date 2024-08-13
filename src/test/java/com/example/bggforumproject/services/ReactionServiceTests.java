@@ -77,7 +77,7 @@ public class ReactionServiceTests {
         Mockito.when(reactionRepository.getByPostAndUser(user.getId(), post.getId()))
                 .thenThrow(EntityNotFoundException.class);
 
-        reactionService.create(reaction, user, post);
+        reactionService.create(reaction, user, post.getId());
         Mockito.verify(reactionRepository, Mockito.times(1))
                 .create(reaction);
     }
@@ -94,7 +94,7 @@ public class ReactionServiceTests {
                 .thenReturn(reaction);
 
         Assertions.assertThrows(EntityDuplicateException.class,
-                () -> reactionService.create(reaction, user, post));
+                () -> reactionService.create(reaction, user, post.getId()));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class ReactionServiceTests {
         Mockito.when(reactionRepository.getByPostAndUser(user.getId(), post.getId()))
                 .thenThrow(EntityNotFoundException.class);
 
-        reactionService.update(reaction, user, post, reaction);
+        reactionService.update(reaction.getId(), user, post.getId(), reaction.getReactionType());
         Mockito.verify(reactionRepository, Mockito.times(1))
                 .update(reaction);
     }
@@ -129,7 +129,7 @@ public class ReactionServiceTests {
         Mockito.when(reactionRepository.get(reaction.getId())).thenReturn(reaction);
 
         Assertions.assertThrows(AuthorizationException.class,
-                () -> reactionService.update(reaction, notCreator, post, reaction));
+                () -> reactionService.update(reaction.getId(), notCreator, post.getId(), reaction.getReactionType()));
     }
 
     @Test
@@ -147,7 +147,7 @@ public class ReactionServiceTests {
                 .thenReturn(reaction);
 
         Assertions.assertThrows(EntityDuplicateException.class,
-                () -> reactionService.update(reactionToUpdate, user, post, reaction));
+                () -> reactionService.update(reactionToUpdate.getId(), user, post.getId(), reaction.getReactionType()));
     }
 
     @Test
@@ -158,9 +158,9 @@ public class ReactionServiceTests {
         reaction.setUserId(user);
 
         Mockito.when(reactionRepository.get(reaction.getId())).thenReturn(reaction);
-        reactionService.delete(reaction.getId(), user, postId);
+        reactionService.delete(reaction.getId(), user, reaction.getPostId().getId());
         Mockito.verify(reactionRepository, Mockito.times(1))
-                .delete(reaction.getId());
+                .delete(reaction);
     }
 
     @Test
@@ -175,6 +175,6 @@ public class ReactionServiceTests {
         Mockito.when(reactionRepository.get(reaction.getId())).thenReturn(reaction);
 
         Assertions.assertThrows(AuthorizationException.class,
-                () -> reactionService.delete(reaction.getId(), notCreator, postId));
+                () -> reactionService.delete(reaction.getId(), notCreator, reaction.getPostId().getId()));
     }
 }

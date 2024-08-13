@@ -87,7 +87,7 @@ public class AnonymousUserServiceTests {
     public void getAllPosts_Should_Return_No_Posts_When__Filters_Mismatch() {
         PostFilterOptions postFilterOptions =
                 new PostFilterOptions(
-                        "microsoft", null, null, null,
+                        "microsoft", null, null, null, null, null,
                         null, null, null, null
                 );
 

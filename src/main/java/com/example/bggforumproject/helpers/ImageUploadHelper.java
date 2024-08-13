@@ -2,7 +2,6 @@ package com.example.bggforumproject.helpers;
 
 import com.example.bggforumproject.exceptions.IllegalFileUploadException;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.DateFormat;

@@ -28,6 +28,8 @@ public class PostServiceTests {
     @Test
     public void get_Should_CallRepository(){
         PostFilterOptions mockPostFilterOptions = createMockPostFilterOptions();
+        int pageIndex = 0;
+        int pageSize = 10;
 
         Mockito.when(postRepository.get(mockPostFilterOptions, pageIndex, pageSize))
                 .thenReturn(null);
@@ -114,7 +116,7 @@ public class PostServiceTests {
 
         Mockito.when(postRepository.get(1)).thenReturn(post);
 
-        postService.update(postId, post, user);
+        postService.update(post.getId(), post, user);
         Mockito.verify(postRepository, Mockito.times(1))
                 .update(post);
     }
@@ -131,7 +133,7 @@ public class PostServiceTests {
         Mockito.when(postRepository.get(1)).thenReturn(post);
 
         Assertions.assertThrows(AuthorizationException.class,
-                () -> postService.update(postId, post, notCreator));
+                () -> postService.update(post.getId(), post, notCreator));
     }
 
     @Test
@@ -145,7 +147,7 @@ public class PostServiceTests {
         postService.delete(post.getId(), user);
 
         Mockito.verify(postRepository, Mockito.times(1))
-                .delete(post.getId());
+                .delete(post);
     }
 
     @Test
@@ -160,7 +162,7 @@ public class PostServiceTests {
         postService.delete(post.getId(), admin);
 
         Mockito.verify(postRepository, Mockito.times(1))
-                .delete(post.getId());
+                .delete(post);
     }
 
     @Test
@@ -175,7 +177,7 @@ public class PostServiceTests {
         postService.delete(post.getId(), moderator);
 
         Mockito.verify(postRepository, Mockito.times(1))
-                .delete(post.getId());
+                .delete(post);
     }
 
     @Test
