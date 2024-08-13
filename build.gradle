@@ -35,9 +35,9 @@ dependencies {
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation group: 'io.github.cdimascio', name: 'dotenv-java', version: '3.0.1'
-    implementation 'com.cloudinary:cloudinary-http44:1.39.0'
-    implementation 'commons-io:commons-io:2.16.1'
-
+    implementation('com.cloudinary:cloudinary-http45:1.39.0') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
 

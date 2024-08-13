@@ -1,11 +1,11 @@
 package com.example.bggforumproject.helpers;
 
 import com.example.bggforumproject.exceptions.IllegalFileUploadException;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,13 +30,16 @@ public class ImageUploadHelper {
         }
 
         String fileName = file.getOriginalFilename();
-        String extension = FilenameUtils.getExtension(fileName);
+        String extension = Arrays.stream(fileName.split("//."))
+                .reduce((a, b) -> b)
+                .orElse("");
+
         if (!isAllowedExtension(fileName, pattern)) {
             throw new IllegalFileUploadException("Only jpg, png, gif, bmp files are allowed");
         }
     }
 
-    public static String getFileName(final String name) {
+    public static String getFileName(String name) {
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         String date = dateFormat.format(System.currentTimeMillis());
         return String.format(FILE_NAME_FORMAT, name, date);

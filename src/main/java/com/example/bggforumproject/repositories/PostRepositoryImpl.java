@@ -105,9 +105,9 @@ public class PostRepositoryImpl implements PostRepository {
             int totalEntries = query.list().size();
 
             query.setFirstResult((int) pageable.getOffset());
-            query.setMaxResults(pageable.getPageSize());
+            query.setMaxResults(pageSize);
 
-            return new PageImpl<>(query.list(), pageable,totalEntries);
+            return new PageImpl<>(query.list(), pageable, totalEntries);
         }
     }
 

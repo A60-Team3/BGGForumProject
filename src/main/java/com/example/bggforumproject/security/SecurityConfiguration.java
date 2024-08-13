@@ -47,7 +47,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                             .requestMatchers("/BGGForum/posts/most-commented", "/BGGForum/posts/most-recently-created")
                             .permitAll()
                             .requestMatchers("/resources/**", "/static/**", "/static/templates/**",
-                                    "/css/**", "/images/**")
+                                    "/css/**", "/images/**","/js/**")
                             .permitAll();
 //                    auth.requestMatchers("/BGGForum/posts/tags/**").hasAnyRole("ADMIN", "MODERATOR");
 //                    auth.requestMatchers("/BGGForum/users").hasAnyRole("ADMIN", "MODERATOR");
@@ -76,7 +76,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/css/**", "/images/**")
-                .addResourceLocations("classpath:/static/css/", "classpath:/static/images/");
+        registry.addResourceHandler("/css/**", "/images/**", "/js/**")
+                .addResourceLocations("classpath:/static/css/", "classpath:/static/images/", "classpath:/static/js/");
     }
 }

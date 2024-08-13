@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/fragments/head.html :: head(title = 'Register')}"></head>
+<head th:replace="~{/fragments/head.html :: head('Register')}"></head>
 <body>
 <div class="body-content">
     <h2>Register</h2>
@@ -46,5 +46,7 @@
     </form>
 </div>
 
+<div th:replace="~{/fragments/footer.html :: footer}"></div>
+<div th:replace="~{/fragments/scripts.html}"></div>
 </body>
 </html>

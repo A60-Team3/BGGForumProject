@@ -34,20 +34,26 @@ public class AnonymousMvcController {
     }
 
     @GetMapping("/main")
-    public String getHomePage(@RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
+    public String getHomePage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
                               @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
                               @ModelAttribute("postFilterOptions") FilterDto dto, Model model) {
         PostFilterOptions postFilterOptions = new PostFilterOptions(
-                dto.title(), dto.content(), dto.userId(), dto.tags(),
-                dto.createCondition(), dto.created(),
-                dto.updateCondition(), dto.updated(),
-                dto.sortBy(), dto.sortOrder()
+                (dto.title() != null && dto.title().isEmpty()) ? null : dto.title(),
+                (dto.content() != null && dto.content().isEmpty()) ? null : dto.content(),
+                dto.userId(),
+                (dto.tags() != null && dto.tags().isEmpty()) ? null : dto.tags(),
+                (dto.createCondition() != null && dto.createCondition().isEmpty()) ? null : dto.createCondition(),
+                dto.created(),
+                (dto.updateCondition() != null && dto.updateCondition().isEmpty()) ? null : dto.updateCondition(),
+                dto.updated(),
+                (dto.sortBy() != null && dto.sortBy().isEmpty()) ? null : dto.sortBy(),
+                (dto.sortOrder() != null && dto.sortOrder().isEmpty()) ? null : dto.sortOrder()
         );
 
         Page<Post> posts = anonymousUserService.getAllPosts(postFilterOptions, pageIndex, pageSize);
 
         model.addAttribute("posts", posts.getContent());
-        model.addAttribute("pagePosts",posts);
+        model.addAttribute("pagePosts", posts);
         model.addAttribute("currentPage", posts.getNumber() + 1);
         model.addAttribute("totalItems", posts.getTotalElements());
         model.addAttribute("totalPages", posts.getTotalPages());
