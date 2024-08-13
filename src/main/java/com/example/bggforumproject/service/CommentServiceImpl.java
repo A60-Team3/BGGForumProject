@@ -12,6 +12,7 @@ import com.example.bggforumproject.repositories.contracts.CommentRepository;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.service.contacts.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,14 +33,14 @@ public class CommentServiceImpl implements CommentService {
         this.authorizationHelper = authorizationHelper;
     }
     @Override
-    public List<Comment> getAll(CommentFilterOptions commentFilterOptions) {
-        return commentRepository.get(commentFilterOptions);
+    public Page<Comment> getAll(CommentFilterOptions commentFilterOptions) {
+        return commentRepository.get(commentFilterOptions, 0, 0);
     }
 
     @Override
-    public List<Comment> getCommentsForPost(long postId, CommentFilterOptions commentFilterOptions) {
+    public Page<Comment> getCommentsForPost(long postId, CommentFilterOptions commentFilterOptions, int pageIndex, int pageSize) {
         postRepository.get(postId);
-        return commentRepository.get(commentFilterOptions);
+        return commentRepository.get(commentFilterOptions, pageIndex, pageSize);
     }
 
     @Override

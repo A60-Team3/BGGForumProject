@@ -3,14 +3,15 @@ package com.example.bggforumproject.service.contacts;
 import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.models.Comment;
 import com.example.bggforumproject.models.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface CommentService {
 
-    List<Comment> getAll(CommentFilterOptions commentFilterOptions);
+    Page<Comment> getAll(CommentFilterOptions commentFilterOptions);
 
-    List<Comment> getCommentsForPost(long postId, CommentFilterOptions commentFilterOptions);
+    Page<Comment> getCommentsForPost(long postId, CommentFilterOptions commentFilterOptions, int pageIndex, int pageSize);
 
     Comment get(long id);
 

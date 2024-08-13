@@ -9,6 +9,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -32,7 +36,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public List<Comment> get(CommentFilterOptions commentFilterOptions) {
+    public Page<Comment> get(CommentFilterOptions commentFilterOptions, int pageIndex, int pageSize) {
         try (Session session = sessionFactory.openSession()) {
             StringBuilder queryString = new StringBuilder("from Comment c");
 
@@ -102,7 +106,13 @@ public class CommentRepositoryImpl implements CommentRepository {
 
             Query<Comment> query = session.createQuery(queryString.toString(), Comment.class);
             query.setProperties(params);
-            return query.list();
+            Pageable pageable = PageRequest.of(pageIndex, pageSize);
+            int totalEntries = query.list().size();
+
+            query.setFirstResult((int) pageable.getOffset());
+            query.setMaxResults(pageable.getPageSize());
+
+            return new PageImpl<>(query.list(), pageable,totalEntries);
         }
     }
 

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+<head th:replace="~{/fragments/head.html :: head(title = 'Posts')}"></head>
+<body>
+<div class="body-content">
+    <div sec:authorize="isAuthenticated()">
+        <form action="#" th:action="@{/BGGForum/posts}" method="get" th:object="${postFilterOptions}">
+            <label th:text="#{filter.label}">Filter Options</label>
+            <br/><br/>
+            <input type="text" placeholder="Post Title" th:field="*{title}"/>
+            <input type="text" placeholder="Post Content" th:field="*{content}"/>
+            <select th:field="*{createCondition}">
+                <option value="before">'<'</option>
+                <option value="beforeEqual">'<='</option>
+                <option value="after">'>'</option>
+                <option value="afterEqual">'>='</option>
+                <option value="equal">'='</option>
+                <option value="notEqual">'!='</option>
+            </select>
+            <input type="datetime-local" th:field="*{created}"/>
+            <select th:field="*{updateCondition}">
+                <option value="before">'<'</option>
+                <option value="beforeEqual">'<='</option>
+                <option value="after">'>'</option>
+                <option value="afterEqual">'>='</option>
+                <option value="equal">'='</option>
+                <option value="notEqual">'!='</option>
+            </select>
+            <input type="datetime-local" th:field="*{updated}"/>
+            <div>
+                <label>Tags:</label>
+                <div th:each="tag : ${tags}">
+                    <input type="checkbox" th:field="*{tags}" th:value="${tag.id}" id="tag-${tag.id}"/>
+                    <label th:for="'tag-' + ${tag.id}" th:text="${tag.name}"></label>
+                </div>
+            </div>
+            <select th:field="*{sortBy}">
+                <option value="">Sort By</option>
+                <option value="title">Title</option>
+                <option value="content">Content</option>
+                <option value="user">Creator</option>
+                <option value="created">Date Created</option>
+                <option value="updated">Date Updated</option>
+            </select>
+            <select th:field="*{sortOrder}">
+                <option value="">Sort Order</option>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+            <br/><br/>
+
+            <input type="submit" value="Search"/>
+        </form>
+    </div>
+
+    <div th:if="${posts.isEmpty()}">
+        <h2 th:text="#{posts.title.empty}">No Posts</h2>
+    </div>
+    <div th:unless="${posts.isEmpty()}">
+        <h2 th:text="#{posts.title}">All Posts</h2>
+
+        <div class="margin12" th:each="post : ${posts}">
+            <label th:text="#{post.label.title}  + ': '">Title</label>
+            <span class="margin12">
+                <a href="#" th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}">Post</a>
+            </span>
+            <p class="margin12" th:text="#{post.label.content}  + ': ' +       ${post.content}">Post content</p>
+            <p class="margin12" th:text="#{post.label.created}  + ': ' +       ${#temporals.format(post.createdAt, 'dd-MM-yyyy HH:mm')}">Time of Creation</p>
+            <p class="margin12" th:text="#{post.label.updated}  + ': ' +       ${#temporals.format(post.updatedAt,'dd-MM-yyyy HH:mm')}">Last Updated</p>
+            <p class="margin12" th:text="#{post.label.createdBy}  + ': ' +       ${post.userId.username}">Creator</p>
+            <label th:text="#{post.label.tag}  + ': '">Tags:</label>
+            <span class="margin12" th:each="tag, iterStat : ${post.tags}">
+                <span th:text="${tag.name}">Tag Name</span>
+                <span th:if="${!iterStat.last}">, </span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<nav th:replace="~{/fragments/pagination.html::pagination}">
+</nav>
+
+<footer th:replace="~{/fragments/footer.html::footer}"></footer>
+</body>
+</html>
