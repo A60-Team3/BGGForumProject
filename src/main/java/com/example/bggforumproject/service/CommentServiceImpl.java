@@ -8,14 +8,13 @@ import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.models.Comment;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.CommentRepository;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.service.contacts.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -91,7 +90,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         try {
-            authorizationHelper.checkPermissionsAndOwnership(repoComment, user, "ADMIN", "MODERATOR");
+            authorizationHelper.checkPermissionsAndOwnership(repoComment, user, RoleType.ADMIN, RoleType.MODERATOR);
         } catch (AuthorizationException e) {
             throw new AuthorizationException(DELETE_COMMENT_ERROR_MESSAGE);
         }

@@ -8,6 +8,8 @@ import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.service.contacts.AnonymousUserService;
 import com.example.bggforumproject.service.contacts.TagService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,27 +38,18 @@ public class AnonymousMvcController {
     @GetMapping("/main")
     public String getHomePage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
                               @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
-                              @ModelAttribute("postFilterOptions") FilterDto dto, Model model) {
-        PostFilterOptions postFilterOptions = new PostFilterOptions(
-                (dto.title() != null && dto.title().isEmpty()) ? null : dto.title(),
-                (dto.content() != null && dto.content().isEmpty()) ? null : dto.content(),
-                dto.userId(),
-                (dto.tags() != null && dto.tags().isEmpty()) ? null : dto.tags(),
-                (dto.createCondition() != null && dto.createCondition().isEmpty()) ? null : dto.createCondition(),
-                dto.created(),
-                (dto.updateCondition() != null && dto.updateCondition().isEmpty()) ? null : dto.updateCondition(),
-                dto.updated(),
-                (dto.sortBy() != null && dto.sortBy().isEmpty()) ? null : dto.sortBy(),
-                (dto.sortOrder() != null && dto.sortOrder().isEmpty()) ? null : dto.sortOrder()
-        );
+                              @ModelAttribute("postFilterOptions") FilterDto dto,
+                              Model model) {
 
-        Page<Post> posts = anonymousUserService.getAllPosts(postFilterOptions, pageIndex, pageSize);
+        List<Post> mostCommented = anonymousUserService.getMostCommented();
+        Page<Post> mostRecentlyCreated = anonymousUserService.getMostRecentlyCreated(pageIndex, pageSize);
 
-        model.addAttribute("posts", posts.getContent());
-        model.addAttribute("pagePosts", posts);
-        model.addAttribute("currentPage", posts.getNumber() + 1);
-        model.addAttribute("totalItems", posts.getTotalElements());
-        model.addAttribute("totalPages", posts.getTotalPages());
+        model.addAttribute("postsCommented", mostCommented);
+        model.addAttribute("postsRecent", mostRecentlyCreated.getContent());
+        model.addAttribute("posts", mostRecentlyCreated);
+        model.addAttribute("currentPage", mostRecentlyCreated.getNumber() + 1);
+        model.addAttribute("totalItems", mostRecentlyCreated.getTotalElements());
+        model.addAttribute("totalPages", mostRecentlyCreated.getTotalPages());
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("totalUsers", anonymousUserService.countUsers());
         model.addAttribute("totalPosts", anonymousUserService.countPosts());

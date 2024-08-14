@@ -24,6 +24,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -81,15 +83,21 @@ public class PostMvcController {
     }*/
 
     @GetMapping
-    public String getPosts(@RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
-                              @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
-                              @ModelAttribute("postFilterOptions") FilterDto dto, Model model) {
-
+    public String getPosts(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+                           @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
+                           @ModelAttribute("postFilterOptions") FilterDto dto, Model model,
+                           @AuthenticationPrincipal UserDetails user) {
         PostFilterOptions postFilterOptions = new PostFilterOptions(
-                dto.title(), dto.content(), dto.userId(), dto.tags(),
-                dto.createCondition(), dto.created(),
-                dto.updateCondition(), dto.updated(),
-                dto.sortBy(), dto.sortOrder()
+                (dto.title() != null && dto.title().isEmpty()) ? null : dto.title(),
+                (dto.content() != null && dto.content().isEmpty()) ? null : dto.content(),
+                dto.userId(),
+                (dto.tags() != null && dto.tags().isEmpty()) ? null : dto.tags(),
+                (dto.createCondition() != null && dto.createCondition().isEmpty()) ? null : dto.createCondition(),
+                dto.created(),
+                (dto.updateCondition() != null && dto.updateCondition().isEmpty()) ? null : dto.updateCondition(),
+                dto.updated(),
+                (dto.sortBy() != null && dto.sortBy().isEmpty()) ? null : dto.sortBy(),
+                (dto.sortOrder() != null && dto.sortOrder().isEmpty()) ? null : dto.sortOrder()
         );
 
         Page<Post> posts = postService.get(postFilterOptions, pageIndex, pageSize);
@@ -103,7 +111,6 @@ public class PostMvcController {
 
         return "posts";
     }
-
     @GetMapping("/{id}")
     public String getSinglePost(@PathVariable long id, Model model, HttpSession session){
         if(!populateIsAuthenticated(session)){

@@ -1,10 +1,10 @@
 package com.example.bggforumproject.repositories;
 
-import com.example.bggforumproject.models.Post;
-import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.exceptions.InvalidFilterArgumentException;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
+import com.example.bggforumproject.models.Post;
+import com.example.bggforumproject.repositories.contracts.PostRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -15,9 +15,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class PostRepositoryImpl implements PostRepository {
@@ -165,12 +167,19 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getMostRecentlyCreated() {
+    public Page<Post> getMostRecentlyCreated(int pageIndex, int pageSize) {
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery(
                     "from Post order by createdAt desc limit 10",
                     Post.class);
-            return query.list();
+
+            Pageable pageable = PageRequest.of(pageIndex, pageSize);
+            int totalEntries = query.list().size();
+
+            query.setFirstResult((int) pageable.getOffset());
+            query.setMaxResults(pageSize);
+
+            return new PageImpl<>(query.list(), pageable, totalEntries);
         }
     }
 

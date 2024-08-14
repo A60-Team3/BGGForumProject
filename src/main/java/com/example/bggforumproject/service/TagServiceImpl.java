@@ -6,6 +6,7 @@ import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.repositories.contracts.TagRepository;
 import com.example.bggforumproject.exceptions.AuthorizationException;
@@ -85,7 +86,7 @@ public class TagServiceImpl implements TagService {
                 .findFirst()
                 .orElseThrow(() -> new PostMismatchException("tag",tag.getName()));
         try {
-            authorizationHelper.checkPermissionsAndOwnership(post, user,  "ADMIN", "MODERATOR");
+            authorizationHelper.checkPermissionsAndOwnership(post, user,  RoleType.ADMIN,RoleType.MODERATOR);
         } catch (AuthorizationException e) {
             throw new AuthorizationException(DELETE_TAG_ERROR_MESSAGE);
         }
@@ -128,7 +129,7 @@ public class TagServiceImpl implements TagService {
         //TODO implement - check for ownership, must receive postID but not from tag
         boolean hasPermission = true;
         try {
-            authorizationHelper.checkPermissions(user, "ADMIN", "MODERATOR");
+            authorizationHelper.checkPermissions(user, RoleType.ADMIN,RoleType.MODERATOR);
         } catch (AuthorizationException e) {
             hasPermission = false;
         }
@@ -162,7 +163,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void delete(long id, User user) {
-        authorizationHelper.checkPermissions(user, "ADMIN", "MODERATOR");
+        authorizationHelper.checkPermissions(user, RoleType.ADMIN,RoleType.MODERATOR);
         Tag tagToDelete = tagRepository.get(id);
         tagRepository.delete(tagToDelete);
     }

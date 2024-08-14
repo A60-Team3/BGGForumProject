@@ -4,7 +4,7 @@
 #        ('USER');
 
 
-INSERT INTO users (first_name, last_name, email, username, password)
+INSERT INTO userEntities (first_name, last_name, email, username, password)
 VALUES
        ('Jack', 'Thomas', 'jack.thomas@example.com', 'jack_thomas', 'password123'),             -- Admin
        ('Karen', 'Jackson', 'karen.jackson@example.com', 'karen_jackson', 'password123'),       -- User

@@ -23,7 +23,7 @@ public interface PostRepository extends OwnerRepository<Post>{
 
     List<Post> getMostCommented();
 
-    List<Post> getMostRecentlyCreated();
+    Page<Post> getMostRecentlyCreated(int pageIndex, int pageSize);
 
 
 }

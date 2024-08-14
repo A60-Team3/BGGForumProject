@@ -3,11 +3,13 @@
 <head th:fragment="head(title)">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="_csrf" th:content="${_csrf.token}" />
 
     <title th:text="'BGGForum | ' + ${title}">Title</title>
 
     <link rel="icon" type="image/png" href="/images/favicon-32x32.png">
     <link href="../static/css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link href="../static/css/templatemo_style.css" th:href="@{/css/templatemo_style.css}" rel="stylesheet"/>
 
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
 </head>

@@ -9,7 +9,6 @@ import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.RoleRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
-import com.example.bggforumproject.security.jwtRest.TokenService;
 import com.example.bggforumproject.service.AuthenticationServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,6 @@ public class AuthenticationServiceTests {
     private RoleRepository roleRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
-    @Mock
-    private TokenService tokenService;
     @Mock
     private AuthorizationHelper authorizationHelper;
 
@@ -91,8 +88,8 @@ public class AuthenticationServiceTests {
                 .thenReturn(user.getPassword());
 
         Mockito
-                .when(roleRepository.getByAuthority(Mockito.anyString()))
-                .thenReturn(new Role(RoleType.USER.name()));
+                .when(roleRepository.getByAuthority(Mockito.any()))
+                .thenReturn(new Role(RoleType.USER));
 
         service.registerUser(user);
 
@@ -103,10 +100,6 @@ public class AuthenticationServiceTests {
     public void loginUser_Should_Return_JWTToken() {
         User user = createMockUser();
         Authentication auth = new TestingAuthenticationToken(user, Mockito.any());
-
-        Mockito
-                .when(tokenService.generateJwt(auth))
-                .thenReturn(user.getPassword());
 
         ResponseDTO responseDTO = service.loginUser(auth);
 

@@ -5,8 +5,6 @@ import com.example.bggforumproject.models.Comment;
 import com.example.bggforumproject.models.User;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public interface CommentService {
 
     Page<Comment> getAll(CommentFilterOptions commentFilterOptions);

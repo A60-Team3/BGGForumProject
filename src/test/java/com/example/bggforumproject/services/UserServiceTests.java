@@ -122,16 +122,19 @@ public class UserServiceTests {
     public void getSpecificUserComments_Should_CallRepository() {
         CommentFilterOptions mockCommentFilterOptions = createMockCommentFilterOptions();
 
-        Mockito.when(commentRepository.get(mockCommentFilterOptions))
+        int pageIndex = 0;
+        int pageSize = 10;
+
+        Mockito.when(commentRepository.get(mockCommentFilterOptions, pageIndex, pageSize))
                 .thenReturn(null);
 
         Mockito.when(userRepository.getById(Mockito.anyLong()))
                 .thenReturn(Mockito.any(User.class));
 
-        userService.getSpecificUserComments(1, mockCommentFilterOptions);
+        userService.getSpecificUserComments(1, mockCommentFilterOptions, pageIndex, pageSize);
 
         Mockito.verify(commentRepository, Mockito.times(1))
-                .get(mockCommentFilterOptions);
+                .get(mockCommentFilterOptions, pageIndex, pageSize);
         Mockito.verify(userRepository, Mockito.times(1))
                 .getById(1);
     }
@@ -143,7 +146,7 @@ public class UserServiceTests {
         Mockito
                 .doThrow(AuthorizationException.class)
                 .when(authorizationHelper)
-                .checkPermissions(user, "ADMIN");
+                .checkPermissions(user, RoleType.ADMIN);
 
         Assertions.assertThrows(
                 AuthorizationException.class,
@@ -158,7 +161,7 @@ public class UserServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissions(user, "ADMIN");
+                .checkPermissions(user, RoleType.ADMIN);
 
         Mockito
                 .when(userRepository.getById(Mockito.anyLong()))
@@ -177,15 +180,15 @@ public class UserServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissions(user, "ADMIN");
+                .checkPermissions(user, RoleType.ADMIN);
 
         Mockito
                 .when(userRepository.getById(Mockito.anyLong()))
                 .thenReturn(user);
 
         Mockito
-                .when(roleRepository.getByAuthority(Mockito.anyString()))
-                .thenReturn(new Role(RoleType.MODERATOR.name()));
+                .when(roleRepository.getByAuthority(Mockito.any()))
+                .thenReturn(new Role(RoleType.MODERATOR));
 
         Assertions.assertThrows(
                 EntityDuplicateException.class,
@@ -200,19 +203,19 @@ public class UserServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissions(user, "ADMIN");
+                .checkPermissions(user, RoleType.ADMIN);
 
         Mockito
                 .when(userRepository.getById(Mockito.anyLong()))
                 .thenReturn(user);
 
         Mockito
-                .when(roleRepository.getByAuthority(Mockito.anyString()))
-                .thenReturn(new Role(RoleType.MODERATOR.name()));
+                .when(roleRepository.getByAuthority(Mockito.any()))
+                .thenReturn(new Role(RoleType.MODERATOR));
 
         User promoted = userService.promote(1, user);
 
-        user.getRoles().add(new Role(RoleType.MODERATOR.name()));
+        user.getRoles().add(new Role(RoleType.MODERATOR));
 
         Mockito.verify(userRepository, Mockito.times(1)).update(user);
 
@@ -296,7 +299,7 @@ public class UserServiceTests {
         Mockito
                 .doThrow(AuthorizationException.class)
                 .when(authorizationHelper)
-                .checkPermissions(Mockito.any(), Mockito.anyString(), Mockito.anyString());
+                .checkPermissions(Mockito.any(), Mockito.any(), Mockito.any());
 
         Assertions.assertThrows(
                 AuthorizationException.class,
@@ -310,7 +313,7 @@ public class UserServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissions(Mockito.any(), Mockito.anyString(), Mockito.anyString());
+                .checkPermissions(Mockito.any(), Mockito.any(), Mockito.any());
 
         Mockito
                 .when(userRepository.getById(Mockito.anyLong()))
@@ -328,7 +331,7 @@ public class UserServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissions(Mockito.any(), Mockito.anyString(), Mockito.anyString());
+                .checkPermissions(Mockito.any(), Mockito.any(), Mockito.any());
 
         Mockito
                 .when(userRepository.getById(Mockito.anyLong()))
@@ -348,7 +351,7 @@ public class UserServiceTests {
         Mockito
                 .doThrow(AuthorizationException.class)
                 .when(authorizationHelper)
-                .checkPermissions(Mockito.any(), Mockito.anyString());
+                .checkPermissions(Mockito.any(), Mockito.any());
 
         Assertions.assertThrows(
                 AuthorizationException.class,
@@ -362,7 +365,7 @@ public class UserServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissions(Mockito.any(), Mockito.anyString());
+                .checkPermissions(Mockito.any(), Mockito.any());
 
         Mockito
                 .when(userRepository.getById(Mockito.anyLong()))
@@ -382,7 +385,7 @@ public class UserServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissions(Mockito.any(), Mockito.anyString());
+                .checkPermissions(Mockito.any(), Mockito.any());
 
         Mockito
                 .when(userRepository.getById(Mockito.anyLong()))
@@ -402,7 +405,7 @@ public class UserServiceTests {
         Mockito
                 .doThrow(AuthorizationException.class)
                 .when(authorizationHelper)
-                .checkPermissions(Mockito.any(), Mockito.anyString());
+                .checkPermissions(Mockito.any(), Mockito.any());
 
         Assertions.assertThrows(
                 AuthorizationException.class,
@@ -416,7 +419,7 @@ public class UserServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissions(Mockito.any(), Mockito.anyString());
+                .checkPermissions(Mockito.any(), Mockito.any());
 
         Mockito
                 .when(userRepository.getById(Mockito.anyLong()))
@@ -436,7 +439,7 @@ public class UserServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissions(Mockito.any(), Mockito.anyString());
+                .checkPermissions(Mockito.any(), Mockito.any());
 
         Mockito
                 .when(userRepository.getById(Mockito.anyLong()))

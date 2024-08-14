@@ -176,7 +176,8 @@ public class UsersController {
                     @ApiResponse(responseCode = "404", description = "User with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
     @GetMapping("/{userId}/comments")
-    public ResponseEntity<List<CommentOutDTO>> getUserComments(@Parameter(description = "Target User ID", required = true)
+    public ResponseEntity<List<CommentOutDTO>> getUserComments(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+                                                               @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,@Parameter(description = "Target User ID", required = true)
                                                                @PathVariable long userId,
                                                                @Parameter(description = "Partial or full words")
                                                                @RequestParam(required = false) String content,
@@ -193,7 +194,7 @@ public class UsersController {
         CommentFilterOptions commentFilterOptions =
                 new CommentFilterOptions(content, created, updated, userId, commentedTo, sortBy, sortOrder);
 
-        List<Comment> filteredComments = userService.getSpecificUserComments(userId, commentFilterOptions);
+        Page<Comment> filteredComments = userService.getSpecificUserComments(userId, commentFilterOptions, pageIndex, pageSize);
 
         List<CommentOutDTO> commentOutDTOS = filteredComments.stream()
                 .map(comment -> mapper.map(comment, CommentOutDTO.class))

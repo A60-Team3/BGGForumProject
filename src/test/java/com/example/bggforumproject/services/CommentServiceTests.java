@@ -6,6 +6,7 @@ import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.models.Comment;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.CommentRepository;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.service.CommentServiceImpl;
@@ -39,11 +40,14 @@ public class CommentServiceTests {
         Post post = createMockPost();
         CommentFilterOptions mockCommentFilterOptions = createMockCommentFilterOptions();
 
+        int pageIndex = 0;
+        int pageSize = 10;
+
         Mockito.when(postRepository.get(post.getId())).thenReturn(post);
-        commentService.getCommentsForPost(post.getId(), mockCommentFilterOptions);
+        commentService.getCommentsForPost(post.getId(), mockCommentFilterOptions, pageIndex, pageSize);
 
         Mockito.verify(commentRepository, Mockito.times(1))
-                .get(mockCommentFilterOptions);
+                .get(mockCommentFilterOptions, pageIndex, pageSize);
     }
 
     @Test
@@ -140,7 +144,7 @@ public class CommentServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissionsAndOwnership(comment, user, "ADMIN", "MODERATOR");
+                .checkPermissionsAndOwnership(comment, user, RoleType.ADMIN, RoleType.MODERATOR);
 
         commentService.delete(comment.getId(), post.getId(), user);
 
@@ -161,7 +165,7 @@ public class CommentServiceTests {
         Mockito
                 .doThrow(AuthorizationException.class)
                 .when(authorizationHelper)
-                .checkPermissionsAndOwnership(comment, notCreator, "ADMIN", "MODERATOR");
+                .checkPermissionsAndOwnership(comment, notCreator, RoleType.ADMIN, RoleType.MODERATOR);
 
         Assertions.assertThrows(AuthorizationException.class,
                 () -> commentService.delete(comment.getId(), post.getId(), notCreator));

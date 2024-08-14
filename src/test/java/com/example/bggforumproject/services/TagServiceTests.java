@@ -10,6 +10,7 @@ import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Role;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.repositories.contracts.TagRepository;
 import com.example.bggforumproject.service.TagServiceImpl;
@@ -142,7 +143,7 @@ public class TagServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissionsAndOwnership(post, user, "ADMIN", "MODERATOR");
+                .checkPermissionsAndOwnership(post, user, RoleType.ADMIN, RoleType.MODERATOR);
 
         tagService.deleteTagFromPost(tag.getId(), post.getId(), user);
         Mockito.verify(postRepository, Mockito.times(1))
@@ -169,7 +170,7 @@ public class TagServiceTests {
         Mockito
                 .doThrow(AuthorizationException.class)
                 .when(authorizationHelper)
-                .checkPermissionsAndOwnership(post, notCreator, "ADMIN", "MODERATOR");
+                .checkPermissionsAndOwnership(post, notCreator, RoleType.ADMIN, RoleType.MODERATOR);
 
         Assertions.assertThrows(AuthorizationException.class,
                 () -> tagService.deleteTagFromPost(tag.getId(), post.getId(), notCreator));
@@ -219,7 +220,7 @@ public class TagServiceTests {
         Mockito
                 .doNothing()
                 .when(authorizationHelper)
-                .checkPermissions(user, "ADMIN", "MODERATOR");
+                .checkPermissions(user, RoleType.ADMIN, RoleType.MODERATOR);
 
         tagService.delete(tag.getId(), user);
 
@@ -231,14 +232,14 @@ public class TagServiceTests {
     public void delete_Should_Throw_When_UserIsRegularUser() {
         Tag tag = createMockTag();
         User user = createMockUser();
-        Role role = new Role("USER");
+        Role role = new Role(RoleType.USER);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         user.setRoles(roles);
         Mockito
                 .doThrow(AuthorizationException.class)
                 .when(authorizationHelper)
-                .checkPermissions(user, "ADMIN", "MODERATOR");
+                .checkPermissions(user, RoleType.ADMIN, RoleType.MODERATOR);
 
         Assertions.assertThrows(AuthorizationException.class,
                 () -> tagService.delete(tag.getId(), user));

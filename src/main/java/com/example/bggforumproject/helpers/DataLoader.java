@@ -37,7 +37,7 @@ public class DataLoader implements CommandLineRunner {
         if (roleRepository.findAll().isEmpty()) {
             for (RoleType roleEnum : RoleType.values()) {
                 Role userRole = new Role();
-                userRole.setAuthority(roleEnum.name());
+                userRole.setAuthority(roleEnum);
                 roleRepository.create(userRole);
             }
         }

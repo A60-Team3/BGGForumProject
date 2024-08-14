@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <footer th:fragment="footer">
-    <small th:text="${'© Copyright ' + #dates.year(#dates.createNow()) + ' BGG Forum'}">BGG Forum</small>
+    <div class="cleaner_h20"></div>
+    <div id="templatemo_footer">
+        <small th:text="${'© Copyright ' + #dates.year(#dates.createNow()) + ' BGG Forum'}">BGG Forum</small>
+    </div>
+    <div class="cleaner"></div>
 </footer>
 </html>

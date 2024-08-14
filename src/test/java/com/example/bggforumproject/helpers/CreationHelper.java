@@ -26,19 +26,19 @@ public class CreationHelper {
         user.setBlocked(false);
         user.setDeleted(false);
         user.setRoles(new HashSet<>());
-        user.getRoles().add(new Role(RoleType.USER.name()));
+        user.getRoles().add(new Role(RoleType.USER));
         return user;
     }
 
     public static User createMockModerator() {
         User user = createMockUser();
-        user.getRoles().add(new Role(RoleType.MODERATOR.name()));
+        user.getRoles().add(new Role(RoleType.MODERATOR));
         return user;
     }
 
     public static User createMockAdmin() {
         User user = createMockUser();
-        user.getRoles().add(new Role(RoleType.ADMIN.name()));
+        user.getRoles().add(new Role(RoleType.ADMIN));
         return user;
     }
 

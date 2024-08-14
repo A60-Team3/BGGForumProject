@@ -3,9 +3,10 @@ package com.example.bggforumproject.helpers;
 import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
+import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.models.contracts.Ownable;
 import com.example.bggforumproject.models.Role;
-import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
 import org.springframework.stereotype.Component;
 
@@ -35,8 +36,10 @@ public class AuthorizationHelper {
         }
     }
 
-    public void checkPermissions(User user, String... roles) {
-        Set<Role> roleSet = Arrays.stream(roles).map(Role::new).collect(Collectors.toSet());
+    public void checkPermissions(User user, RoleType... roles) {
+        Set<Role> roleSet = Arrays.stream(roles)
+                .map(Role::new)
+                .collect(Collectors.toSet());
 
         boolean hasPermissions = user.getRoles().stream().anyMatch(roleSet::contains);
 
@@ -55,7 +58,7 @@ public class AuthorizationHelper {
         }
     }
 
-    public <T extends Ownable> void checkPermissionsAndOwnership(T entity, User user, String... roles) {
+    public <T extends Ownable> void checkPermissionsAndOwnership(T entity, User user, RoleType... roles) {
         try {
             checkPermissions(user, roles);
         } catch (AuthorizationException e) {

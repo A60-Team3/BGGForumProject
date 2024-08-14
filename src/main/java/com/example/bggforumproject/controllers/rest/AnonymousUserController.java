@@ -104,8 +104,9 @@ public class AnonymousUserController {
                             content = @Content(schema = @Schema(implementation = PostAnonymousOutDTO.class)))
             })
     @GetMapping("/posts/most-recently-created")
-    public ResponseEntity<List<PostAnonymousOutDTO>> getMostRecentlyCreated() {
-        List<Post> mostRecentlyCreated = anonymousUserService.getMostRecentlyCreated();
+    public ResponseEntity<List<PostAnonymousOutDTO>> getMostRecentlyCreated(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+                                                                            @RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {
+        Page<Post> mostRecentlyCreated = anonymousUserService.getMostRecentlyCreated(pageIndex, pageSize);
 
         List<PostAnonymousOutDTO> postAnonymousOutDTOS = mostRecentlyCreated.stream()
                 .map(post -> mapper.map(post, PostAnonymousOutDTO.class))

@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -51,7 +52,9 @@ public class CommentController {
                     @ApiResponse(responseCode = "404", description = "Post with such id doesnt exist.", content = @Content(schema = @Schema(implementation = ApiErrorResponseDTO.class)))
             })
     @GetMapping("/{postId}/comments")
-    public ResponseEntity<List<CommentOutDTO>> getComments(@Parameter(description = "Target Post ID", required = true)
+    public ResponseEntity<List<CommentOutDTO>> getComments(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+                                                           @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
+                                                           @Parameter(description = "Target Post ID", required = true)
                                                            @PathVariable long postId,
                                                            @Parameter(description = "Partial or full words")
                                                            @RequestParam(required = false) String content,
@@ -68,7 +71,7 @@ public class CommentController {
         CommentFilterOptions commentFilterOptions =
                 new CommentFilterOptions(content, created, updated, userID, postId, sortBy, sortOrder);
 
-        List<Comment> commentsForPost = commentService.getCommentsForPost(postId, commentFilterOptions);
+        Page<Comment> commentsForPost = commentService.getCommentsForPost(postId, commentFilterOptions, pageIndex, pageSize);
 
         List<CommentOutDTO> commentOutDTOS = commentsForPost.stream()
                 .map(comment -> mapper.map(comment, CommentOutDTO.class))

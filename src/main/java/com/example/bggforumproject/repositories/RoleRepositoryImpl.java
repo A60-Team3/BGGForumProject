@@ -1,6 +1,7 @@
 package com.example.bggforumproject.repositories;
 
 import com.example.bggforumproject.models.Role;
+import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.RoleRepository;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import org.hibernate.Session;
@@ -20,7 +21,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public Role getByAuthority(String authority) {
+    public Role getByAuthority(RoleType authority) {
         try (Session session = sessionFactory.openSession()) {
 
             Query<Role> query = session.createQuery("from Role where authority = :authority", Role.class);
@@ -28,7 +29,7 @@ public class RoleRepositoryImpl implements RoleRepository {
 
             List<Role> list = query.list();
             if (list.isEmpty()){
-                throw new EntityNotFoundException("Role", "role", authority);
+                throw new EntityNotFoundException("Role", "role", authority.name());
             }
 
             return list.get(0);

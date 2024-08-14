@@ -1,26 +1,23 @@
 package com.example.bggforumproject.security;
 
+import com.example.bggforumproject.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@EnableWebMvc
 @EnableMethodSecurity
 public class SecurityConfiguration implements WebMvcConfigurer {
 
@@ -30,11 +27,13 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public AuthenticationManager authManager(UserDetailsService userDetailsService) {
-        DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-        daoProvider.setUserDetailsService(userDetailsService);
-        daoProvider.setPasswordEncoder(passwordEncoder());
-        return new ProviderManager(daoProvider);
+    public AuthenticationManager authManager(UserDetailsService userDetailsService, HttpSecurity httpSecurity) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity
+                .getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
+        return authenticationManagerBuilder.build();
     }
 
     @Bean
@@ -42,33 +41,26 @@ public class SecurityConfiguration implements WebMvcConfigurer {
         http
                 .authorizeHttpRequests(auth -> {
                     auth.
-                            requestMatchers("/auth/login", "/auth/login-error", "/auth/register", "/BGGForum/main", "/")
+                            requestMatchers("/auth/register", "/BGGForum/main", "/BGGForum", "/", "/auth/login")
                             .permitAll()
                             .requestMatchers("/BGGForum/posts/most-commented", "/BGGForum/posts/most-recently-created")
                             .permitAll()
                             .requestMatchers("/resources/**", "/static/**", "/static/templates/**",
-                                    "/css/**", "/images/**","/js/**")
-                            .permitAll();
-//                    auth.requestMatchers("/BGGForum/posts/tags/**").hasAnyRole("ADMIN", "MODERATOR");
-//                    auth.requestMatchers("/BGGForum/users").hasAnyRole("ADMIN", "MODERATOR");
-//                    auth.requestMatchers("/BGGForum/admin/**").hasAnyRole("ADMIN", "MODERATOR");
-//                    auth.requestMatchers("/BGGForum/users/**").hasAnyRole("ADMIN", "MODERATOR", "USER");
-//                    auth.requestMatchers("/BGGForum/admin/admin/**").hasRole("ADMIN");
+                                    "/css/**", "/images/**", "/js/**")
+                            .permitAll();//
                     auth.anyRequest().authenticated();
                 })
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin(formLogin ->
+               .formLogin(formLogin ->
                         formLogin.loginPage("/auth/login")
-                                .defaultSuccessUrl("/BGGForum/main", true)
-                                .failureForwardUrl("/auth/login-error")
-
+                                .defaultSuccessUrl("/BGGForum/main?success", true)
+                                .failureUrl("/auth/login?error")
+                                .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
                         .addLogoutHandler(new SecurityContextLogoutHandler())
                         .deleteCookies("JSESSIONID")
-                        .logoutSuccessUrl("/BGGForum/main")
+                        .logoutSuccessUrl("/BGGForum/main?logout")
                 );
 
         return http.build();

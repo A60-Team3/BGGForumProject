@@ -10,7 +10,7 @@ CREATE TABLE posts_users_reactions
         foreign key (post_id) references posts (id)
             ON DELETE CASCADE,
     constraint fk_posts_users_reactions_users
-        foreign key (user_id) references users (id)
+        foreign key (user_id) references userEntities (id)
             ON DELETE CASCADE,
     constraint fk_posts_users_reactions_reactions
         foreign key (reaction_id) references reactions (id)

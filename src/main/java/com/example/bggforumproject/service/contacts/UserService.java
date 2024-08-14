@@ -19,7 +19,7 @@ public interface UserService {
 
     Page<Post> getSpecificUserPosts(long id, PostFilterOptions postFilterOptions, int pageIndex, int pageSize);
 
-    List<Comment> getSpecificUserComments(long id, CommentFilterOptions commentFilterOptions);
+    Page<Comment> getSpecificUserComments(long id, CommentFilterOptions commentFilterOptions, int pageIndex, int pageSize);
 
     User promote(long id, User currentUser);
 

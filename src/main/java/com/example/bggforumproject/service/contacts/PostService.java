@@ -23,5 +23,5 @@ public interface PostService {
 
     List<Post> getMostCommented();
 
-    List<Post> getMostRecentlyCreated();
+    Page<Post> getMostRecentlyCreated(int pageIndex, int pageSize);
 }

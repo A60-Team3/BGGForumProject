@@ -42,7 +42,7 @@ public class AnonymousUserServiceImpl implements AnonymousUserService {
     }
 
     @Override
-    public List<Post> getMostRecentlyCreated() {
-        return postRepository.getMostRecentlyCreated();
+    public Page<Post> getMostRecentlyCreated(int pageIndex, int pageSize) {
+        return postRepository.getMostRecentlyCreated(pageIndex, pageSize);
     }
 }

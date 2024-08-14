@@ -6,6 +6,7 @@ import com.example.bggforumproject.helpers.AuthorizationHelper;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.service.contacts.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +48,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getMostRecentlyCreated() {
-        return postRepository.getMostRecentlyCreated();
+    public Page<Post> getMostRecentlyCreated(int pageIndex, int pageSize) {
+        return postRepository.getMostRecentlyCreated(pageIndex, pageSize);
     }
 
     @Override
@@ -102,7 +103,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void delete(long id, User user) {
         Post post = postRepository.get(id);
-        authorizationHelper.checkPermissionsAndOwnership(post, user, "ADMIN", "MODERATOR");
+        authorizationHelper.checkPermissionsAndOwnership(post, user, RoleType.ADMIN, RoleType.MODERATOR);
 
         postRepository.delete(post);
     }

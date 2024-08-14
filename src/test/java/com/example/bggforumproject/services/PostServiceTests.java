@@ -90,10 +90,13 @@ public class PostServiceTests {
 
     @Test
     public void getMostRecentlyCreated_Should_CallRepository(){
-        postService.getMostRecentlyCreated();
+        int pageIndex = 0;
+        int pageSize = 5;
+        postService.getMostRecentlyCreated(pageIndex, pageSize);
+
 
         Mockito.verify(postRepository, Mockito.times(1))
-                .getMostRecentlyCreated();
+                .getMostRecentlyCreated(pageIndex, pageSize);
     }
 
     @Test

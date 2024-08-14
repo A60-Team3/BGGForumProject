@@ -34,18 +34,18 @@ public class AnonymousUserServiceTests {
 
     @Test
     public void countUsers_Should_Return_CountUsersInDatabase() {
-        List<User> users = List.of(createMockAdmin(), createMockModerator(), createMockUser());
+        List<User> userEntities = List.of(createMockAdmin(), createMockModerator(), createMockUser());
 
-        Mockito.when(userRepository.getAll()).thenReturn(users);
+        Mockito.when(userRepository.getAll()).thenReturn(userEntities);
 
         assertEquals(3, anonymousUserService.countUsers());
     }
 
     @Test
     public void countUsers_Should_CallRepositoryAndReturnUserCount() {
-        List<User> users = List.of(createMockAdmin(), createMockModerator(), createMockUser());
+        List<User> userEntities = List.of(createMockAdmin(), createMockModerator(), createMockUser());
 
-        Mockito.when(userRepository.getAll()).thenReturn(users);
+        Mockito.when(userRepository.getAll()).thenReturn(userEntities);
 
         long countUsers = anonymousUserService.countUsers();
 

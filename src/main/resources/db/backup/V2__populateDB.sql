@@ -6,7 +6,7 @@ VALUES ('ADMIN'),
        ('USER');
 
 
-INSERT INTO users (first_name, last_name, email, username, password)
+INSERT INTO userEntities (first_name, last_name, email, username, password)
 VALUES ('John', 'Doe', 'john.doe@example.com', 'john_doe', 'password123'),                      -- Admin
        ('Jane', 'Smith', 'jane.smith@example.com', 'jane_smith', 'password123'),                -- Moderator
        ('Alice', 'Johnson', 'alice.johnson@example.com', 'alice_johnson', 'password123'),       -- User

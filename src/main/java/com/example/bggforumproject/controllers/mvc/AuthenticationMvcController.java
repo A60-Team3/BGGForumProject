@@ -4,7 +4,6 @@ import com.example.bggforumproject.dtos.RegistrationDTO;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.service.contacts.AuthenticationService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -28,23 +27,18 @@ public class AuthenticationMvcController {
         this.mapper = mapper;
     }
 
-
-    @ModelAttribute("isAuthenticated")
-    public boolean populateIsAuthenticated(HttpSession session) {
-        return session.getAttribute("currentUser") != null;
-    }
-
-
     @GetMapping("/login")
     public String login() {
-
         return "login";
     }
 
-    @PostMapping("/login-error")
-    public String failedLogin(Model model) {
-        model.addAttribute("loginError", true);
-        return "login";
+    @GetMapping("/logout")
+    public String logoutUser() {
+        return "redirect:/auth/logout?true";
+    }
+
+    @PostMapping("/logout?true")
+    public void handleLogout() {
     }
 
     @GetMapping("/register")
@@ -67,7 +61,7 @@ public class AuthenticationMvcController {
         try {
             User user = mapper.map(register, User.class);
             authenticationService.registerUser(user);
-            return "redirect:/auth/login";
+            return "redirect:/auth/login?success";
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("username", "username_error", e.getMessage());
             return "register";

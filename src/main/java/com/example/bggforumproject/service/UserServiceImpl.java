@@ -67,19 +67,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Comment> getSpecificUserComments(long id, CommentFilterOptions commentFilterOptions) {
+    public Page<Comment> getSpecificUserComments(long id, CommentFilterOptions commentFilterOptions, int pageIndex, int pageSize) {
         userRepository.getById(id);
 
-        return commentRepository.get(commentFilterOptions);
+        return commentRepository.get(commentFilterOptions, pageIndex, pageSize);
     }
 
     @Override
     public User promote(long id, User currentUser) {
-        authorizationHelper.checkPermissions(currentUser, "ADMIN");
+        authorizationHelper.checkPermissions(currentUser, RoleType.ADMIN);
 
         User userToPromote = userRepository.getById(id);
 
-        Role role = roleRepository.getByAuthority(RoleType.MODERATOR.name());
+        Role role = roleRepository.getByAuthority(RoleType.MODERATOR);
 
         if (userToPromote.getRoles().contains(role)) {
             throw new EntityDuplicateException(
@@ -118,9 +118,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User blockUser(long id, User currentUser, boolean isBlocked) {
-        authorizationHelper.checkPermissions(currentUser, "ADMIN", "MODERATOR");
+        authorizationHelper.checkPermissions(currentUser, RoleType.ADMIN, RoleType.MODERATOR);
 
-        User user= userRepository.getById(id);
+        User user = userRepository.getById(id);
 
         if (user.isBlocked() == isBlocked) {
             throw new EntityDuplicateException(
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void softDelete(long id, User currentUser) {
-        authorizationHelper.checkPermissions(currentUser, "ADMIN");
+        authorizationHelper.checkPermissions(currentUser, RoleType.ADMIN);
 
         User userToArchive = userRepository.getById(id);
 
@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(long id, User user) {
-        authorizationHelper.checkPermissions(user, "ADMIN");
+        authorizationHelper.checkPermissions(user, RoleType.ADMIN);
 
         User userToDelete = userRepository.getById(id);
 

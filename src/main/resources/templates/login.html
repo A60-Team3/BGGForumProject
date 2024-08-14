@@ -1,32 +1,51 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head th:replace="~{/fragments/head.html :: head(title = 'Log In')}"></head>
 <body>
-<div class="body-content">
-    <h2>Login</h2>
-    <p class="label-error" th:if="${loginError}" th:text="#{user.label.login-error}"></p>
-    <form action="#" th:action="@{/auth/login}" th:method="post">
-        <label th:text="#{user.label.username}">Username</label>
-        <br/>
-        <input type="text" id="username" name="username" autofocus="autofocus"/>
-        <br/><br/>
+<div id="templatemo_wrapper">
+    <div th:replace="~{/fragments/navbar}"></div>
 
-        <label th:text="#{user.label.password}">Password</label>
-        <br/>
-        <input type="password" id="password" name="password"/>
-        <br/><br/>
+    <div th:replace="~{/fragments/siteLogo}"></div>
 
-        <input type="submit" value="Login"/>
-    </form>
+    <div id="templatemo_right_column">
+        <div id="templatemo_main">
+            <div class="label-error" sec:authorize="isAuthenticated()" th:text="#{user.label.duplicate-login}"></div>
+            <div sec:authorize="!isAuthenticated()">
+                <div>
+                    <h3>Login</h3>
+                    <h5 class=" label-error" th:if="${param.error}" th:text="#{user.label.login-error}">Login Error
+                    </h5>
+                    <h5 class="text-success" th:if="${param.success}" th:text="#{user.label.register-success}">Register
+                        Success
+                    </h5>
+                    <form class="form-check" action="#" th:action="@{/auth/login}" th:method="post">
+                        <label th:text="#{user.label.username}">Username</label>
+                        <br/>
+                        <input type="text" id="username" name="username" placeholder="Username" autofocus="autofocus"/>
+                        <br/><br/>
 
-    <div class="body-content">
-        <h3>Not yet registered?
-            <a th:href="@{/auth/register}" th:text="#{user.label.register-link}">Register</a>
-        </h3>
+                        <label th:text="#{user.label.password}">Password</label>
+                        <br/>
+                        <input type="password" id="password" name="password" placeholder="Password"/>
+                        <br/><br/>
+
+                        <input type="submit" value="Login"/>
+                    </form>
+
+                    <br/><br/>
+                    <div>
+                        <h4>Not yet registered?
+                            <a th:href="@{/auth/register}" th:text="#{user.label.register-link}">Register</a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <div th:replace="~{/fragments/footer.html :: footer}"></div>
 </div>
-
-<div th:replace="~{/fragments/footer.html :: footer}"></div>
 <div th:replace="~{/fragments/scripts.html}"></div>
 </body>
 </html>

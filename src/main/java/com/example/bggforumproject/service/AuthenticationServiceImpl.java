@@ -10,7 +10,6 @@ import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.RoleRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
-import com.example.bggforumproject.security.jwtRest.TokenService;
 import com.example.bggforumproject.service.contacts.AuthenticationService;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
@@ -50,7 +49,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
-        Role userRole = roleRepository.getByAuthority(RoleType.USER.name());
+        Role userRole;
+        if (userRepository.getAll().isEmpty()) {
+            userRole = roleRepository.getByAuthority(RoleType.ADMIN);
+        } else {
+            userRole = roleRepository.getByAuthority(RoleType.USER);
+        }
 
         user.setPassword(encodedPassword);
         user.setRoles(Set.of(userRole));
