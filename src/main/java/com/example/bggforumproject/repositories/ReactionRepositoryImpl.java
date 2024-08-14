@@ -34,6 +34,28 @@ public class ReactionRepositoryImpl implements ReactionRepository {
     }
 
     @Override
+    public int getLikesCount(long postId) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Integer> query = session.createQuery(
+                    "select count(reactionType) from Reaction where postId.id = :postId and reactionType = 'LIKE'");
+            query.setParameter("postId", postId);
+
+            return query.list().get(0);
+        }
+    }
+
+    @Override
+    public int getDislikesCount(long postId) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Integer> query = session.createQuery(
+                    "select count(reactionType) from Reaction where postId.id = :postId and reactionType = 'DISLIKE'");
+            query.setParameter("postId", postId);
+
+            return query.list().get(0);
+        }
+    }
+
+    @Override
     public Reaction get(long id) {
         try (Session session = sessionFactory.openSession()) {
             Reaction reaction = session.get(Reaction.class, id);

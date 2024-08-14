@@ -8,6 +8,10 @@ public interface ReactionRepository extends OwnerRepository<Reaction> {
 
     List<Reaction> getAll(long postId);
 
+    int getLikesCount(long postId);
+
+    int getDislikesCount(long postId);
+
     Reaction get(long id);
 
     Reaction getByPostAndUser(long userId, long postId);

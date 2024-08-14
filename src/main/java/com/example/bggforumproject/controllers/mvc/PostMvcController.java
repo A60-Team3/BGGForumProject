@@ -10,9 +10,11 @@ import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Post;
+import com.example.bggforumproject.models.Reaction;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.service.contacts.PostService;
+import com.example.bggforumproject.service.contacts.ReactionService;
 import com.example.bggforumproject.service.contacts.TagService;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,16 +37,18 @@ public class PostMvcController {
 
     private final PostService postService;
     private final UserService userService;
+    private final ReactionService reactionService;
     private final TagService tagService;
     private final ModelMapper mapper;
 
     @Autowired
     public PostMvcController(PostService postService,
-                             UserService userService,
+                             UserService userService, ReactionService reactionService,
                              TagService tagService,
                              ModelMapper mapper) {
         this.postService = postService;
         this.userService = userService;
+        this.reactionService = reactionService;
         this.tagService = tagService;
         this.mapper = mapper;
     }
@@ -63,6 +67,18 @@ public class PostMvcController {
     public List<Tag> populateTags() {
         return tagService.get(new TagFilterOptions(null, null, null, null, null));
     }
+
+    //TODO: implement likes and dislikes counter
+    /*
+    @ModelAttribute("likes")
+    public int populateLikesCount() {
+        return reactionService.getLikesCount();
+    }
+
+    @ModelAttribute("dislikes")
+    public List<Reaction> populateDislikes(){
+        return reactionService.getDislikes;
+    }*/
 
     @GetMapping
     public String getPosts(@RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
@@ -89,7 +105,11 @@ public class PostMvcController {
     }
 
     @GetMapping("/{id}")
-    public String getSinglePost(@PathVariable long id, Model model){
+    public String getSinglePost(@PathVariable long id, Model model, HttpSession session){
+        if(!populateIsAuthenticated(session)){
+            return "redirect:/auth/login";
+        }
+
         PostOutFullDTO postOutFullDTO = mapper.map(postService.get(id), PostOutFullDTO.class);
         model.addAttribute("post", postOutFullDTO);
         return "single-post";

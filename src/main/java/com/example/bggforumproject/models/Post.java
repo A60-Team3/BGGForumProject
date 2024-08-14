@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -37,6 +38,9 @@ public class Post extends BaseEntity implements Ownable {
     joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     private Set<Tag> tags;
+
+    @OneToMany(mappedBy = "postId", fetch = FetchType.EAGER)
+    private List<Reaction> reactions;
 
     public Post() {
     }
@@ -87,6 +91,14 @@ public class Post extends BaseEntity implements Ownable {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public List<Reaction> getReactions() {
+        return reactions;
+    }
+
+    public void setReactions(List<Reaction> reactions) {
+        this.reactions = reactions;
     }
 
     @Override
