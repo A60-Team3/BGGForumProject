@@ -84,11 +84,10 @@ public class AdminMvcController {
         model.addAttribute("totalItems", all.getTotalElements());
         model.addAttribute("totalPages", all.getTotalPages());
         model.addAttribute("pageSize", pageSize);
-        model.addAttribute("pageIndex", pageIndex);
 
         return "admin";
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{userId}/promote")
     public String promoteUser(@RequestParam(value = "pageIndex") int pageIndex,
                               @RequestParam(value = "pageSize") int pageSize,

@@ -708,3 +708,27 @@ em {
 }
 
 /* footer wrapper */
+
+/*custom css*/
+
+.profile-container {
+
+    padding: 0 10px;
+    margin-left: 20px;
+
+    width: 60%; /* or set a specific width */
+    max-width: 300px; /* optional: limits the maximum width */
+    height: auto; /* maintains aspect ratio */
+    border-radius: 50%; /* optional: makes the container circular if desired */
+    overflow: hidden; /* hides any overflow */
+}
+
+.profile-picture {
+    width: 100%; /* make the image take up the full width of the container */
+    height: auto; /* maintain the aspect ratio */
+    display: block; /* removes any whitespace below the image */
+    object-fit: cover; /* ensures the image covers the container while maintaining aspect ratio */
+}
+
+/*custom css*/
+

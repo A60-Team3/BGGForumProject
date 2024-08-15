@@ -11,6 +11,7 @@ public record FilterDto(String firstName, String lastName,
                         String phoneNumber, List<RoleType> roles,
                         String title, String content,
                         Long userId, List<Long> tags,
+                        List<Long> postIds,
                         String createCondition, LocalDateTime created,
                         String updateCondition, LocalDateTime updated,
                         String sortBy, String sortOrder) {

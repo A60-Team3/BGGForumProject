@@ -3,7 +3,6 @@ package com.example.bggforumproject.controllers.mvc;
 import com.example.bggforumproject.dtos.request.FilterDto;
 import com.example.bggforumproject.dtos.response.CommentDTO;
 import com.example.bggforumproject.dtos.response.PostCreateDTO;
-import com.example.bggforumproject.dtos.response.PostOutFullDTO;
 import com.example.bggforumproject.dtos.response.PostUpdateDTO;
 import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
@@ -14,7 +13,6 @@ import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.*;
 import com.example.bggforumproject.service.contacts.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +26,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/BGGForum/posts")
@@ -57,13 +54,8 @@ public class PostMvcController {
         this.mapper = mapper;
     }
 
-    @ModelAttribute("isAuthenticated")
-    public boolean populateIsAuthenticated(HttpSession session) {
-        return session.getAttribute("currentUser") != null;
-    }
-
     @ModelAttribute("isAdmin")
-    public boolean populateIsAdmin(){
+    public boolean populateIsAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
@@ -72,7 +64,7 @@ public class PostMvcController {
     }
 
     @ModelAttribute("isModerator")
-    public boolean populateIsModerator(){
+    public boolean populateIsModerator() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
@@ -86,7 +78,7 @@ public class PostMvcController {
     }
 
     @ModelAttribute("comment")
-    public CommentDTO populateCommentDto(){
+    public CommentDTO populateCommentDto() {
         return new CommentDTO();
     }
 
@@ -110,13 +102,13 @@ public class PostMvcController {
     @GetMapping
     public String getPosts(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
                            @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
-                           @ModelAttribute("postFilterOptions") FilterDto dto, Model model,
-                           @AuthenticationPrincipal UserDetails user) {
+                           @ModelAttribute("postFilterOptions") FilterDto dto, Model model) {
         PostFilterOptions postFilterOptions = new PostFilterOptions(
                 (dto.title() != null && dto.title().isEmpty()) ? null : dto.title(),
                 (dto.content() != null && dto.content().isEmpty()) ? null : dto.content(),
                 dto.userId(),
                 (dto.tags() != null && dto.tags().isEmpty()) ? null : dto.tags(),
+                (dto.postIds() != null && dto.postIds().isEmpty()) ? null : dto.postIds(),
                 (dto.createCondition() != null && dto.createCondition().isEmpty()) ? null : dto.createCondition(),
                 dto.created(),
                 (dto.updateCondition() != null && dto.updateCondition().isEmpty()) ? null : dto.updateCondition(),
@@ -128,7 +120,7 @@ public class PostMvcController {
         Page<Post> posts = postService.get(postFilterOptions, pageIndex, pageSize);
 
         model.addAttribute("posts", posts.getContent());
-        model.addAttribute("pagePosts",posts);
+        model.addAttribute("pagePosts", posts);
         model.addAttribute("currentPage", posts.getNumber() + 1);
         model.addAttribute("totalItems", posts.getTotalElements());
         model.addAttribute("totalPages", posts.getTotalPages());
@@ -136,38 +128,41 @@ public class PostMvcController {
 
         return "posts";
     }
-    @GetMapping("/{id}")
-    public String getSinglePost(@PathVariable long id, Model model, HttpSession session){
 
+    @GetMapping("/{postId}")
+    public String getSinglePost(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+                                @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
+                                @PathVariable long postId, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
-        PostOutFullDTO postOutFullDTO = mapper.map(postService.get(id), PostOutFullDTO.class);
-        model.addAttribute("post", postService.get(id));
-        model.addAttribute("comments",
-                commentService.getCommentsForPost(id,
-                        new CommentFilterOptions(null, null, null, null, null, null, null),
-                        0, 5));
+
+//        PostOutFullDTO postOutFullDTO = mapper.map(postService.get(id), PostOutFullDTO.class);
+
+        Post post = postService.get(postId);
+        Page<Comment> all = commentService
+                .getAll(new CommentFilterOptions(null, null, null, null, postId, null, null));
+
+        Page<Comment> commentsForPost = commentService.getCommentsForPost(postId, pageIndex, pageSize);
+
+        model.addAttribute("post", post);
+        model.addAttribute("comments", commentsForPost);
         model.addAttribute("loggedUser", currentUser);
-        return "single-post";
+        return "post-single";
     }
 
     @GetMapping("/new")
-    public String showNewPostPage(Model model, HttpSession session){
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
-
+    public String showNewPostPage(Model model) {
         model.addAttribute("post", new PostCreateDTO());
         return "create-post";
     }
 
     @PostMapping("/new")
     public String createPost(@Valid @ModelAttribute("post") PostCreateDTO dto,
-                                BindingResult bindingResult,
-                                HttpSession session){
-        User user = userService.get((String) session.getAttribute("currentUser"));
+                             BindingResult bindingResult,
+                             @AuthenticationPrincipal UserDetails loggedUser) {
+        User user = userService.get(loggedUser.getUsername());
 
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "create-post";
         }
         Post post = mapper.map(dto, Post.class);
@@ -177,10 +172,7 @@ public class PostMvcController {
     }
 
     @GetMapping("/{id}/update")
-    public String showEditPostPage(@PathVariable long id, Model model, HttpSession session){
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
+    public String showEditPostPage(@PathVariable long id, Model model) {
 
         try {
             Post post = postService.get(id);
@@ -200,12 +192,10 @@ public class PostMvcController {
                              @Valid @ModelAttribute("post") PostUpdateDTO dto,
                              BindingResult bindingResult,
                              Model model,
-                             HttpSession session){
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
-        User user = userService.get((String) session.getAttribute("currentUser"));
-        if(bindingResult.hasErrors()){
+                             @AuthenticationPrincipal UserDetails loggedUser) {
+
+        User user = userService.get(loggedUser.getUsername());
+        if (bindingResult.hasErrors()) {
             return "edit-post";
         }
 
@@ -227,15 +217,19 @@ public class PostMvcController {
         }
     }
 
-    @GetMapping("/{id}/delete")
-    public String deletePost(@PathVariable long id, Model model, HttpSession session){
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
-        User user = userService.get((String) session.getAttribute("currentUser"));
+    @GetMapping("/{postId}/delete")
+    public String deletePost(@RequestParam(value = "pageIndex") int pageIndex,
+                             @RequestParam(value = "pageSize") int pageSize,
+                             @PathVariable long postId, Model model,
+                             @AuthenticationPrincipal UserDetails loggedUser,
+                             RedirectAttributes redirectAttributes) {
+
+        User user = userService.get(loggedUser.getUsername());
 
         try {
-            postService.delete(id, user);
+            postService.delete(postId, user);
+            redirectAttributes.addAttribute("pageIndex", pageIndex);
+            redirectAttributes.addAttribute("pageSize", pageSize);
             return "redirect:/BGGForum/posts";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());

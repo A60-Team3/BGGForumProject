@@ -57,6 +57,11 @@ public class PostRepositoryImpl implements PostRepository {
                 params.put("userId", value);
             });
 
+            postFilterOptions.getPostIds().ifPresent(value -> {
+                filters.add("p.id IN (:postIds)");
+                params.put("postIds", value);
+            });
+
             postFilterOptions.getTitle().ifPresent(value -> {
                 filters.add("p.title like :title");
                 params.put("title", String.format("%%%s%%", value.trim()));

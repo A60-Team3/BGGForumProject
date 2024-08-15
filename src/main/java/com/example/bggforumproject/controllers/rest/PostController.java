@@ -67,11 +67,11 @@ public class PostController {
                                                     @Parameter(description = "Pattern - tagId1,tagId2,tagId3")
                                                     @RequestParam(required = false) List<Long> tags,
                                                     @Parameter(description = "Pattern - [</>/<=/>=/<>/=]")
-                                                        @RequestParam(required = false) String createdCondition,
+                                                    @RequestParam(required = false) String createdCondition,
                                                     @Parameter(description = "Pattern - YYYY-MM-DD HH:mm:ss")
                                                     @RequestParam(required = false) LocalDateTime created,
                                                     @Parameter(description = "Pattern - [</>/<=/>=/<>/=]")
-                                                        @RequestParam(required = false) String updatedCondition,
+                                                    @RequestParam(required = false) String updatedCondition,
                                                     @Parameter(description = "Pattern - YYYY-MM-DD HH:mm:ss")
                                                     @RequestParam(required = false) LocalDateTime updated,
                                                     @Parameter(description = "Options - all field names and (year/month/day)Created/Updated")
@@ -80,7 +80,7 @@ public class PostController {
     ) {
 
         PostFilterOptions postFilterOptions =
-                new PostFilterOptions(title, content, userId, tags,
+                new PostFilterOptions(title, content, userId, tags, null,
                         createdCondition, created, updatedCondition, updated, sortBy, sortOrder);
 
         return ResponseEntity.ok(postService.get(postFilterOptions, pageIndex, pageSize)

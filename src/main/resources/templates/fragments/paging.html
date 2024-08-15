@@ -8,6 +8,7 @@
                         + ${(postFilterOptions.updateCondition != null  && !postFilterOptions.updateCondition.isEmpty()) ? 'updateCondition=' + postFilterOptions.updateCondition + '&' : ''}
                         + ${postFilterOptions.updated != null ? 'updated=' + postFilterOptions.updated + '&' : ''}
                         + ${(postFilterOptions.tags != null && !postFilterOptions.tags.isEmpty()) ? 'tags=' + postFilterOptions.tags + '&' : ''}
+                        + ${(postFilterOptions.postIds != null && !postFilterOptions.postIds.isEmpty()) ? 'tags=' + postFilterOptions.postIds + '&' : ''}
                         + ${(postFilterOptions.sortBy != null && !postFilterOptions.sortBy.isEmpty()) ? 'sortBy=' + postFilterOptions.sortBy + '&' : ''}
                         + ${(postFilterOptions.sortOrder != null && !postFilterOptions.sortOrder.isEmpty()) ? 'sortOrder=' + postFilterOptions.sortOrder + '&' : ''}
                         + 'pageIndex=' + ${pageNum} + '&pageSize=' + ${pageSize}}"

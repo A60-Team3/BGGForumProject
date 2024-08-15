@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface ReactionRepository extends OwnerRepository<Reaction> {
 
-    List<Reaction> getAll(long postId);
+    List<Reaction> getAllForSpecificPost(long postId);
+
+    List<Reaction> getAllByUser(long userId);
 
     int getLikesCount(long postId);
 

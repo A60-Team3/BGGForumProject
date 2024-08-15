@@ -16,13 +16,7 @@
     </div>
 
     <div id="templatemo_left_column">
-        <div id="templatemo_header">
-
-            <div id="site_title">
-                <h1><a href="/">BGG <strong>Forum</strong><span>Roll your dices</span></a></h1>
-            </div><!-- end of site_title -->
-
-        </div> <!-- end of header -->
+        <div th:replace="~{/fragments/siteLogo}"></div> <!-- end of header -->
 
         <div id="templatemo_sidebar">
             <h4>Most Commented posts</h4>
@@ -51,7 +45,7 @@
                 <div th:each="post : ${postsRecent}">
                     <label th:text="#{post.label.title}  + ': '">Title</label>
                     <span>
-                        <a href="#" th:href="@{/posts/__${post.id}__}" th:text="${post.title}">Post</a>
+                        <a href="#" th:href="@{/BGGForum/posts/__${post.id}__}" th:text="${post.title}">Post</a>
                     </span>
                     <div th:text="#{post.label.created}  + ': ' + ${#temporals.format(post.createdAt,'dd-MM-yyyy HH:mm')}">
                         Time of Creation

@@ -71,7 +71,7 @@ public class CommentController {
         CommentFilterOptions commentFilterOptions =
                 new CommentFilterOptions(content, created, updated, userID, postId, sortBy, sortOrder);
 
-        Page<Comment> commentsForPost = commentService.getCommentsForPost(postId, commentFilterOptions, pageIndex, pageSize);
+        Page<Comment> commentsForPost = commentService.getCommentsForPost(postId, pageIndex, pageSize);
 
         List<CommentOutDTO> commentOutDTOS = commentsForPost.stream()
                 .map(comment -> mapper.map(comment, CommentOutDTO.class))

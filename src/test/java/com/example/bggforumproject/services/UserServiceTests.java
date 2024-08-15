@@ -112,7 +112,7 @@ public class UserServiceTests {
         Mockito.when(userRepository.getById(Mockito.anyLong()))
                 .thenReturn(Mockito.any(User.class));
 
-        userService.getSpecificUserPosts(1, mockPostFilterOptions, pageIndex, pageSize);
+        userService.getSpecificUserPosts(1, pageIndex, pageSize);
 
         Mockito.verify(postRepository, Mockito.times(1))
                 .get(mockPostFilterOptions, pageIndex, pageSize);
@@ -133,7 +133,7 @@ public class UserServiceTests {
         Mockito.when(userRepository.getById(Mockito.anyLong()))
                 .thenReturn(Mockito.any(User.class));
 
-        userService.getSpecificUserComments(1, mockCommentFilterOptions, pageIndex, pageSize);
+        userService.getSpecificUserComments(1, pageIndex, pageSize);
 
         Mockito.verify(commentRepository, Mockito.times(1))
                 .get(mockCommentFilterOptions, pageIndex, pageSize);

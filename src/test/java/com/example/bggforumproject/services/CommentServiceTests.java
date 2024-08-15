@@ -44,7 +44,7 @@ public class CommentServiceTests {
         int pageSize = 10;
 
         Mockito.when(postRepository.get(post.getId())).thenReturn(post);
-        commentService.getCommentsForPost(post.getId(), mockCommentFilterOptions, pageIndex, pageSize);
+        commentService.getCommentsForPost(post.getId(), pageIndex, pageSize);
 
         Mockito.verify(commentRepository, Mockito.times(1))
                 .get(mockCommentFilterOptions, pageIndex, pageSize);

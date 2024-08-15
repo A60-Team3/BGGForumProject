@@ -10,6 +10,7 @@ public class PostFilterOptions {
     private final Optional<String> content;
     private final Optional<Long> userId;
     private final Optional<List<Long>> tags;
+    private final Optional<List<Long>> postIds;
     private final Optional<String> createdCondition;
     private final Optional<LocalDateTime> created;
     private final Optional<String> updatedCondition;
@@ -18,12 +19,13 @@ public class PostFilterOptions {
     private final Optional<String> sortOrder;
 
     public PostFilterOptions(String title, String content, Long userId,
-                             List<Long> tags, String createdCondition, LocalDateTime created, String updatedCondition, LocalDateTime updated,
+                             List<Long> tags, List<Long> postIds, String createdCondition, LocalDateTime created, String updatedCondition, LocalDateTime updated,
                              String sortBy, String sortOrder) {
         this.title = Optional.ofNullable(title);
         this.content = Optional.ofNullable(content);
         this.userId = Optional.ofNullable(userId);
         this.tags = Optional.ofNullable(tags);
+        this.postIds = Optional.ofNullable(postIds);
         this.createdCondition = Optional.ofNullable(createdCondition);
         this.created = Optional.ofNullable(created);
         this.updatedCondition = Optional.ofNullable(updatedCondition);
@@ -70,5 +72,9 @@ public class PostFilterOptions {
 
     public Optional<String> getUpdatedCondition() {
         return updatedCondition;
+    }
+
+    public Optional<List<Long>> getPostIds() {
+        return postIds;
     }
 }

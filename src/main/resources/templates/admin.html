@@ -74,13 +74,7 @@
 
 
     <div id="templatemo_left_column">
-        <div id="templatemo_header">
-
-            <div id="site_title">
-                <h1><a href="/">BGG <strong>Forum</strong><span>Roll your dices</span></a></h1>
-            </div><!-- end of site_title -->
-
-        </div> <!-- end of header -->
+        <div th:replace="~{/fragments/siteLogo}"></div> <!-- end of header -->
 
         <div id="templatemo_sidebar">
             <h4>Admins</h4>
@@ -135,13 +129,13 @@
                                  src="../static/images/blank_profile.png"
                                  alt="profile_picture">
                         </div>
-                        <div class="cell" th:text="${user.firstName} + ' ' + ${user.lastName}">First Name</div>
+                        <div class="cell" th:text="${user.firstName} + ' ' + ${user.lastName}">Full Name</div>
                         <div class="cell" th:text="${user.email}">E-mail</div>
                         <div class="cell">
                             <a href="#" th:href="@{/users/__${user.id}__}" th:text="${user.username}"></a>
                             <div sec:authorize="hasRole('ADMIN')">
                                 <form action="#"
-                                      th:action="@{__${requestURI}__/__${user.id}__/delete(pageIndex=${pageIndex}, pageSize=${pageSize})}"
+                                      th:action="@{__${requestURI}__/__${user.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
                                       method="post">
                                     <button type="submit" class="btn btn-danger mt-auto lh-1">Delete</button>
                                 </form>
@@ -159,7 +153,7 @@
                             <div sec:authorize="hasRole('ADMIN')">
                                 <div th:if="${user.roles.?[authority == 'ADMIN' || authority == 'MODERATOR'].isEmpty()}">
                                     <form action="#"
-                                          th:action="@{__${requestURI}__/__${user.id}__/promote(pageIndex=${pageIndex}, pageSize=${pageSize})}"
+                                          th:action="@{__${requestURI}__/__${user.id}__/promote(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
                                           method="post">
                                         <button type="submit" class="btn btn-success mt-auto lh-1">Promote</button>
                                     </form>
@@ -172,7 +166,7 @@
                         <div class="cell">
                             <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
                                 <form action="#"
-                                      th:action="@{__${requestURI}__/__${user.id}__/block(pageIndex=${pageIndex}, pageSize=${pageSize})}"
+                                      th:action="@{__${requestURI}__/__${user.id}__/block(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
                                       method="post">
                                     <div th:if="${user.isBlocked}">
                                         <button type="submit" class="btn btn-success mt-auto">Free</button>
@@ -186,7 +180,7 @@
                         <div class="cell">
                             <div sec:authorize="hasRole('ADMIN')">
                                 <form action="#"
-                                      th:action="@{__${requestURI}__/__${user.id}__/archive(pageIndex=${pageIndex}, pageSize=${pageSize})}"
+                                      th:action="@{__${requestURI}__/__${user.id}__/archive(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
                                       method="post">
                                     <div th:unless="${user.isDeleted}">
                                         <button type="submit" class="btn btn-danger mt-auto lh-1">Archive</button>

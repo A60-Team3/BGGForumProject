@@ -22,12 +22,24 @@ public class ReactionRepositoryImpl implements ReactionRepository {
     }
 
     @Override
-    public List<Reaction> getAll(long postId) {
+    public List<Reaction> getAllForSpecificPost(long postId) {
         try (Session session = sessionFactory.openSession()) {
             Query<Reaction> query = session.createQuery(
                     "from Reaction where postId.id = :postId",
                     Reaction.class);
             query.setParameter("postId", postId);
+
+            return query.list();
+        }
+    }
+
+    @Override
+    public List<Reaction> getAllByUser(long userId) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Reaction> query = session.createQuery(
+                    "from Reaction where userId.id = :userId",
+                    Reaction.class);
+            query.setParameter("userId", userId);
 
             return query.list();
         }

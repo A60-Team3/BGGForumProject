@@ -9,7 +9,7 @@ public interface CommentService {
 
     Page<Comment> getAll(CommentFilterOptions commentFilterOptions);
 
-    Page<Comment> getCommentsForPost(long postId, CommentFilterOptions commentFilterOptions, int pageIndex, int pageSize);
+    Page<Comment> getCommentsForPost(long id, int pageIndex, int pageSize);
 
     Comment get(long id);
 

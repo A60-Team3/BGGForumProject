@@ -3,8 +3,6 @@ package com.example.bggforumproject.service.contacts;
 import com.example.bggforumproject.models.Comment;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.User;
-import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
-import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.UserFilterOptions;
 import org.springframework.data.domain.Page;
 
@@ -15,26 +13,26 @@ public interface UserService {
 
     User get(String username);
 
+    List<User> getAll();
+
     Page<User> getAll(UserFilterOptions userFilterOptions, int pageIndex, int pageSize);
-
-    Page<Post> getSpecificUserPosts(long id, PostFilterOptions postFilterOptions, int pageIndex, int pageSize);
-
-    Page<Comment> getSpecificUserComments(long id, CommentFilterOptions commentFilterOptions, int pageIndex, int pageSize);
-
-    User promote(long id, User currentUser);
-
-    void delete(long id, User user);
-
-    User update(long id, User loggedUser, User user);
 
     List<User> getAllModerators();
 
-    List<User> getAll();
+    List<User> getAllAdmins();
 
-    void softDelete(long id, User currentUser);
+    Page<Post> getSpecificUserPosts(long id, int pageIndex, int pageSize);
+
+    Page<Comment> getSpecificUserComments(long id, int pageIndex, int pageSize);
+
+    User update(long id, User loggedUser, User user);
+
+    User promote(long id, User currentUser);
 
     User blockUser(long id, User currentUser);
 
-    List<User> getAllAdmins();
+    void softDelete(long id, User currentUser);
+
+    void delete(long id, User user);
 }
 

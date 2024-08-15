@@ -106,6 +106,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
             Query<Comment> query = session.createQuery(queryString.toString(), Comment.class);
             query.setProperties(params);
+
             Pageable pageable = PageRequest.of(pageIndex, pageSize);
             int totalEntries = query.list().size();
 

@@ -4,7 +4,7 @@
 
 
 <head th:replace="~{/fragments/head.html :: head(title = 'Posts')}"></head>
-<body>
+<body sec:authorize="isAuthenticated()">
 <div id="templatemo_wrapper">
 
     <div th:replace="~{/fragments/navbar.html}"></div>
@@ -66,15 +66,9 @@
     </div>
 
     <div id="templatemo_left_column">
-        <div id="templatemo_header">
-
-            <div id="site_title">
-                <h1><a href="/">BGG <strong>Forum</strong><span>Roll your dices</span></a></h1>
-            </div><!-- end of site_title -->
-
-        </div> <!-- end of header -->
-
+        <div th:replace="~{/fragments/siteLogo}"></div>
     </div>
+
     <div id="templatemo_right_column">
         <div id="templatemo_main">
             <div th:if="${posts.isEmpty()}">
@@ -88,9 +82,18 @@
                         <a href="#" th:href="@{/BGGForum/posts/__${post.id}__}" th:text="${post.title}">Post</a>
                     </span>
                     <div th:text="#{post.label.content}  + ': ' + ${post.content}">Post content</div>
+
+                    <div class="comment_text">
+                        <div class="reply" th:if="${post.userId.username == #authentication.name}"><a href="#">Edit</a>
+                        </div>
+                        <div class="reply" th:if="${isAdmin || post.userId.username == #authentication.name}"><a
+                                href="#" th:href="@{/BGGForum/posts/__${post.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}">Delete</a></div>
+                    </div>
+<!--                        TODO fix paging deletion to redirect to proper page if last entry on page-->
                     <div th:text="#{post.label.created}  + ': ' + ${#temporals.format(post.createdAt,'dd-MM-yyyy HH:mm')}">
                         Time of Creation
                     </div>
+
                     <div th:text="#{post.label.updated}  + ': ' + ${#temporals.format(post.updatedAt,'dd-MM-yyyy HH:mm')}">
                         Last Updated
                     </div>

@@ -33,7 +33,12 @@ public class ReactionServiceImpl implements ReactionService {
     @Override
     public List<Reaction> getAll(long postId) {
         postRepository.get(postId);
-        return reactionRepository.getAll(postId);
+        return reactionRepository.getAllForSpecificPost(postId);
+    }
+
+    @Override
+    public List<Reaction> getAllByUser(long userId) {
+        return reactionRepository.getAllByUser(userId);
     }
 
     @Override

@@ -61,15 +61,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<Post> getSpecificUserPosts(long id, PostFilterOptions postFilterOptions, int pageIndex, int pageSize) {
+    public Page<Post> getSpecificUserPosts(long id, int pageIndex, int pageSize) {
         userRepository.getById(id);
+
+        PostFilterOptions postFilterOptions = new PostFilterOptions(null, null, id, null,
+                null, null, null, null, null, null, null);
+
 
         return postRepository.get(postFilterOptions, pageIndex, pageSize);
     }
 
     @Override
-    public Page<Comment> getSpecificUserComments(long id, CommentFilterOptions commentFilterOptions, int pageIndex, int pageSize) {
+    public Page<Comment> getSpecificUserComments(long id, int pageIndex, int pageSize) {
         userRepository.getById(id);
+        CommentFilterOptions commentFilterOptions = new CommentFilterOptions(null, null,
+                null, id, null, null, null);
 
         return commentRepository.get(commentFilterOptions, pageIndex, pageSize);
     }
@@ -90,7 +96,7 @@ public class UserServiceImpl implements UserService {
 
         userToPromote.setRoles(userToPromote.getRoles().stream()
                 .filter(userRole -> !userRole.getRole().equals(RoleType.USER))
-                        .collect(Collectors.toSet()));
+                .collect(Collectors.toSet()));
 
         userToPromote.getRoles().add(role);
 
@@ -154,7 +160,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll(){
+    public List<User> getAll() {
         return userRepository.getAll();
     }
 

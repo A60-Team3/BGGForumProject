@@ -42,7 +42,7 @@ public class ReactionServiceTests {
         reactionService.getAll(post.getId());
 
         Mockito.verify(reactionRepository, Mockito.times(1))
-                .getAll(post.getId());
+                .getAllForSpecificPost(post.getId());
     }
 
     @Test

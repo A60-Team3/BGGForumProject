@@ -31,15 +31,22 @@ public class CommentServiceImpl implements CommentService {
         this.postRepository = postRepository;
         this.authorizationHelper = authorizationHelper;
     }
+
     @Override
     public Page<Comment> getAll(CommentFilterOptions commentFilterOptions) {
-        return commentRepository.get(commentFilterOptions, 0, 0);
+        return commentRepository.get(commentFilterOptions, 0, 1);
     }
 
     @Override
-    public Page<Comment> getCommentsForPost(long postId, CommentFilterOptions commentFilterOptions, int pageIndex, int pageSize) {
+    public Page<Comment> getCommentsForPost(long postId, int pageIndex, int pageSize) {
         postRepository.get(postId);
-        return commentRepository.getCommentsForPost(postId, pageIndex, pageSize);
+        CommentFilterOptions commentFilterOptions = new CommentFilterOptions
+                (
+                        null, null, null, null,
+                        postId, null, null
+                );
+
+        return commentRepository.get(commentFilterOptions, pageIndex, pageSize);
     }
 
     @Override
@@ -64,7 +71,7 @@ public class CommentServiceImpl implements CommentService {
         Post post = postRepository.get(postId);
 
         if (!repoComment.getPostId().equals(post)) {
-            throw new PostMismatchException( "Comment does not belong to the specified post");
+            throw new PostMismatchException("Comment does not belong to the specified post");
         }
 
         authorizationHelper.checkOwnership(repoComment, user);
@@ -86,7 +93,7 @@ public class CommentServiceImpl implements CommentService {
         Post post = postRepository.get(postId);
 
         if (!repoComment.getPostId().equals(post)) {
-            throw new PostMismatchException( "Comment does not belong to the specified post");
+            throw new PostMismatchException("Comment does not belong to the specified post");
         }
 
         try {

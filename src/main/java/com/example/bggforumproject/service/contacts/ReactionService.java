@@ -10,7 +10,9 @@ public interface ReactionService {
 
         List<Reaction> getAll(long postId);
 
-        int getLikesCount(long postId);
+    List<Reaction> getAllByUser(long userId);
+
+    int getLikesCount(long postId);
 
         int getDislikesCount(long postId);
 

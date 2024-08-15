@@ -11,7 +11,6 @@ import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.service.contacts.CommentService;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -37,11 +36,6 @@ public class CommentMvcController {
         this.mapper = mapper;
     }
 
-    @ModelAttribute("isAuthenticated")
-    public boolean populateIsAuthenticated(HttpSession session) {
-        return session.getAttribute("currentUser") != null;
-    }
-
     @ModelAttribute("requestURI")
     public String requestURI(final HttpServletRequest request) {
         return request.getRequestURI();
@@ -51,7 +45,7 @@ public class CommentMvcController {
     public String getComments(@PathVariable long postId,
                               @RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
                               @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
-                              @ModelAttribute("commentFilterOptions") FilterDto dto, Model model){
+                              @ModelAttribute("commentFilterOptions") FilterDto dto, Model model) {
 
         CommentFilterOptions commentFilterOptions = new CommentFilterOptions(
                 dto.content(),
@@ -63,10 +57,10 @@ public class CommentMvcController {
                 dto.sortOrder()
         );
 
-        Page<Comment> comments = commentService.getCommentsForPost(postId,commentFilterOptions, pageIndex, pageSize);
+        Page<Comment> comments = commentService.getCommentsForPost(postId, pageIndex, pageSize);
 
         model.addAttribute("comments", comments.getContent());
-        model.addAttribute("pageComments",comments);
+        model.addAttribute("pageComments", comments);
         model.addAttribute("currentPage", comments.getNumber() + 1);
         model.addAttribute("totalItems", comments.getTotalElements());
         model.addAttribute("totalPages", comments.getTotalPages());
@@ -77,11 +71,7 @@ public class CommentMvcController {
 
     //TODO consume the postId variable somehow
     @GetMapping("/{postId}/comments/new")
-    public String showNewCommentPage(@PathVariable long postId, Model model, HttpSession session){
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
-
+    public String showNewCommentPage(@PathVariable long postId, Model model) {
 
         model.addAttribute("comment", new CommentDTO());
         return "create-comment";
@@ -90,13 +80,12 @@ public class CommentMvcController {
     @PostMapping("/{postId}/comments/new")
     public String createComment(@PathVariable long postId,
                                 @Valid @ModelAttribute("comment") CommentDTO dto,
-                                BindingResult bindingResult,
-                                HttpSession session){
+                                BindingResult bindingResult) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.get(authentication.getName());
 
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "redirect:/BGGForum/posts/{postId}#comment_form";
         }
 
@@ -108,14 +97,8 @@ public class CommentMvcController {
     @GetMapping("/{postId}/comments/{commentId}/update")
     public String showUpdateCommentPage(@PathVariable long postId,
                                         @PathVariable long commentId,
-                                        Model model,
-                                        HttpSession session){
-
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
-
-        try{
+                                        Model model) {
+        try {
             Comment comment = commentService.get(commentId);
             CommentDTO commentDTO = mapper.map(comment, CommentDTO.class);
             model.addAttribute("postId", postId);
@@ -132,20 +115,18 @@ public class CommentMvcController {
 
     @PostMapping("/{postId}/comments/{commentId}/update")
     public String updateComment(@PathVariable long postId,
-                                        @PathVariable long commentId,
-                                        @Valid @ModelAttribute("comment") CommentDTO dto,
-                                        BindingResult bindingResult,
-                                        Model model,
-                                        HttpSession session){
-
+                                @PathVariable long commentId,
+                                @Valid @ModelAttribute("comment") CommentDTO dto,
+                                BindingResult bindingResult,
+                                Model model) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.get(authentication.getName());
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "edit-comment";
         }
 
-        try{
+        try {
             Comment comment = mapper.map(dto, Comment.class);
             commentService.update(commentId, postId, comment.getContent(), user);
             return "redirect:/BGGForum/posts/{postId}/comments";
@@ -167,12 +148,11 @@ public class CommentMvcController {
     @GetMapping("/{postId}/comments/{commentId}/delete")
     public String deleteComment(@PathVariable long postId,
                                 @PathVariable long commentId,
-                                Model model,
-                                HttpSession session){
+                                Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.get(authentication.getName());
 
-        try{
+        try {
             commentService.delete(commentId, postId, user);
             return "redirect:/BGGForum/posts/{postId}#comment_section";
         } catch (EntityNotFoundException e) {

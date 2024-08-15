@@ -10,14 +10,7 @@
 
 
     <div id="templatemo_left_column">
-
-        <div id="templatemo_header">
-
-            <div id="site_title">
-                <h1><a href="/">BGG <strong>Forum</strong><span>Roll your dices</span></a></h1>
-            </div><!-- end of site_title -->
-
-        </div> <!-- end of header -->
+        <div th:replace="~{/fragments/siteLogo}"></div>
     </div> <!-- end of templatemo_left_column -->
 
     <div id="templatemo_right_column">
@@ -26,11 +19,16 @@
 
             <div class="post_section">
 
-                <span class="comment"><a href="#comment_section">256</a></span>
-
+                <span class="comment"><a href="#comment_section" th:text="${comments.content.size()}">256</a></span>
+                <div class="comment_text">
+                    <div class="reply" th:if="${post.userId.username == #authentication.name}"><a href="#">Edit</a>
+                    </div>
+                    <div class="reply" th:if="${isAdmin || post.userId.username == #authentication.name}"><a
+                            href="#" th:href="@{/BGGForum/posts/__${post.id}__/delete}">Delete</a></div>
+                </div>
                 <h2 th:text="${post.getTitle()}">Aliquam lorem ante dapibus in viverra </h2>
 
-                <span th:text="${post.getCreatedAt()}">December 28, 2048</span> | <strong>Author:</strong> <span
+                <span th:text="${#temporals.format(post.getCreatedAt(), 'dd-MM-yyyy')}">December 28, 2048</span> | <strong>Author:</strong> <span
                     th:text="${post.userId.getUsername()}">John</span> | <strong
                     th:text="#{post.label.tag}">Category:</strong> <span th:each="tag, iterStat : ${post.getTags()}">
                         <span th:text="${tag.getName()}">Tag Name</span>
@@ -53,16 +51,20 @@
                     <li>
                         <div class="comment_box commentbox1" th:each="comment : ${comments}">
                             <div class="gravatar">
-                                <img src="images/avator.png" alt="author"/>
+                                <img th:src="${comment.userId.photoUrl != null ? comment.userId.photoUrl : '/images/blank_profile.png'}"
+                                     src="../static/images/blank_profile.png"
+                                     alt="profile_picture">
                             </div>
 
                             <div class="comment_text">
-                                <div class="comment_author" th:text="${comment.getUserId().getUsername()}">Steve<div class="date" th:text="${comment.getCreatedAt()}">December 10, 2048</div><!--<span
+                                <div class="comment_author" th:text="${comment.getUserId().getUsername()}">Steve<div
+                                        class="date" th:text="${comment.getCreatedAt()}">December 10, 2048</div><!--<span
                                         class="time">12:30 AM</span>--></div>
-                                <p th:text="${comment.getContent()}">Phasellus mattis tellus eu risusLorem ipsum dolor sit amet, consectetur adipiscing
+                                <p th:text="${comment.getContent()}">Phasellus mattis tellus eu risusLorem ipsum dolor
+                                    sit amet, consectetur adipiscing
                                     elit.</p>
-                                <div class="reply" th:if="${comment.getUserId().getId() == loggedUser.getId()}"><a href="#">Edit</a></div>
-                                <div class="reply" th:if="${isAdmin || comment.getUserId().getId() == loggedUser.getId()}"><a href="#" th:href="@{/BGGForum/posts/__${post.id}__/comments/__${comment.id}__/delete}">Delete</a></div>
+                                <div class="reply" th:if="${comment.userId.username == #authentication.name}"><a href="#">Edit</a></div>
+                                <div class="reply" th:if="${isAdmin || comment.userId.username == #authentication.name}"><a href="#" th:href="@{/BGGForum/posts/__${post.id}__/comments/__${comment.id}__/delete}">Delete</a></div>
                             </div>
                             <div class="cleaner"></div>
                         </div>
@@ -73,7 +75,8 @@
             <div id="comment_form">
                 <h3>Leave a comment</h3>
 
-                <form action="#" th:action="@{/BGGForum/posts/__${post.id}__/comments/new}" th:object="${comment}" method="post">
+                <form action="#" th:action="@{/BGGForum/posts/__${post.id}__/comments/new}" th:object="${comment}"
+                      method="post">
 
                     <div class="form_row">
                         <label><strong>Comment</strong></label>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{/fragments/head.html :: head(${shownUser.firstName + ' ' + shownUser.lastName})}"></head>
+<body>
+<div id="templatemo_wrapper">
+    <div th:replace="~{/fragments/navbar.html}"></div>
+    <div id="templatemo_left_column">
+
+        <div class="profile-container">
+            <img class="profile-picture"
+                 th:src="${shownUser.photoUrl != null ? shownUser.photoUrl : '/images/blank_profile.png'}"
+                 src="../static/images/blank_profile.png"
+                 alt="profile_picture">
+        </div>
+
+        <div id="templatemo_sidebar">
+            <ul class="templatemo_list">
+                <li>
+                    <h5 th:text="'Username: ' + ${shownUser.username}">Username </h5>
+                </li>
+                <li>
+                    <h5 th:text="'Full Name: ' + ${shownUser.firstName} + ' ' + ${shownUser.lastName}">Full Name </h5>
+                </li>
+                <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                    <h5 th:text="'Email: ' + ${shownUser.email}">Email</h5>
+                </li>
+                <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                    <h5 th:text="'Phone number: ' + ${shownUser.phoneNumber.number}">Cellphone</h5>
+                </li>
+                <li>
+                    <h5 th:text="'Joined: ' + ${#temporals.format(shownUser.registeredAt, 'MMM dd YYYY')}">
+                        Registered</h5>
+                </li>
+                <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                    <h5 th:text="'User Access: ' + ${(shownUser.isBlocked) ? 'Blocked' : 'Allowed'}"></h5>
+                </li>
+                <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                    <h5 th:text="'User Status: ' + ${(shownUser.isBlocked) ? 'Archived' : 'Active'}"></h5>
+                </li>
+                <li>
+                    <h5> User Roles:
+                        <span th:each="role, iterStat : ${shownUser.roles}">
+                                <span th:text="${role.authority}">Role</span>
+                                <span th:if="${!iterStat.last}">,</span>
+                        </span>
+                    </h5>
+                </li>
+                <li>
+                    <h5 th:text="'Written: ' + ${userPosts.size()} + ' articles.'">Total Posts </h5>
+                </li>
+                <li>
+                    <h5 th:text="'Commented: ' + ${commentedPosts.size()} + ' articles.'">Total Posts </h5>
+                </li>
+                <li>
+                    <h5 th:text="'Fancied: ' + ${reactedPosts.size()} + ' articles.'">Total Posts </h5>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="templatemo_right_column">
+        <div id="templatemo_main">
+            <div th:if="${!shownUser.roles.?[authority == 'ADMIN'].isEmpty() || shownUser.username == #authentication.name}">
+                <div th:if="${userPosts.isEmpty()}">
+                    <h3>No Posts</h3>
+                </div>
+                <div th:unless="${userPosts.isEmpty()}">
+                    <h3><a th:href="@{/BGGForum/posts(postIds=${userPosts})}">See User published works.</a></h3>
+                </div>
+
+                <div th:if="${commentedPosts.isEmpty()}">
+                    <h3>No Comments</h3>
+                </div>
+
+                <div th:unless="${commentedPosts.isEmpty()}">
+                    <h3><a th:href="@{/BGGForum/posts(postIds=${commentedPosts})}">See what you commented on.</a></h3>
+                </div>
+
+                <div th:if="${reactedPosts.isEmpty()}">
+                    <h3>No Reactions</h3>
+                </div>
+
+                <div th:unless="${reactedPosts.isEmpty()}">
+                    <h3><a th:href="@{/BGGForum/posts(postIds=${commentedPosts})}">See what attracts you.</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer th:replace="~{/fragments/footer}"></footer>
+
+</div>
+</body>
+<div th:replace="~{/fragments/scripts.html}"></div>
+</html>

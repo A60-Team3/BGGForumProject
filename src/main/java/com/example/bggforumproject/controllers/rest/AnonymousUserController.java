@@ -62,7 +62,7 @@ public class AnonymousUserController {
 
         PostFilterOptions postFilterOptions =
                 new PostFilterOptions(
-                        title, null, null, tags,
+                        title, null, null, tags, null,
                         createdCondition, created, null, null,
                         sortBy, sortOrder
                 );
