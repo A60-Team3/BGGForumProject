@@ -1,7 +1,7 @@
 package com.example.bggforumproject.service;
 
 
-import com.example.bggforumproject.dtos.ResponseDTO;
+import com.example.bggforumproject.dtos.response.ResponseDTO;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.helpers.AuthorizationHelper;

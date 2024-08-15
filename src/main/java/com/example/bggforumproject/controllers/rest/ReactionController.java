@@ -1,9 +1,9 @@
 package com.example.bggforumproject.controllers.rest;
 
-import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
-import com.example.bggforumproject.dtos.CommentDTO;
-import com.example.bggforumproject.dtos.PostAllReactionsDTO;
-import com.example.bggforumproject.dtos.ReactionOutDTO;
+import com.example.bggforumproject.dtos.response.ApiErrorResponseDTO;
+import com.example.bggforumproject.dtos.response.CommentDTO;
+import com.example.bggforumproject.dtos.response.PostAllReactionsDTO;
+import com.example.bggforumproject.dtos.response.ReactionOutDTO;
 import com.example.bggforumproject.models.Reaction;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.models.enums.ReactionType;

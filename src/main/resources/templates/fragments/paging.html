@@ -1,13 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <a th:fragment="pagingPost(pageNum, label, tooltip)" class="page-link"
-   th:href="@{'/BGGForum/main?' + ${postFilterOptions.title != null ? 'title=' + postFilterOptions.title + '&' : ''}
-                        + ${postFilterOptions.content != null ? 'content=' + postFilterOptions.content + '&' : ''}
-                        + ${postFilterOptions.createCondition != null ? 'createCondition=' + postFilterOptions.createCondition + '&' : ''}
+   th:href="@{'__${requestURI}__' + '?' + ${(postFilterOptions.title != null && !postFilterOptions.title.isEmpty()) ? 'title=' + postFilterOptions.title + '&' : ''}
+                        + ${(postFilterOptions.content != null && !postFilterOptions.content.isEmpty())  ? 'content=' + postFilterOptions.content + '&' : ''}
+                        + ${(postFilterOptions.createCondition != null && !postFilterOptions.createCondition.isEmpty()) ? 'createCondition=' + postFilterOptions.createCondition + '&' : ''}
                         + ${postFilterOptions.created != null ? 'created=' + postFilterOptions.created + '&' : ''}
-                        + ${postFilterOptions.updateCondition != null ? 'updateCondition=' + postFilterOptions.updateCondition + '&' : ''}
+                        + ${(postFilterOptions.updateCondition != null  && !postFilterOptions.updateCondition.isEmpty()) ? 'updateCondition=' + postFilterOptions.updateCondition + '&' : ''}
                         + ${postFilterOptions.updated != null ? 'updated=' + postFilterOptions.updated + '&' : ''}
-                        + ${postFilterOptions.tags != null ? 'tags=' + postFilterOptions.tags + '&' : ''}
+                        + ${(postFilterOptions.tags != null && !postFilterOptions.tags.isEmpty()) ? 'tags=' + postFilterOptions.tags + '&' : ''}
+                        + ${(postFilterOptions.sortBy != null && !postFilterOptions.sortBy.isEmpty()) ? 'sortBy=' + postFilterOptions.sortBy + '&' : ''}
+                        + ${(postFilterOptions.sortOrder != null && !postFilterOptions.sortOrder.isEmpty()) ? 'sortOrder=' + postFilterOptions.sortOrder + '&' : ''}
+                        + 'pageIndex=' + ${pageNum} + '&pageSize=' + ${pageSize}}"
+   th:title="${tooltip}" rel="tooltip">
+    [[${label}]]
+</a>
+
+<a th:fragment="pagingUser(pageNum, label, tooltip)" class="page-link"
+   th:href="@{'__${requestURI}__' + '?' + ${(userFilterOptions.firstName != null && !userFilterOptions.firstName.isEmpty()) ? 'firstName=' + userFilterOptions.firstName + '&' : ''}
+                        + ${(userFilterOptions.lastName != null && !userFilterOptions.lastName.isEmpty()) ? 'lastName=' + userFilterOptions.lastName + '&' : ''}
+                        + ${(userFilterOptions.createCondition != null && !userFilterOptions.createCondition.isEmpty()) ? 'createCondition=' + userFilterOptions.createCondition + '&' : ''}
+                        + ${userFilterOptions.created != null ? 'created=' + userFilterOptions.created + '&' : ''}
+                        + ${(userFilterOptions.email != null && !userFilterOptions.email.isEmpty()) ? 'email=' + userFilterOptions.email + '&' : ''}
+                        + ${(userFilterOptions.phoneNumber != null && !userFilterOptions.phoneNumber.isEmpty()) ? 'phoneNumber=' + userFilterOptions.phoneNumber + '&' : ''}
+                        + ${(userFilterOptions.username != null && !userFilterOptions.username.isEmpty()) ? 'username=' + userFilterOptions.username + '&' : ''}
+                        + ${(userFilterOptions.isBlocked != null && !userFilterOptions.isBlocked.isEmpty()) ? 'isBlocked=' + userFilterOptions.isBlocked + '&' : ''}
+                        + ${(userFilterOptions.isDeleted != null && !userFilterOptions.isDeleted.isEmpty()) ? 'isDeleted=' + userFilterOptions.isDeleted + '&' : ''}
+                        + ${(userFilterOptions.roles != null && !userFilterOptions.roles.isEmpty()) ? 'roles=' + userFilterOptions.roles + '&' : ''}
+                        + ${(userFilterOptions.sortBy != null && !userFilterOptions.sortBy.isEmpty()) ? 'sortBy=' + userFilterOptions.sortBy + '&' : ''}
+                        + ${(userFilterOptions.sortOrder != null && !userFilterOptions.sortOrder.isEmpty()) ? 'sortOrder=' + userFilterOptions.sortOrder + '&' : ''}
                         + 'pageIndex=' + ${pageNum} + '&pageSize=' + ${pageSize}}"
    th:title="${tooltip}" rel="tooltip">
     [[${label}]]

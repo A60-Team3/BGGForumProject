@@ -1,7 +1,7 @@
 package com.example.bggforumproject.controllers.mvc;
 
-import com.example.bggforumproject.dtos.CommentDTO;
-import com.example.bggforumproject.dtos.FilterDto;
+import com.example.bggforumproject.dtos.response.CommentDTO;
+import com.example.bggforumproject.dtos.request.FilterDto;
 import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;

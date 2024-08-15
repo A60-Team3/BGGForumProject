@@ -9,11 +9,10 @@
 
     <div th:replace="~{/fragments/navbar.html}"></div>
 
-    <div class="py-5" sec:authorize="isAuthenticated()">
+    <div class="py-5 post-filter" sec:authorize="isAuthenticated()">
         <div class="container d-flex align-items-center flex-column">
-            <form action="#" th:action="@{/BGGForum/main}" method="get" th:object="${postFilterOptions}">
+            <form action="#" th:action="@{__${requestURI}__}" method="get" th:object="${postFilterOptions}">
                 <h5 th:text="#{filter.label}">Filter Options</h5>
-                <br/><br/>
                 <div class="input-group">
                     <input type="text" placeholder="Post Title" th:field="*{title}"/>
                     <input type="text" placeholder="Post Content" th:field="*{content}"/>
@@ -61,12 +60,21 @@
                 </div>
 
                 <input class="btn btn-primary" type="submit" value="Search"/>
-                <a class="btn btn-secondary" th:href="@{/BGGForum/main}" value="Clear Filters">Clear Filter</a>
+                <a class="btn btn-done" th:href="@{__${requestURI}__}">Clear Filter</a>
             </form>
         </div>
     </div>
 
-    <div id="templatemo_left_column"></div>
+    <div id="templatemo_left_column">
+        <div id="templatemo_header">
+
+            <div id="site_title">
+                <h1><a href="/">BGG <strong>Forum</strong><span>Roll your dices</span></a></h1>
+            </div><!-- end of site_title -->
+
+        </div> <!-- end of header -->
+
+    </div>
     <div id="templatemo_right_column">
         <div id="templatemo_main">
             <div th:if="${posts.isEmpty()}">
@@ -74,21 +82,19 @@
             </div>
 
             <div th:unless="${posts.isEmpty()}">
-                <h3 th:text="'Displaying ' + ${totalItems} + ' from ' + ${totalPosts} + ' posts.'
-                        + ' Created by ' + ${totalUsers} + ' users.'">HeadLine</h3>
                 <div th:each="post : ${posts}">
                     <label th:text="#{post.label.title}  + ': '">Title</label>
                     <span>
                         <a href="#" th:href="@{/posts/__${post.id}__}" th:text="${post.title}">Post</a>
                     </span>
-                    <div th:text="#{post.label.content}  + ': ' +       ${post.content}">Post content</div>
-                    <div th:text="#{post.label.created}  + ': ' +       ${#temporals.format(post.createdAt,'dd-MM-yyyy HH:mm')}">
+                    <div th:text="#{post.label.content}  + ': ' + ${post.content}">Post content</div>
+                    <div th:text="#{post.label.created}  + ': ' + ${#temporals.format(post.createdAt,'dd-MM-yyyy HH:mm')}">
                         Time of Creation
                     </div>
-                    <div th:text="#{post.label.updated}  + ': ' +       ${#temporals.format(post.updatedAt,'dd-MM-yyyy HH:mm')}">
+                    <div th:text="#{post.label.updated}  + ': ' + ${#temporals.format(post.updatedAt,'dd-MM-yyyy HH:mm')}">
                         Last Updated
                     </div>
-                    <div th:text="#{post.label.createdBy}  + ': ' +       ${post.userId.username}">
+                    <div th:text="#{post.label.createdBy}  + ': ' + ${post.userId.username}">
                         Creator
                     </div>
                     <span th:text="#{post.label.tag}  + ': '">Tags:</span>

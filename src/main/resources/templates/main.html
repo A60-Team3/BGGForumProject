@@ -7,62 +7,6 @@
 <div id="templatemo_wrapper">
     <div th:replace="~{/fragments/navbar.html}"></div>
 
-    <div class="py-5 post-filter" sec:authorize="isAuthenticated()">
-        <div class="container d-flex align-items-center flex-column ">
-            <form action="#" th:action="@{/BGGForum/main}" method="get" th:object="${postFilterOptions}">
-                <h5 th:text="#{filter.label}">Filter Options</h5>
-                <div class="input-group align-content-center">
-                    <input type="text" placeholder="Post Title" th:field="*{title}"/>
-                    <input type="text" placeholder="Post Content" th:field="*{content}"/>
-                    <select th:field="*{createCondition}">
-                        <option value="">None</option>
-                        <option value="<">'<'</option>
-                        <option value="<=>">'<='</option>
-                        <option value=">">'>'</option>
-                        <option value=">=">'>='</option>
-                        <option value="=">'='</option>
-                        <option value="!=">'!='</option>
-                    </select>
-                    <input type="datetime-local" th:field="*{created}"/>
-                    <select th:field="*{updateCondition}">
-                        <option value="">None</option>
-                        <option value="<">'<'</option>
-                        <option value="<=>">'<='</option>
-                        <option value=">">'>'</option>
-                        <option value=">=">'>='</option>
-                        <option value="=">'='</option>
-                        <option value="!=">'!='</option>
-                    </select>
-                    <input type="datetime-local" th:field="*{updated}"/>
-                    <select th:field="*{sortBy}">
-                        <option value="">Sort By</option>
-                        <option value="title">Title</option>
-                        <option value="content">Content</option>
-                        <option value="user">Creator</option>
-                        <option value="created">Date Created</option>
-                        <option value="updated">Date Updated</option>
-                    </select>
-                    <select th:field="*{sortOrder}">
-                        <option value="">Sort Order</option>
-                        <option value="asc">Ascending</option>
-                        <option value="desc">Descending</option>
-                    </select>
-                    <div>
-                        <label>Tags:</label>
-                        <span th:each="tag : ${tags}">
-                    <input type="checkbox" th:field="*{tags}" th:value="${tag.id}" id="tag-${tag.id}"/>
-                    <label th:for="'tag-' + ${tag.id}" th:text="${tag.name}"></label>
-                    </span>
-                    </div>
-                    <br/><br/>
-                </div>
-
-                <input class="btn btn-primary" type="submit" value="Search"/>
-                <a class="btn btn-done" th:href="@{/BGGForum/main}">Clear Filter</a>
-            </form>
-        </div>
-    </div>
-
     <h4 class="post-filter message" th:if="${param.logout}" th:text="#{user.label.logout-success}"> Log out successful</h4>
 
     <div sec:authorize="isAuthenticated()">

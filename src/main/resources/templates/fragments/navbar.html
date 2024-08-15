@@ -4,13 +4,13 @@
             <a th:href="@{/}">Home</a>
         </li>
         <li sec:authorize="isAuthenticated()">
-            <a th:href="@{/posts}">Posts</a>
+            <a th:href="@{/BGGForum/posts}">Posts</a>
         </li>
         <li sec:authorize="!isAuthenticated()">
             <a th:href="@{/auth/register}">Register</a>
         </li>
-        <li sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_MODERATOR')">
-            <a th:href="@{/admin}">Admin</a></li>
+        <li sec:authorize="hasAnyRole('ADMIN','MODERATOR')">
+            <a th:href="@{/BGGForum/admin}">Admin</a></li>
         <li sec:authorize="!isAuthenticated()">
             <a th:href="@{/auth/login}">Sign In</a>
         </li>

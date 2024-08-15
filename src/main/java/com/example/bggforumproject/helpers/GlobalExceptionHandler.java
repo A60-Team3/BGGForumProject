@@ -1,6 +1,6 @@
 package com.example.bggforumproject.helpers;
 
-import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
+import com.example.bggforumproject.dtos.response.ApiErrorResponseDTO;
 import com.example.bggforumproject.exceptions.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

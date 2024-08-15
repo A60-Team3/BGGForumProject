@@ -2,7 +2,7 @@ package com.example.bggforumproject.service.contacts;
 
 
 import com.example.bggforumproject.models.User;
-import com.example.bggforumproject.dtos.ResponseDTO;
+import com.example.bggforumproject.dtos.response.ResponseDTO;
 import org.springframework.security.core.Authentication;
 
 public interface AuthenticationService {

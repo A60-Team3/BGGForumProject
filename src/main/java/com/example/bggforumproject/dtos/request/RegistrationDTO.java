@@ -1,4 +1,4 @@
-package com.example.bggforumproject.dtos;
+package com.example.bggforumproject.dtos.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

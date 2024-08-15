@@ -1,7 +1,7 @@
 package com.example.bggforumproject.helpers;
 
 import com.example.bggforumproject.models.Post;
-import com.example.bggforumproject.dtos.PostCreateDTO;
+import com.example.bggforumproject.dtos.response.PostCreateDTO;
 import com.example.bggforumproject.service.contacts.PostService;
 import org.springframework.stereotype.Component;
 

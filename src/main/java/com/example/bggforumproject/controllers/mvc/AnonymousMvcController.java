@@ -1,12 +1,12 @@
 package com.example.bggforumproject.controllers.mvc;
 
-import com.example.bggforumproject.dtos.FilterDto;
-import com.example.bggforumproject.helpers.filters.PostFilterOptions;
+import com.example.bggforumproject.dtos.request.FilterDto;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.service.contacts.AnonymousUserService;
 import com.example.bggforumproject.service.contacts.TagService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +30,11 @@ public class AnonymousMvcController {
         this.anonymousUserService = anonymousUserService;
     }
 
+    @ModelAttribute("requestURI")
+    public String requestURI(final HttpServletRequest request) {
+        return request.getRequestURI();
+    }
+
     @ModelAttribute("tags")
     public List<Tag> populateTags() {
         return tagService.get(new TagFilterOptions(null, null, null, null, null));
@@ -39,6 +44,7 @@ public class AnonymousMvcController {
     public String getHomePage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
                               @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
                               @ModelAttribute("postFilterOptions") FilterDto dto,
+                              @AuthenticationPrincipal UserDetails userDetails,
                               Model model) {
 
         List<Post> mostCommented = anonymousUserService.getMostCommented();
@@ -46,7 +52,6 @@ public class AnonymousMvcController {
 
         model.addAttribute("postsCommented", mostCommented);
         model.addAttribute("postsRecent", mostRecentlyCreated.getContent());
-        model.addAttribute("posts", mostRecentlyCreated);
         model.addAttribute("currentPage", mostRecentlyCreated.getNumber() + 1);
         model.addAttribute("totalItems", mostRecentlyCreated.getTotalElements());
         model.addAttribute("totalPages", mostRecentlyCreated.getTotalPages());

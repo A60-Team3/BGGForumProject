@@ -1,8 +1,8 @@
 package com.example.bggforumproject.controllers.rest;
 
-import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
-import com.example.bggforumproject.dtos.PostAnonymousOutDTO;
-import com.example.bggforumproject.dtos.UnknownOutDTO;
+import com.example.bggforumproject.dtos.response.ApiErrorResponseDTO;
+import com.example.bggforumproject.dtos.response.PostAnonymousOutDTO;
+import com.example.bggforumproject.dtos.request.UnknownOutDTO;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.service.contacts.AnonymousUserService;

@@ -1,6 +1,6 @@
 package com.example.bggforumproject.config;
 
-import com.example.bggforumproject.dtos.*;
+import com.example.bggforumproject.dtos.response.*;
 import com.example.bggforumproject.models.*;
 import com.example.bggforumproject.models.enums.ReactionType;
 import org.modelmapper.Converter;

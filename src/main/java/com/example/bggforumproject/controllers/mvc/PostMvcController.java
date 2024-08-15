@@ -1,16 +1,15 @@
 package com.example.bggforumproject.controllers.mvc;
 
-import com.example.bggforumproject.dtos.FilterDto;
-import com.example.bggforumproject.dtos.PostCreateDTO;
-import com.example.bggforumproject.dtos.PostOutFullDTO;
-import com.example.bggforumproject.dtos.PostUpdateDTO;
+import com.example.bggforumproject.dtos.request.FilterDto;
+import com.example.bggforumproject.dtos.response.PostCreateDTO;
+import com.example.bggforumproject.dtos.response.PostOutFullDTO;
+import com.example.bggforumproject.dtos.response.PostUpdateDTO;
 import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Post;
-import com.example.bggforumproject.models.Reaction;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.service.contacts.PostService;

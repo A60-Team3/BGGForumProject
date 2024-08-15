@@ -1,4 +1,4 @@
-package com.example.bggforumproject.dtos;
+package com.example.bggforumproject.dtos.response;
 
 public class ResponseDTO {
     private long id;

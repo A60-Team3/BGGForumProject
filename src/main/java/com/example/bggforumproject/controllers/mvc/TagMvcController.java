@@ -1,8 +1,7 @@
 package com.example.bggforumproject.controllers.mvc;
 
-import com.example.bggforumproject.dtos.TagDTO;
+import com.example.bggforumproject.dtos.response.TagDTO;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
-import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.service.contacts.TagService;

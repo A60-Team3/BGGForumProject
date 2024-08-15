@@ -1,8 +1,8 @@
 package com.example.bggforumproject.controllers.rest;
 
-import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
-import com.example.bggforumproject.dtos.UserBlockOutDTO;
-import com.example.bggforumproject.dtos.UserOutDTO;
+import com.example.bggforumproject.dtos.response.ApiErrorResponseDTO;
+import com.example.bggforumproject.dtos.response.UserBlockOutDTO;
+import com.example.bggforumproject.dtos.response.UserOutDTO;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.service.contacts.UserService;
 import io.swagger.v3.oas.annotations.Operation;

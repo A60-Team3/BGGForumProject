@@ -1,7 +1,12 @@
 package com.example.bggforumproject.controllers.rest;
 
 
-import com.example.bggforumproject.dtos.*;
+import com.example.bggforumproject.dtos.request.LoginDTO;
+import com.example.bggforumproject.dtos.request.RegistrationDTO;
+import com.example.bggforumproject.dtos.request.UnknownOutDTO;
+import com.example.bggforumproject.dtos.response.ApiErrorResponseDTO;
+import com.example.bggforumproject.dtos.response.ResponseDTO;
+import com.example.bggforumproject.dtos.response.UserOutDTO;
 import com.example.bggforumproject.exceptions.CustomAuthenticationException;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.service.contacts.AuthenticationService;

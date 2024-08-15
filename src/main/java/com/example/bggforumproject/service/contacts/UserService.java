@@ -15,7 +15,7 @@ public interface UserService {
 
     User get(String username);
 
-    List<User> getAll(UserFilterOptions userFilterOptions);
+    Page<User> getAll(UserFilterOptions userFilterOptions, int pageIndex, int pageSize);
 
     Page<Post> getSpecificUserPosts(long id, PostFilterOptions postFilterOptions, int pageIndex, int pageSize);
 
@@ -27,8 +27,14 @@ public interface UserService {
 
     User update(long id, User loggedUser, User user);
 
+    List<User> getAllModerators();
+
+    List<User> getAll();
+
     void softDelete(long id, User currentUser);
 
     User blockUser(long id, User currentUser, boolean isBlocked);
+
+    List<User> getAllAdmins();
 }
 

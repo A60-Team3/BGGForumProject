@@ -1,12 +1,17 @@
 package com.example.bggforumproject.controllers.rest;
 
-import com.example.bggforumproject.dtos.*;
+import com.example.bggforumproject.dtos.request.UserUpdateDTO;
+import com.example.bggforumproject.dtos.response.ApiErrorResponseDTO;
+import com.example.bggforumproject.dtos.response.CommentOutDTO;
+import com.example.bggforumproject.dtos.response.PostOutFullDTO;
+import com.example.bggforumproject.dtos.response.UserOutDTO;
 import com.example.bggforumproject.models.Comment;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.UserFilterOptions;
+import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.service.contacts.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,6 +27,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +58,8 @@ public class UsersController {
             })
     @GetMapping("")
     public ResponseEntity<List<UserOutDTO>> getAll(
+            @RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+            @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
             @Parameter(description = "Partial or full first name")
             @RequestParam(required = false) String firstName,
             @Parameter(description = "Partial or full last name")
@@ -61,25 +69,25 @@ public class UsersController {
             @Parameter(description = "Partial or full username")
             @RequestParam(required = false) String username,
             @Parameter(description = "Pattern - [</>/<=/>=/<>/=],YYYY-MM-DD HH:mm:ss")
-            @RequestParam(required = false) String registered,
+            @RequestParam(required = false) LocalDateTime registered,
             @Parameter(description = "Pattern - [</>/<=/>=/<>/=],YYYY-MM-DD HH:mm:ss")
-            @RequestParam(required = false) String updated,
+            @RequestParam(required = false) LocalDateTime updated,
             @RequestParam(required = false) Boolean isBlocked,
             @RequestParam(required = false) Boolean isDeleted,
             @Parameter(description = "Pattern - roleName1,roleName2,rolename3")
-            @RequestParam(required = false) String authority,
+            @RequestParam(required = false) List<RoleType> authority,
             @Parameter(description = "Options - all field names and (year/month/day)Registered/Updated")
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String sortOrder
     ) {
         UserFilterOptions userFilterOptions =
                 new UserFilterOptions(
-                        firstName, lastName, email, username,
-                        registered, updated, isBlocked, isDeleted,
-                        authority, sortBy, sortOrder
+                        firstName, lastName, email, username,null,
+                        registered, null,  updated, isBlocked, isDeleted,
+                        authority, null, sortBy, sortOrder
                 );
 
-        List<User> users = userService.getAll(userFilterOptions);
+        Page<User> users = userService.getAll(userFilterOptions, pageIndex, pageSize);
         List<UserOutDTO> userOutDTOS = users.stream()
                 .map(user -> mapper.map(user, UserOutDTO.class))
                 .toList();

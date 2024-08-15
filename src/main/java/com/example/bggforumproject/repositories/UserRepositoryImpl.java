@@ -8,9 +8,12 @@ import com.example.bggforumproject.helpers.filters.UserFilterOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -72,7 +75,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getAll(UserFilterOptions userFilterOptions) {
+    public Page<User> getAll(UserFilterOptions userFilterOptions, int pageIndex, int pageSize) {
         try (Session session = sessionFactory.openSession()) {
             StringBuilder queryString = new StringBuilder("from User u");
 
@@ -80,6 +83,12 @@ public class UserRepositoryImpl implements UserRepository {
                     (userFilterOptions.getSortBy().isPresent()
                             && userFilterOptions.getSortBy().get().equals("authority"))) {
                 queryString.append(" join u.authorities r");
+            }
+
+            if (userFilterOptions.getPhoneNumber().isPresent() ||
+                    (userFilterOptions.getSortBy().isPresent()
+                            && userFilterOptions.getSortBy().get().equals("phone"))) {
+                queryString.append(" join u.phoneNumber ph");
             }
 
             List<String> filters = new ArrayList<>();
@@ -105,25 +114,26 @@ public class UserRepositoryImpl implements UserRepository {
                 params.put("username", String.format("%%%s%%", value.trim()));
             });
 
-            userFilterOptions.getRegistered().ifPresent(value -> {
-                String condition = value.split(",")[0];
-                String date = value.split(",")[1];
+            userFilterOptions.getPhoneNumber().ifPresent(value -> {
+                filters.add("ph.number like :number");
+                params.put("number", String.format("%%%s%%", value.trim()));
+            });
 
-                if (VALID_CONDITIONS.contains(condition)) {
-                    filters.add(String.format("u.registeredAt %s (:registered)", condition));
-                    params.put("registered", LocalDateTime.parse(date.trim(), FORMATTER));
+            userFilterOptions.getRegistered().ifPresent(value -> {
+                if (userFilterOptions.getRegisteredCondition().isPresent()) {
+                    filters.add(String.format("u.registeredAt %s (:registeredAt)",
+                            userFilterOptions.getRegisteredCondition().get()));
+                    params.put("registeredAt", value);
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
                 }
             });
 
             userFilterOptions.getUpdated().ifPresent(value -> {
-                String condition = value.split(",")[0];
-                String date = value.split(",")[1];
-
-                if (VALID_CONDITIONS.contains(condition)) {
-                    filters.add(String.format("u.updatedAt %s (:updated)", condition));
-                    params.put("updated", LocalDateTime.parse(date.trim(), FORMATTER));
+                if (userFilterOptions.getUpdatedCondition().isPresent()) {
+                    filters.add(String.format("u.updatedAt %s (:updated)",
+                            userFilterOptions.getUpdatedCondition().get()));
+                    params.put("updated", value);
                 } else {
                     throw new InvalidFilterArgumentException("Filter condition not valid");
                 }
@@ -140,10 +150,8 @@ public class UserRepositoryImpl implements UserRepository {
             });
 
             userFilterOptions.getAuthority().ifPresent(value -> {
-                List<String> roles = Arrays.stream(value.split(",")).toList();
-
-                filters.add("LOWER(r.authority) IN (:roleType");
-                params.put("roleType", roles);
+                filters.add("r.authority IN (:roleType)");
+                params.put("roleType", value);
             });
 
             if (!filters.isEmpty()) {
@@ -156,7 +164,13 @@ public class UserRepositoryImpl implements UserRepository {
             Query<User> query = session.createQuery(queryString.toString(), User.class);
             query.setProperties(params);
 
-            return query.list();
+            int totalUsers = query.list().size();
+
+            Pageable pageable = PageRequest.of(pageIndex, pageSize);
+            query.setFirstResult((int) pageable.getOffset());
+            query.setMaxResults(pageSize);
+
+            return new PageImpl<>(query.list(),pageable,totalUsers);
         }
     }
 
@@ -209,6 +223,7 @@ public class UserRepositoryImpl implements UserRepository {
             case "isBlocked" -> "u.isBlocked";
             case "isDeleted" -> "u.isDeleted";
             case "authority" -> "r.authority";
+            case "number" -> "ph.number";
             default -> "u.id";
         };
 

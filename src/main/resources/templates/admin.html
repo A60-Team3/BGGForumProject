@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{/fragments/head.html :: head('Admin Sanctuary')}"></head>
+<body sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+<div id="templatemo_wrapper">
+    <div th:replace="~{/fragments/navbar.html}"></div>
+    <div class="py-5 post-filter">
+        <div class="container d-flex align-items-center flex-column ">
+            <form action="#" th:action="@{__${requestURI}__}" method="get" th:object="${userFilterOptions}">
+                <h5 th:text="#{filter.label}">Filter Options</h5>
+                <div class="input-group align-content-center">
+                    <input type="text" placeholder="First Name" th:field="*{firstName}"/>
+                    <input type="text" placeholder="Last Name" th:field="*{lastName}"/>
+                    <input type="email" placeholder="Email" th:field="*{email}"/>
+                    <input type="text" placeholder="Username" th:field="*{username}"/>
+                    <input type="tel" placeholder="Phone Number" th:field="*{phoneNumber}"/>
+                    <input type="radio" th:field="*{isBlocked}" id="isBlocked" value="true"/>
+                    <label for="isBlocked" th:name="isBlocked"></label>
+                    <input type="radio" th:field="*{isDeleted}" id="isDeleted" value="true"/>
+                    <label for="isDeleted" th:text="isDeleted"></label>
+                    <select th:field="*{createCondition}">
+                        <option value="">None</option>
+                        <option value="<">'<'</option>
+                        <option value="<=>">'<='</option>
+                        <option value=">">'>'</option>
+                        <option value=">=">'>='</option>
+                        <option value="=">'='</option>
+                        <option value="!=">'!='</option>
+                    </select>
+                    <input type="datetime-local" th:field="*{created}"/>
+                    <select th:field="*{updateCondition}">
+                        <option value="">None</option>
+                        <option value="<">'<'</option>
+                        <option value="<=>">'<='</option>
+                        <option value=">">'>'</option>
+                        <option value=">=">'>='</option>
+                        <option value="=">'='</option>
+                        <option value="!=">'!='</option>
+                    </select>
+                    <input type="datetime-local" th:field="*{updated}"/>
+                    <select th:field="*{sortBy}">
+                        <option value="">Sort By</option>
+                        <option value="firstName">First Name</option>
+                        <option value="lastName">Last Name</option>
+                        <option value="email">E-mail</option>
+                        <option value="username">Username</option>
+                        <option value="number">Phone</option>
+                        <option value="registered">Date Registered</option>
+                        <option value="isBlocked">Banned</option>
+                        <option value="isDelete">Archived</option>
+                    </select>
+                    <select th:field="*{sortOrder}">
+                        <option value="">Sort Order</option>
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
+                    <div>
+                        <label>Roles:</label>
+                        <span th:each="role : ${roles}">
+                    <input type="checkbox" th:field="*{roles}" th:value="${role.name}" id="role-${role.name}"/>
+                    <label th:for="'role-' + ${role.name}" th:text="${role.name}"></label>
+                    </span>
+                    </div>
+                    <br/><br/>
+                </div>
+
+                <input class="btn btn-primary" type="submit" value="Search"/>
+                <a class="btn btn-done" th:href="@{__${requestURI}__}">Clear Filter</a>
+            </form>
+        </div>
+    </div>
+
+
+
+    <div id="templatemo_left_column">
+        <div id="templatemo_header">
+
+            <div id="site_title">
+                <h1><a href="/">BGG <strong>Forum</strong><span>Roll your dices</span></a></h1>
+            </div><!-- end of site_title -->
+
+        </div> <!-- end of header -->
+
+        <div id="templatemo_sidebar">
+            <h4>Admins</h4>
+            <div th:if="${admins.isEmpty()}">No Admins</div>
+            <div th:unless="${admins.isEmpty()}">
+                <ul class="templatemo_list" th:each="admin : ${admins}">
+                    <li><a href="#" th:href="@{/users/__${admin.id}__}" th:text="${admin.username}">Admins</a></li>
+                </ul>
+            </div>
+
+            <div class="cleaner_h40"></div>
+
+            <h4>Moderators</h4>
+            <div th:if="${mods.isEmpty()}">No Moderators</div>
+            <div th:unless="${mods.isEmpty()}">
+                <ul class="templatemo_list" th:each="deputy : ${mods}">
+                    <li><a href="#" th:href="@{/users/__${deputy.id}__}" th:text="${deputy.username}">Moderators</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="cleaner_h20"></div>
+
+            <h6 th:text="'Total filtered users: ' + ${totalItems}"></h6>
+            <h6 th:text="'Total registered users: ' + ${regulars.size}"></h6>
+        </div>
+    </div>
+
+    <div id="templatemo_right_column">
+        <div id="templatemo_main">
+            <div th:if="${users.isEmpty()}">
+                <h2>No Users</h2>
+            </div>
+
+            <div th:unless="${users.isEmpty()}">
+                <div class="table">
+                    <div class="header">
+                        <div class="header-cell">Photo</div>
+                        <div class="header-cell">First Name</div>
+                        <div class="header-cell">Last Name</div>
+                        <div class="header-cell">E-mail</div>
+                        <div class="header-cell">Username</div>
+                        <div class="header-cell">Registered</div>
+                        <div class="header-cell">Roles</div>
+                        <div class="header-cell">Phone Number</div>
+                        <div class="header-cell">Is Blocked</div>
+                        <div class="header-cell">Is Archived</div>
+                    </div>
+
+                    <div class="row" th:each="user : ${users}">
+                        <div class="cell">
+                            <img class="img-fluid rounded mb-5" th:src="${user.photoUrl != null ? user.photoUrl : '/images/blank_profile.png'}"
+                                 src="../static/images/blank_profile.png"
+                                 alt="profile_picture">
+                        </div>
+                        <div class="cell" th:text="${user.firstName}">First Name</div>
+                        <div class="cell" th:text="${user.lastName}">Last Name</div>
+                        <div class="cell" th:text="${user.email}">E-mail</div>
+                        <div class="cell">
+                            <a href="#" th:href="@{/users/__${user.id}__}" th:text="${user.username}"></a>
+                        </div>
+                        <div class="cell"
+                             th:text="'Registered: ' + ${#temporals.format(user.registeredAt,'dd-MM-yyyy HH:mm')}">
+                            Time of Registration
+                        </div>
+                        <div class="cell">
+                            <span th:each="role, iterStat : ${user.roles}">
+                            <span th:text="${role.authority}">Role</span>
+                            <span th:if="${!iterStat.last}">,</span>
+                            </span>
+                        </div>
+                        <div class="cell">
+                            <div th:if="${user.phoneNumber != null}" th:text="${user.phoneNumber.number}"></div>
+                        </div>
+                        <div class="cell">
+                            <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                                <form action="#" th:action="@{/admin/__${user.id}__/block}" method="post">
+                                    <div th:if="${user.isBlocked}" class="text-center">
+                                        <button type="submit" class="btn btn-success mt-auto">Free</button>
+                                    </div>
+                                    <div th:unless="${user.isBlocked}" class="text-center">
+                                        <button type="submit" class="btn btn-danger mt-auto">Block</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="cell">
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <form action="#" th:action="@{/admin/__${user.id}__/archive}" method="post">
+                                    <div th:unless="${user.isDeleted}" class="text-center">
+                                        <button type="submit" class="btn btn-danger mt-auto">Archive</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <nav th:replace="~{/fragments/pagination.html :: pagination(pagingUser)}"></nav>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="~{/fragments/footer}"></footer>
+</div>
+</body>
+<div th:replace="~{/fragments/scripts.html}"></div>
+</html>

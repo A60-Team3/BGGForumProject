@@ -1,8 +1,8 @@
 package com.example.bggforumproject.controllers.rest;
 
-import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
-import com.example.bggforumproject.dtos.PostOutFullDTO;
-import com.example.bggforumproject.dtos.TagOutDTO;
+import com.example.bggforumproject.dtos.response.ApiErrorResponseDTO;
+import com.example.bggforumproject.dtos.response.PostOutFullDTO;
+import com.example.bggforumproject.dtos.response.TagOutDTO;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;

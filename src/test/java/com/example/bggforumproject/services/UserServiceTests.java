@@ -88,14 +88,16 @@ public class UserServiceTests {
     @Test
     public void getAll_Should_CallRepository() {
         UserFilterOptions mockFilterOptions = createMockUserFilterOptions();
+        int pageIndex = 0;
+        int pageSize = 5;
 
-        Mockito.when(userRepository.getAll(mockFilterOptions))
+        Mockito.when(userRepository.getAll(mockFilterOptions, pageIndex, pageSize))
                 .thenReturn(null);
 
-        userService.getAll(mockFilterOptions);
+        userService.getAll(mockFilterOptions, pageIndex, pageSize);
 
         Mockito.verify(userRepository, Mockito.times(1))
-                .getAll(mockFilterOptions);
+                .getAll(mockFilterOptions, pageIndex, pageSize);
     }
 
     @Test

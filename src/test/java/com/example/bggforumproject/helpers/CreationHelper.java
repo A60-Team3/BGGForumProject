@@ -104,11 +104,9 @@ public class CreationHelper {
                 "last",
                 "email@email.com",
                 "username",
-                null,
-                null,
-                false,
-                false,
-                null, null, null);
+                null, null, null,
+                null, false, false,
+                null, null, null, null);
     }
 
     public static PostFilterOptions createMockPostFilterOptions() {

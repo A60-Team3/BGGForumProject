@@ -1,8 +1,8 @@
 package com.example.bggforumproject.controllers.rest;
 
-import com.example.bggforumproject.dtos.ApiErrorResponseDTO;
-import com.example.bggforumproject.dtos.CommentDTO;
-import com.example.bggforumproject.dtos.CommentOutDTO;
+import com.example.bggforumproject.dtos.response.ApiErrorResponseDTO;
+import com.example.bggforumproject.dtos.response.CommentDTO;
+import com.example.bggforumproject.dtos.response.CommentOutDTO;
 import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.models.Comment;
 import com.example.bggforumproject.models.User;

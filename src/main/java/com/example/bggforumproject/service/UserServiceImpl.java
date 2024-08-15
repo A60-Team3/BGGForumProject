@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll(UserFilterOptions userFilterOptions) {
-        return userRepository.getAll(userFilterOptions);
+    public Page<User> getAll(UserFilterOptions userFilterOptions, int pageIndex, int pageSize) {
+        return userRepository.getAll(userFilterOptions, pageIndex, pageSize);
     }
 
     @Override
@@ -132,6 +132,31 @@ public class UserServiceImpl implements UserService {
         userRepository.update(user);
 
         return user;
+    }
+
+    @Override
+    public List<User> getAllAdmins() {
+        return userRepository.getAll().stream()
+                .filter(user -> user.getRoles()
+                        .stream()
+                        .map(Role::getRole).toList()
+                        .contains(RoleType.ADMIN))
+                .toList();
+    }
+
+    @Override
+    public List<User> getAllModerators() {
+        return userRepository.getAll().stream()
+                .filter(user -> user.getRoles()
+                        .stream()
+                        .map(Role::getRole).toList()
+                        .contains(RoleType.MODERATOR))
+                .toList();
+    }
+
+    @Override
+    public List<User> getAll(){
+        return userRepository.getAll();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.bggforumproject.dtos;
+package com.example.bggforumproject.dtos.response;
 
 import com.example.bggforumproject.models.enums.ReactionType;
 import io.swagger.v3.oas.annotations.media.Schema;

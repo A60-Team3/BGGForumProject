@@ -1,5 +1,6 @@
-package com.example.bggforumproject.dtos;
+package com.example.bggforumproject.dtos.request;
 
+import com.example.bggforumproject.dtos.response.PostAnonymousOutDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;

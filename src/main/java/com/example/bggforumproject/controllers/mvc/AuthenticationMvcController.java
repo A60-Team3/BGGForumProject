@@ -1,6 +1,6 @@
 package com.example.bggforumproject.controllers.mvc;
 
-import com.example.bggforumproject.dtos.RegistrationDTO;
+import com.example.bggforumproject.dtos.request.RegistrationDTO;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.service.contacts.AuthenticationService;
