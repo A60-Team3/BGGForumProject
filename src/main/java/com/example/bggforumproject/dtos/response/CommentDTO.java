@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 public class CommentDTO {
 
     @NotNull(message = "Content cannot be empty!")
-    @Size(min = 1, max = 8192, message = "Content should be between 32 and 8192 symbols!")
+    @Size(min = 1, max = 8192, message = "Content should be between 1 and 8192 symbols!")
     private String content;
 
     public CommentDTO() {

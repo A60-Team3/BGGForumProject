@@ -1,21 +1,21 @@
 package com.example.bggforumproject.controllers.mvc;
 
 import com.example.bggforumproject.dtos.request.FilterDto;
+import com.example.bggforumproject.dtos.response.CommentDTO;
 import com.example.bggforumproject.dtos.response.PostCreateDTO;
 import com.example.bggforumproject.dtos.response.PostOutFullDTO;
 import com.example.bggforumproject.dtos.response.PostUpdateDTO;
 import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
+import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
+import com.example.bggforumproject.models.Comment;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.models.User;
-import com.example.bggforumproject.service.contacts.PostService;
-import com.example.bggforumproject.service.contacts.ReactionService;
-import com.example.bggforumproject.service.contacts.TagService;
-import com.example.bggforumproject.service.contacts.UserService;
+import com.example.bggforumproject.service.contacts.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -37,17 +37,19 @@ import java.util.List;
 public class PostMvcController {
 
     private final PostService postService;
+    private final CommentService commentService;
     private final UserService userService;
     private final ReactionService reactionService;
     private final TagService tagService;
     private final ModelMapper mapper;
 
     @Autowired
-    public PostMvcController(PostService postService,
+    public PostMvcController(PostService postService, CommentService commentService,
                              UserService userService, ReactionService reactionService,
                              TagService tagService,
                              ModelMapper mapper) {
         this.postService = postService;
+        this.commentService = commentService;
         this.userService = userService;
         this.reactionService = reactionService;
         this.tagService = tagService;
@@ -62,6 +64,11 @@ public class PostMvcController {
     @ModelAttribute("requestURI")
     public String requestURI(final HttpServletRequest request) {
         return request.getRequestURI();
+    }
+
+    @ModelAttribute("comment")
+    public CommentDTO populateCommentDto(){
+        return new CommentDTO();
     }
 
     @ModelAttribute("tags")
@@ -112,12 +119,14 @@ public class PostMvcController {
     }
     @GetMapping("/{id}")
     public String getSinglePost(@PathVariable long id, Model model, HttpSession session){
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
+
 
         PostOutFullDTO postOutFullDTO = mapper.map(postService.get(id), PostOutFullDTO.class);
-        model.addAttribute("post", postOutFullDTO);
+        model.addAttribute("post", postService.get(id));
+        model.addAttribute("comments",
+                commentService.getCommentsForPost(id,
+                        new CommentFilterOptions(null, null, null, null, null, null, null),
+                        0, 5));
         return "single-post";
     }
 

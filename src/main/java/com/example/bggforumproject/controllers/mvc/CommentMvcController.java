@@ -16,6 +16,8 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -91,15 +93,16 @@ public class CommentMvcController {
                                 BindingResult bindingResult,
                                 HttpSession session){
 
-        User user = userService.get((String) session.getAttribute("currentUser"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.get(authentication.getName());
 
         if (bindingResult.hasErrors()){
-            return "create-comment";
+            return "redirect:/BGGForum/posts/{postId}#comment_form";
         }
 
         Comment comment = mapper.map(dto, Comment.class);
         commentService.create(postId, comment, user);
-        return "redirect:/BGGForum/posts/{postId}/comments";
+        return "redirect:/BGGForum/posts/{postId}#comment_section";
     }
 
     @GetMapping("/{postId}/comments/{commentId}/update")

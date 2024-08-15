@@ -39,7 +39,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Page<Comment> getCommentsForPost(long postId, CommentFilterOptions commentFilterOptions, int pageIndex, int pageSize) {
         postRepository.get(postId);
-        return commentRepository.get(commentFilterOptions, pageIndex, pageSize);
+        return commentRepository.getCommentsForPost(postId, pageIndex, pageSize);
     }
 
     @Override

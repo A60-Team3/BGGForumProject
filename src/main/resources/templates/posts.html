@@ -85,7 +85,7 @@
                 <div th:each="post : ${posts}">
                     <label th:text="#{post.label.title}  + ': '">Title</label>
                     <span>
-                        <a href="#" th:href="@{/posts/__${post.id}__}" th:text="${post.title}">Post</a>
+                        <a href="#" th:href="@{/BGGForum/posts/__${post.id}__}" th:text="${post.title}">Post</a>
                     </span>
                     <div th:text="#{post.label.content}  + ': ' + ${post.content}">Post content</div>
                     <div th:text="#{post.label.created}  + ': ' + ${#temporals.format(post.createdAt,'dd-MM-yyyy HH:mm')}">

@@ -38,7 +38,8 @@ public class AuthenticationMvcController {
     }
 
     @PostMapping("/logout?true")
-    public void handleLogout() {
+    public String handleLogout() {
+        return "redirect:/BGGForum/main";
     }
 
     @GetMapping("/register")

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{/fragments/head.html :: head(${post.getTitle()})}"></head>
+<body>
+
+<div id="templatemo_wrapper">
+
+    <div th:replace="~{/fragments/navbar.html}"></div>
+
+
+    <div id="templatemo_left_column">
+
+        <div id="templatemo_header">
+
+            <div id="site_title">
+                <h1><a href="/">BGG <strong>Forum</strong><span>Roll your dices</span></a></h1>
+            </div><!-- end of site_title -->
+
+        </div> <!-- end of header -->
+    </div> <!-- end of templatemo_left_column -->
+
+    <div id="templatemo_right_column">
+
+        <div id="templatemo_main">
+
+            <div class="post_section">
+
+                <span class="comment"><a href="#comment_section">256</a></span>
+
+                <h2 th:text="${post.getTitle()}">Aliquam lorem ante dapibus in viverra </h2>
+
+                <span th:text="${post.getCreatedAt()}">December 28, 2048</span> | <strong>Author:</strong> <span
+                    th:text="${post.userId.getUsername()}">John</span> | <strong
+                    th:text="#{post.label.tag}">Category:</strong> <span th:each="tag, iterStat : ${post.getTags()}">
+                        <span th:text="${tag.getName()}">Tag Name</span>
+                        <span th:if="${!iterStat.last}">,</span>
+                    </span>
+
+
+                <div th:text="${post.getContent()}">
+
+                </div>
+
+            </div>
+
+            <div class="comment_tab">
+                Comments
+            </div>
+
+            <div id="comment_section">
+                <ol class="comments first_level">
+                    <li>
+                        <div class="comment_box commentbox1" th:each="comment : ${comments}">
+                            <div class="gravatar">
+                                <img src="images/avator.png" alt="author"/>
+                            </div>
+
+                            <div class="comment_text">
+                                <div class="comment_author" th:text="${comment.getUserId().getUsername()}">Steve<span class="date" th:text="${comment.getCreatedAt()}">December 10, 2048</span><!--<span
+                                        class="time">12:30 AM</span>--></div>
+                                <p th:text="${comment.getContent()}">Phasellus mattis tellus eu risusLorem ipsum dolor sit amet, consectetur adipiscing
+                                    elit.</p>
+
+                            </div>
+                            <div class="cleaner"></div>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+
+            <div id="comment_form">
+                <h3>Leave a comment</h3>
+
+                <form action="#" th:action="@{/BGGForum/posts/__${post.id}__/comments/new}" th:object="${comment}" method="post">
+
+                    <div class="form_row">
+                        <label><strong>Comment</strong></label>
+                        <label class="error" th:errors="*{content}">Content error placeholder</label>
+                        <br/>
+                        <textarea name="comment" rows="" cols="" th:field="*{content}"></textarea>
+                    </div>
+                    <input type="submit" name="Submit" value="Submit" class="submit_btn"/>
+                </form>
+
+            </div>
+
+        </div> <!-- end of main -->
+
+        <div class="cleaner"></div>
+    </div>
+    <!-- end of templatemo_main -->
+    <div class="cleaner_h20"></div>
+
+    <footer th:replace="~{/fragments/footer}"></footer>
+
+    <div class="cleaner"></div>
+</div> <!-- end of warpper -->
+<div th:replace="~{/fragments/scripts.html}"></div>
+<!-- templatemo 251 clean blog -->
+<!-- 
+Clean Blog Template 
+http://www.templatemo.com/preview/templatemo_251_clean_blog 
+-->
+</body>
+</html>

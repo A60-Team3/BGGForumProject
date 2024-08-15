@@ -117,13 +117,19 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public List<Comment> getCommentsForPost(long postId) {
+    public Page<Comment> getCommentsForPost(long postId, int pageIndex, int pageSize) {
         try (Session session = sessionFactory.openSession()) {
             Query<Comment> query = session.createQuery("from Comment " +
                     "where postId.id = :postId", Comment.class);
             query.setParameter("postId", postId);
 
-            return query.list();
+            Pageable pageable = PageRequest.of(pageIndex, pageSize);
+            int totalEntries = query.list().size();
+
+            query.setFirstResult((int) pageable.getOffset());
+            query.setMaxResults(pageable.getPageSize());
+
+            return new PageImpl<>(query.list(), pageable,totalEntries);
         }
     }
 

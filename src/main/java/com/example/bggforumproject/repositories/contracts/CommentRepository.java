@@ -10,7 +10,7 @@ public interface CommentRepository extends OwnerRepository<Comment>{
 
     Page<Comment> get(CommentFilterOptions commentFilterOptions, int pageIndex, int pageSize);
 
-    List<Comment> getCommentsForPost(long postId);
+    Page<Comment> getCommentsForPost(long postId, int pageIndex, int pageSize);
 
     Comment get(long id);
 
