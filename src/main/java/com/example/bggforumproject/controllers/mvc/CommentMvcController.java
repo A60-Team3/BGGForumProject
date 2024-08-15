@@ -138,10 +138,9 @@ public class CommentMvcController {
                                         Model model,
                                         HttpSession session){
 
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
-        User user = userService.get((String) session.getAttribute("currentUser"));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.get(authentication.getName());
         if(bindingResult.hasErrors()){
             return "edit-comment";
         }
@@ -165,19 +164,17 @@ public class CommentMvcController {
 
     }
 
-    @GetMapping("/{postId}/comments/{commentId}")
+    @GetMapping("/{postId}/comments/{commentId}/delete")
     public String deleteComment(@PathVariable long postId,
                                 @PathVariable long commentId,
                                 Model model,
                                 HttpSession session){
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
-        User user = userService.get((String) session.getAttribute("currentUser"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.get(authentication.getName());
 
         try{
             commentService.delete(commentId, postId, user);
-            return "redirect:/BGGForum/posts/{postId}/comments";
+            return "redirect:/BGGForum/posts/{postId}#comment_section";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());

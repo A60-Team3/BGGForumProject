@@ -57,11 +57,12 @@
                             </div>
 
                             <div class="comment_text">
-                                <div class="comment_author" th:text="${comment.getUserId().getUsername()}">Steve<span class="date" th:text="${comment.getCreatedAt()}">December 10, 2048</span><!--<span
+                                <div class="comment_author" th:text="${comment.getUserId().getUsername()}">Steve<div class="date" th:text="${comment.getCreatedAt()}">December 10, 2048</div><!--<span
                                         class="time">12:30 AM</span>--></div>
                                 <p th:text="${comment.getContent()}">Phasellus mattis tellus eu risusLorem ipsum dolor sit amet, consectetur adipiscing
                                     elit.</p>
-
+                                <div class="reply" th:if="${comment.getUserId().getId() == loggedUser.getId()}"><a href="#">Edit</a></div>
+                                <div class="reply" th:if="${isAdmin || comment.getUserId().getId() == loggedUser.getId()}"><a href="#" th:href="@{/BGGForum/posts/__${post.id}__/comments/__${comment.id}__/delete}">Delete</a></div>
                             </div>
                             <div class="cleaner"></div>
                         </div>

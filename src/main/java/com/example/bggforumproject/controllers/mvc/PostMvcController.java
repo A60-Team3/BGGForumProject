@@ -11,10 +11,7 @@ import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
-import com.example.bggforumproject.models.Comment;
-import com.example.bggforumproject.models.Post;
-import com.example.bggforumproject.models.Tag;
-import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.models.*;
 import com.example.bggforumproject.service.contacts.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -23,7 +20,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +30,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/BGGForum/posts")
@@ -59,6 +60,24 @@ public class PostMvcController {
     @ModelAttribute("isAuthenticated")
     public boolean populateIsAuthenticated(HttpSession session) {
         return session.getAttribute("currentUser") != null;
+    }
+
+    @ModelAttribute("isAdmin")
+    public boolean populateIsAdmin(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
+
+        List<User> admins = userService.getAllAdmins();
+        return admins.contains(currentUser);
+    }
+
+    @ModelAttribute("isModerator")
+    public boolean populateIsModerator(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
+
+        List<User> moderators = userService.getAllModerators();
+        return moderators.contains(currentUser);
     }
 
     @ModelAttribute("requestURI")
@@ -120,13 +139,15 @@ public class PostMvcController {
     @GetMapping("/{id}")
     public String getSinglePost(@PathVariable long id, Model model, HttpSession session){
 
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
         PostOutFullDTO postOutFullDTO = mapper.map(postService.get(id), PostOutFullDTO.class);
         model.addAttribute("post", postService.get(id));
         model.addAttribute("comments",
                 commentService.getCommentsForPost(id,
                         new CommentFilterOptions(null, null, null, null, null, null, null),
                         0, 5));
+        model.addAttribute("loggedUser", currentUser);
         return "single-post";
     }
 

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -197,5 +198,18 @@ public class User extends BaseEntity implements UserDetails {
     @JsonIgnore
     public boolean isEnabled() {
         return !isBlocked();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return isBlocked == user.isBlocked && isDeleted == user.isDeleted && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(registeredAt, user.registeredAt) && Objects.equals(updatedAt, user.updatedAt) && Objects.equals(authorities, user.authorities) && Objects.equals(photoUrl, user.photoUrl) && Objects.equals(phoneNumber, user.phoneNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, email, username, password, registeredAt, updatedAt, isBlocked, isDeleted, authorities, photoUrl, phoneNumber);
     }
 }

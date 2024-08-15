@@ -494,6 +494,7 @@ em {
 
 .comment_box .comment_text {
     margin: 0 0 0 65px;
+    word-wrap: break-word;
 }
 
 .comment_box .comment_text p {
