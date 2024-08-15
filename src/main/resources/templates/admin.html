@@ -13,11 +13,11 @@
                 <div class="input-group align-content-center">
                     <input type="text" placeholder="First Name" th:field="*{firstName}"/>
                     <input type="text" placeholder="Last Name" th:field="*{lastName}"/>
-                    <input type="email" placeholder="Email" th:field="*{email}"/>
+                    <input type="text" placeholder="Email" th:field="*{email}"/>
                     <input type="text" placeholder="Username" th:field="*{username}"/>
-                    <input type="tel" placeholder="Phone Number" th:field="*{phoneNumber}"/>
+                    <input type="text" placeholder="Phone Number" th:field="*{phoneNumber}"/>
                     <input type="radio" th:field="*{isBlocked}" id="isBlocked" value="true"/>
-                    <label for="isBlocked" th:name="isBlocked"></label>
+                    <label for="isBlocked" th:text="isBlocked"></label>
                     <input type="radio" th:field="*{isDeleted}" id="isDeleted" value="true"/>
                     <label for="isDeleted" th:text="isDeleted"></label>
                     <select th:field="*{createCondition}">
@@ -59,8 +59,8 @@
                     <div>
                         <label>Roles:</label>
                         <span th:each="role : ${roles}">
-                    <input type="checkbox" th:field="*{roles}" th:value="${role.name}" id="role-${role.name}"/>
-                    <label th:for="'role-' + ${role.name}" th:text="${role.name}"></label>
+                    <input type="checkbox" th:field="*{roles}" th:value="${role}" id="role-${role}"/>
+                    <label th:for="'role-' + ${role}" th:text="${role}"></label>
                     </span>
                     </div>
                     <br/><br/>
@@ -71,7 +71,6 @@
             </form>
         </div>
     </div>
-
 
 
     <div id="templatemo_left_column">
@@ -119,8 +118,7 @@
                 <div class="table">
                     <div class="header">
                         <div class="header-cell">Photo</div>
-                        <div class="header-cell">First Name</div>
-                        <div class="header-cell">Last Name</div>
+                        <div class="header-cell">Full Name</div>
                         <div class="header-cell">E-mail</div>
                         <div class="header-cell">Username</div>
                         <div class="header-cell">Registered</div>
@@ -132,15 +130,22 @@
 
                     <div class="row" th:each="user : ${users}">
                         <div class="cell">
-                            <img class="img-fluid rounded mb-5" th:src="${user.photoUrl != null ? user.photoUrl : '/images/blank_profile.png'}"
+                            <img class="img-fluid rounded mb-5"
+                                 th:src="${user.photoUrl != null ? user.photoUrl : '/images/blank_profile.png'}"
                                  src="../static/images/blank_profile.png"
                                  alt="profile_picture">
                         </div>
-                        <div class="cell" th:text="${user.firstName}">First Name</div>
-                        <div class="cell" th:text="${user.lastName}">Last Name</div>
+                        <div class="cell" th:text="${user.firstName} + ' ' + ${user.lastName}">First Name</div>
                         <div class="cell" th:text="${user.email}">E-mail</div>
                         <div class="cell">
                             <a href="#" th:href="@{/users/__${user.id}__}" th:text="${user.username}"></a>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <form action="#"
+                                      th:action="@{__${requestURI}__/__${user.id}__/delete(pageIndex=${pageIndex}, pageSize=${pageSize})}"
+                                      method="post">
+                                    <button type="submit" class="btn btn-danger mt-auto lh-1">Delete</button>
+                                </form>
+                            </div>
                         </div>
                         <div class="cell"
                              th:text="'Registered: ' + ${#temporals.format(user.registeredAt,'dd-MM-yyyy HH:mm')}">
@@ -148,30 +153,43 @@
                         </div>
                         <div class="cell">
                             <span th:each="role, iterStat : ${user.roles}">
-                            <span th:text="${role.authority}">Role</span>
-                            <span th:if="${!iterStat.last}">,</span>
+                                <span th:text="${role.authority}">Role</span>
+                                <span th:if="${!iterStat.last}">,</span>
                             </span>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <div th:if="${user.roles.?[authority == 'ADMIN' || authority == 'MODERATOR'].isEmpty()}">
+                                    <form action="#"
+                                          th:action="@{__${requestURI}__/__${user.id}__/promote(pageIndex=${pageIndex}, pageSize=${pageSize})}"
+                                          method="post">
+                                        <button type="submit" class="btn btn-success mt-auto lh-1">Promote</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                         <div class="cell">
                             <div th:if="${user.phoneNumber != null}" th:text="${user.phoneNumber.number}"></div>
                         </div>
                         <div class="cell">
                             <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
-                                <form action="#" th:action="@{/admin/__${user.id}__/block}" method="post">
-                                    <div th:if="${user.isBlocked}" class="text-center">
+                                <form action="#"
+                                      th:action="@{__${requestURI}__/__${user.id}__/block(pageIndex=${pageIndex}, pageSize=${pageSize})}"
+                                      method="post">
+                                    <div th:if="${user.isBlocked}">
                                         <button type="submit" class="btn btn-success mt-auto">Free</button>
                                     </div>
-                                    <div th:unless="${user.isBlocked}" class="text-center">
-                                        <button type="submit" class="btn btn-danger mt-auto">Block</button>
+                                    <div th:unless="${user.isBlocked}">
+                                        <button type="submit" class="btn btn-danger mt-auto lh-1">Block</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                         <div class="cell">
                             <div sec:authorize="hasRole('ADMIN')">
-                                <form action="#" th:action="@{/admin/__${user.id}__/archive}" method="post">
-                                    <div th:unless="${user.isDeleted}" class="text-center">
-                                        <button type="submit" class="btn btn-danger mt-auto">Archive</button>
+                                <form action="#"
+                                      th:action="@{__${requestURI}__/__${user.id}__/archive(pageIndex=${pageIndex}, pageSize=${pageSize})}"
+                                      method="post">
+                                    <div th:unless="${user.isDeleted}">
+                                        <button type="submit" class="btn btn-danger mt-auto lh-1">Archive</button>
                                     </div>
                                 </form>
                             </div>

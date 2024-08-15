@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -79,13 +80,17 @@ public class UserServiceImpl implements UserService {
 
         User userToPromote = userRepository.getById(id);
 
-        Role role = roleRepository.getByAuthority(RoleType.MODERATOR);
+        Role role = new Role(RoleType.MODERATOR);
 
         if (userToPromote.getRoles().contains(role)) {
             throw new EntityDuplicateException(
                     String.format("User with id %d is already %s", id, role.getAuthority())
             );
         }
+
+        userToPromote.setRoles(userToPromote.getRoles().stream()
+                .filter(userRole -> !userRole.getRole().equals(RoleType.USER))
+                        .collect(Collectors.toSet()));
 
         userToPromote.getRoles().add(role);
 
@@ -117,18 +122,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User blockUser(long id, User currentUser, boolean isBlocked) {
+    public User blockUser(long id, User currentUser) {
         authorizationHelper.checkPermissions(currentUser, RoleType.ADMIN, RoleType.MODERATOR);
 
         User user = userRepository.getById(id);
 
-        if (user.isBlocked() == isBlocked) {
-            throw new EntityDuplicateException(
-                    String.format("Block status of user with id %d already set to %s", id, isBlocked)
-            );
-        }
-
-        user.setBlocked(isBlocked);
+        user.setBlocked(!user.isBlocked());
         userRepository.update(user);
 
         return user;

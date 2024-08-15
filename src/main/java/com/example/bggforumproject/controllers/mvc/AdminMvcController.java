@@ -2,6 +2,7 @@ package com.example.bggforumproject.controllers.mvc;
 
 import com.example.bggforumproject.dtos.request.FilterDto;
 import com.example.bggforumproject.dtos.response.UserBlockOutDTO;
+import com.example.bggforumproject.dtos.response.UserOutDTO;
 import com.example.bggforumproject.helpers.filters.UserFilterOptions;
 import com.example.bggforumproject.models.Role;
 import com.example.bggforumproject.models.User;
@@ -15,10 +16,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -41,8 +45,8 @@ public class AdminMvcController {
     }
 
     @ModelAttribute("roles")
-    public List<RoleType> collectRoleTypes(){
-        return roleRepository.findAll().stream().map(Role::getRole).toList();
+    public List<String> collectRoleTypes() {
+        return roleRepository.findAll().stream().map(Role::getAuthority).toList();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
@@ -50,7 +54,7 @@ public class AdminMvcController {
     public String getAdminPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
                                @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
                                @ModelAttribute("userFilterOptions") FilterDto dto, Model model
-                               ){
+    ) {
         UserFilterOptions userFilterOptions = new UserFilterOptions(
                 (dto.firstName() != null && dto.firstName().isEmpty()) ? null : dto.firstName(),
                 (dto.lastName() != null && dto.lastName().isEmpty()) ? null : dto.lastName(),
@@ -80,7 +84,77 @@ public class AdminMvcController {
         model.addAttribute("totalItems", all.getTotalElements());
         model.addAttribute("totalPages", all.getTotalPages());
         model.addAttribute("pageSize", pageSize);
+        model.addAttribute("pageIndex", pageIndex);
 
         return "admin";
+    }
+
+    @PostMapping("/{userId}/promote")
+    public String promoteUser(@RequestParam(value = "pageIndex") int pageIndex,
+                              @RequestParam(value = "pageSize") int pageSize,
+                              @PathVariable long userId,
+                              RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
+
+        redirectAttributes.addAttribute("pageIndex", pageIndex);
+        redirectAttributes.addAttribute("pageSize", pageSize);
+
+        userService.promote(userId, currentUser);
+
+        return "redirect:/BGGForum/admin";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @PostMapping("/{userId}/block")
+    public String blockUser(@RequestParam(value = "pageIndex") int pageIndex,
+                            @RequestParam(value = "pageSize") int pageSize,
+                            @PathVariable long userId,
+                            RedirectAttributes redirectAttributes,
+                            @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.get(userDetails.getUsername());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
+
+        redirectAttributes.addAttribute("pageIndex", pageIndex);
+        redirectAttributes.addAttribute("pageSize", pageSize);
+
+        userService.blockUser(userId, currentUser);
+
+        return "redirect:/BGGForum/admin";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{userId}/archive")
+    public String archiveUser(@RequestParam(value = "pageIndex") int pageIndex,
+                              @RequestParam(value = "pageSize") int pageSize,
+                              @PathVariable long userId,
+                              RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
+
+        userService.softDelete(userId, currentUser);
+
+        redirectAttributes.addAttribute("pageIndex", pageIndex);
+        redirectAttributes.addAttribute("pageSize", pageSize);
+
+        return "redirect:/BGGForum/admin";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{userId}/delete")
+    public String deleteUser(@RequestParam(value = "pageIndex") int pageIndex,
+                             @RequestParam(value = "pageSize") int pageSize,
+                             @PathVariable long userId,
+                             RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
+
+        userService.delete(userId, currentUser);
+
+        redirectAttributes.addAttribute("pageIndex", pageIndex);
+        redirectAttributes.addAttribute("pageSize", pageSize);
+
+        return "redirect:/BGGForum/admin";
     }
 }

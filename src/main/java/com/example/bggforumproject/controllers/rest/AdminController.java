@@ -49,7 +49,7 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
-        User blocked = userService.blockUser(userId, currentUser, isBlocked);
+        User blocked = userService.blockUser(userId, currentUser);
 
         return ResponseEntity.ok(mapper.map(blocked, UserBlockOutDTO.class));
     }

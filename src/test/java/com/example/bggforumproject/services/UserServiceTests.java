@@ -305,7 +305,7 @@ public class UserServiceTests {
 
         Assertions.assertThrows(
                 AuthorizationException.class,
-                () -> userService.blockUser(1, user, true)
+                () -> userService.blockUser(1, user)
         );
     }
 
@@ -323,7 +323,7 @@ public class UserServiceTests {
 
         Assertions.assertThrows(
                 EntityNotFoundException.class,
-                () -> userService.blockUser(1, user, true)
+                () -> userService.blockUser(1, user)
         );
     }
 
@@ -339,7 +339,7 @@ public class UserServiceTests {
                 .when(userRepository.getById(Mockito.anyLong()))
                 .thenReturn(user);
 
-        userService.blockUser(user.getId(), user, true);
+        userService.blockUser(user.getId(), user);
 
         Mockito.verify(userRepository, Mockito.times(1)).update(user);
         Mockito.verify(userRepository, Mockito.times(1)).getById(user.getId());

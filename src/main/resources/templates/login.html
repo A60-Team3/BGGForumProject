@@ -6,12 +6,11 @@
 <body>
 <div id="templatemo_wrapper">
     <div th:replace="~{/fragments/navbar}"></div>
-
     <div th:replace="~{/fragments/siteLogo}"></div>
 
     <div id="templatemo_right_column">
         <div id="templatemo_main">
-            <div class="label-error" sec:authorize="isAuthenticated()" th:text="#{user.label.duplicate-login}"></div>
+            <h3 class="label-error" sec:authorize="isAuthenticated()" th:text="#{user.label.duplicate-login}"></h3>
             <div sec:authorize="!isAuthenticated()">
                 <div>
                     <h3>Login</h3>

@@ -33,7 +33,7 @@ public interface UserService {
 
     void softDelete(long id, User currentUser);
 
-    User blockUser(long id, User currentUser, boolean isBlocked);
+    User blockUser(long id, User currentUser);
 
     List<User> getAllAdmins();
 }
