@@ -84,10 +84,10 @@
                     <div th:text="#{post.label.content}  + ': ' + ${post.content}">Post content</div>
 
                     <div class="comment_text">
-                        <div class="reply" th:if="${post.userId.username == #authentication.name}"><a href="#">Edit</a>
+                        <div class="reply" th:if="${post.userId.username == #authentication.name}"><a href="#">&#9998;Edit</a>
                         </div>
                         <div class="reply" th:if="${isAdmin || post.userId.username == #authentication.name}"><a
-                                href="#" th:href="@{/BGGForum/posts/__${post.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}">Delete</a></div>
+                                href="#" th:href="@{/BGGForum/posts/__${post.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}">&#128465;Delete</a></div>
                     </div>
 <!--                        TODO fix paging deletion to redirect to proper page if last entry on page-->
                     <div th:text="#{post.label.created}  + ': ' + ${#temporals.format(post.createdAt,'dd-MM-yyyy HH:mm')}">

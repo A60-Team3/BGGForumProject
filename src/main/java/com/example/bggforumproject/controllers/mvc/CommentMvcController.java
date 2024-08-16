@@ -104,7 +104,7 @@ public class CommentMvcController {
             model.addAttribute("postId", postId);
             model.addAttribute("commentId", commentId);
             model.addAttribute("comment", commentDTO);
-            return "edit-comment";
+            return "comment-edit";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
@@ -123,20 +123,20 @@ public class CommentMvcController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.get(authentication.getName());
         if (bindingResult.hasErrors()) {
-            return "edit-comment";
+            return "comment-edit";
         }
 
         try {
             Comment comment = mapper.map(dto, Comment.class);
             commentService.update(commentId, postId, comment.getContent(), user);
-            return "redirect:/BGGForum/posts/{postId}/comments";
+            return "redirect:/BGGForum/posts/{postId}#comment_section";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("content", "duplicate_comment", e.getMessage());
-            return "BeerUpdateView";
+            return "comment-edit";
         } catch (AuthorizationException e) {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());

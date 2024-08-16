@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{/fragments/head.html :: head(title = 'Create Post')}"></head>
+<head th:replace="~{/fragments/head.html :: head(title = 'Edit Comment')}"></head>
 <body>
 
 <div id="templatemo_wrapper">
@@ -19,17 +19,10 @@
 
 
             <div id="comment_form">
-                <h3>Create a Post</h3>
+                <h3>Edit Comment</h3>
 
-                <form action="#" th:action="@{/BGGForum/posts/new}" th:object="${post}"
+                <form action="#" th:action="@{/BGGForum/posts/__${postId}__/comments/__${commentId}__/update}" th:object="${comment}"
                       method="post">
-
-                    <div class="form_row">
-                        <label><strong>Title</strong></label>
-                        <label class="error" th:errors="*{title}">Title error placeholder</label>
-                        <br />
-                        <textarea name="title" class="textarea-post-title"></textarea>
-                    </div>
 
                     <div class="form_row">
                         <label><strong>Content</strong></label>
@@ -55,9 +48,9 @@
 </div> <!-- end of warpper -->
 <div th:replace="~{/fragments/scripts.html}"></div>
 <!-- templatemo 251 clean blog -->
-<!-- 
-Clean Blog Template 
-http://www.templatemo.com/preview/templatemo_251_clean_blog 
+<!--
+Clean Blog Template
+http://www.templatemo.com/preview/templatemo_251_clean_blog
 -->
 </body>
 </html>
