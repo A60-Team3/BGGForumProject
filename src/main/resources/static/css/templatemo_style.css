@@ -386,7 +386,7 @@ em {
 
 .post_section .comment {
     position: absolute;
-    top: -10px;
+    top: -50px;
     right: 0px;
     width: 70px;
     height: 42px;
@@ -395,6 +395,42 @@ em {
     font-size: 16px;
     font-weight: bold;
     background: url(../images/templatemo_comment.png) no-repeat;
+}
+
+.post_section .like-icon{
+    position: absolute;
+    top: -65px;
+    left: 0;
+}
+
+.post_section .dislike-icon{
+    position: absolute;
+    top: -65px;
+    left: 100px;
+}
+
+.post_section .likes {
+    position: absolute;
+    top: -50px;
+    left: 20px;
+    width: 70px;
+    height: 42px;
+    text-align: center;
+    padding-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.post_section .dislikes {
+    position: absolute;
+    top: -50px;
+    left: 120px;
+    width: 70px;
+    height: 42px;
+    text-align: center;
+    padding-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .post_section .comment a {
@@ -558,6 +594,28 @@ em {
     display: block;
     font-size: 1.1em;
     height: 150px;
+    margin-top: 5px;
+    padding: 5px;
+    width: 360px;
+}
+
+#comment_form .textarea-post-title{
+    background: #FFFFFF none repeat fixed 0 0;
+    border: 1px solid #CCC;
+    display: block;
+    font-size: 1.1em;
+    height: 50px;
+    margin-top: 5px;
+    padding: 5px;
+    width: 360px;
+}
+
+#comment_form .textarea-post-content{
+    background: #FFFFFF none repeat fixed 0 0;
+    border: 1px solid #CCC;
+    display: block;
+    font-size: 1.1em;
+    height: 350px;
     margin-top: 5px;
     padding: 5px;
     width: 360px;

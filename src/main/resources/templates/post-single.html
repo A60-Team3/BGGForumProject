@@ -19,13 +19,17 @@
 
             <div class="post_section">
 
+                <span class="like-icon"><img src="/images/green-thumbs-up-11246.png" width="30px" height="auto"></span>
+                <span class="likes" th:text="${likes}">256</span>
+                <span class="dislike-icon"><img src="/images/thumbs-down-14924.png" width="30px" height="auto"></span>
+                <span class="dislikes" th:text="${dislikes}">256</span>
                 <span class="comment"><a href="#comment_section" th:text="${comments.content.size()}">256</a></span>
-                <div class="comment_text">
+                <!--<div class="comment_text">
                     <div class="reply" th:if="${post.userId.username == #authentication.name}"><a href="#">Edit</a>
                     </div>
                     <div class="reply" th:if="${isAdmin || post.userId.username == #authentication.name}"><a
                             href="#" th:href="@{/BGGForum/posts/__${post.id}__/delete}">Delete</a></div>
-                </div>
+                </div>-->
                 <h2 th:text="${post.getTitle()}">Aliquam lorem ante dapibus in viverra </h2>
 
                 <span th:text="${#temporals.format(post.getCreatedAt(), 'dd-MM-yyyy')}">December 28, 2048</span> | <strong>Author:</strong> <span
@@ -35,7 +39,7 @@
                         <span th:if="${!iterStat.last}">,</span>
                     </span>
 
-
+                <br>
                 <div th:text="${post.getContent()}">
 
                 </div>

@@ -8,19 +8,19 @@ import java.util.List;
 
 public interface ReactionService {
 
-        List<Reaction> getAll(long postId);
+    List<Reaction> getAll(long postId);
 
     List<Reaction> getAllByUser(long userId);
 
-    int getLikesCount(long postId);
+    long getLikesCount(long postId);
 
-        int getDislikesCount(long postId);
+    long getDislikesCount(long postId);
 
-        Reaction get(long id);
+    Reaction get(long id);
 
-        void create(Reaction reaction, User user, long postId);
+    void create(Reaction reaction, User user, long postId);
 
-        Reaction update(long reactionId, User user, long postId, ReactionType reactionType);
+    Reaction update(long reactionId, User user, long postId, ReactionType reactionType);
 
-        void delete(long id, User user, long postId);
+    void delete(long id, User user, long postId);
 }

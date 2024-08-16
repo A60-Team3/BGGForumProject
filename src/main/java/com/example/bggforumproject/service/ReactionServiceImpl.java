@@ -42,13 +42,13 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public int getLikesCount(long postId) {
+    public long getLikesCount(long postId) {
         postRepository.get(postId);
         return reactionRepository.getLikesCount(postId);
     }
 
     @Override
-    public int getDislikesCount(long postId) {
+    public long getDislikesCount(long postId) {
         postRepository.get(postId);
         return reactionRepository.getDislikesCount(postId);
     }

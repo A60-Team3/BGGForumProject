@@ -6,6 +6,9 @@
         <li sec:authorize="isAuthenticated()">
             <a th:href="@{/BGGForum/posts}">Posts</a>
         </li>
+        <li sec:authorize="isAuthenticated()">
+            <a th:href="@{/BGGForum/posts/new}">Create Post</a>
+        </li>
         <li sec:authorize="!isAuthenticated()">
             <a th:href="@{/auth/register}">Register</a>
         </li>

@@ -143,9 +143,12 @@ public class PostMvcController {
                 .getAll(new CommentFilterOptions(null, null, null, null, postId, null, null));
 
         Page<Comment> commentsForPost = commentService.getCommentsForPost(postId, pageIndex, pageSize);
-
+        long likes = reactionService.getLikesCount(postId);
+        long dislikes = reactionService.getDislikesCount(postId);
         model.addAttribute("post", post);
         model.addAttribute("comments", commentsForPost);
+        model.addAttribute("likes", likes);
+        model.addAttribute("dislikes", dislikes);
         model.addAttribute("loggedUser", currentUser);
         return "post-single";
     }
@@ -153,7 +156,7 @@ public class PostMvcController {
     @GetMapping("/new")
     public String showNewPostPage(Model model) {
         model.addAttribute("post", new PostCreateDTO());
-        return "create-post";
+        return "post-new";
     }
 
     @PostMapping("/new")
@@ -163,7 +166,7 @@ public class PostMvcController {
         User user = userService.get(loggedUser.getUsername());
 
         if (bindingResult.hasErrors()) {
-            return "create-post";
+            return "post-new";
         }
         Post post = mapper.map(dto, Post.class);
         postService.create(post, user);
