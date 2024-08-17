@@ -4,11 +4,13 @@ import com.example.bggforumproject.dtos.request.FilterDto;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.Tag;
+import com.example.bggforumproject.security.CustomUserDetails;
 import com.example.bggforumproject.service.contacts.AnonymousUserService;
 import com.example.bggforumproject.service.contacts.TagService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +30,14 @@ public class AnonymousMvcController {
     public AnonymousMvcController(TagService tagService, AnonymousUserService anonymousUserService) {
         this.tagService = tagService;
         this.anonymousUserService = anonymousUserService;
+    }
+
+    @ModelAttribute("principalPhoto")
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        if (customUserDetails != null && customUserDetails.getPhotoUrl() != null) {
+            return customUserDetails.getPhotoUrl();
+        }
+        return "/images/blank_profile.png";
     }
 
     @ModelAttribute("requestURI")

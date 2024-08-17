@@ -1,5 +1,15 @@
 <div th:fragment="navbar" id="templatemo_menu">
-    <ul>
+    <div class="profile-menu">
+        <li sec:authorize="isAuthenticated()">
+            <a th:href="@{/BGGForum/users/profile}">
+                <img class="navbar-picture"
+                     th:src="${principalPhoto}"
+                     alt="profile_picture">
+                <span class="navbar-username" th:text="${#authentication.name}"></span>
+            </a>
+        </li>
+    </div>
+    <ul class="main-menu">
         <li>
             <a th:href="@{/}">Home</a>
         </li>
@@ -18,13 +28,7 @@
             <a th:href="@{/auth/login}">Sign In</a>
         </li>
         <li sec:authorize="isAuthenticated()">
-            <a th:href="@{/BGGForum/users/profile}">Profile</a>
-        </li><li sec:authorize="isAuthenticated()">
             <a href="#" onclick="logout()">Log out</a>
         </li>
     </ul>
-
-    <div sec:authorize="isAuthenticated()">
-        <h4 class="ms-2" th:text="'Welcome, ' + ${#authentication.name}"></h4>
-    </div>
 </div>

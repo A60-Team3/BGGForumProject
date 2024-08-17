@@ -30,10 +30,10 @@
                     <span class="reply" th:if="${post.userId.username == #authentication.name}"><a href="#">&#9998;Edit</a>
                     </span>
                     <span class="reply" th:if="${isAdmin || post.userId.username == #authentication.name}"><a
-                            href="#" th:href="@{/BGGForum/posts/__${post.id}__/delete}">&#128465;Delete</a></span>
+                            href="#" th:href="@{__${requestURI}__/delete}">&#128465;Delete</a></span>
                 </div>
                 <span th:text="${#temporals.format(post.getCreatedAt(), 'dd-MM-yyyy')}">December 28, 2048</span> | <strong>Author:</strong> <span
-                    th:text="${post.userId.getUsername()}">John</span> | <strong
+                    th:text="${post.userId.firstName} + ' ' + ${post.userId.lastName}">John</span> | <strong
                     th:text="#{post.label.tag}">Category:</strong> <span th:each="tag, iterStat : ${post.getTags()}">
                         <span th:text="${tag.getName()}">Tag Name</span>
                         <span th:if="${!iterStat.last}">,</span>
@@ -64,8 +64,12 @@
                                 <p th:text="${comment.getContent()}">Phasellus mattis tellus eu risusLorem ipsum dolor
                                     sit amet, consectetur adipiscing
                                     elit.</p>
-                                <div class="reply" th:if="${comment.userId.username == #authentication.name}"><a href="#" th:href="@{/BGGForum/posts/__${post.id}__/comments/__${comment.id}__/update}">Edit</a></div>
-                                <div class="reply" th:if="${isAdmin || comment.userId.username == #authentication.name}"><a href="#" th:href="@{/BGGForum/posts/__${post.id}__/comments/__${comment.id}__/delete}">Delete</a></div>
+                                <div class="reply" th:if="${comment.userId.username == #authentication.name}">
+                                    <a href="#" th:href="@{__${requestURI}__/comments/__${comment.id}__/update}">Edit</a>
+                                </div>
+                                <div class="reply" th:if="${isAdmin || comment.userId.username == #authentication.name}">
+                                    <a href="#" th:href="@{__${requestURI}__/comments/__${comment.id}__/delete}">Delete</a>
+                                </div>
                             </div>
                             <div class="cleaner"></div>
                         </div>
@@ -76,7 +80,7 @@
             <div id="comment_form">
                 <h3>Leave a comment</h3>
 
-                <form action="#" th:action="@{/BGGForum/posts/__${post.id}__/comments/new}" th:object="${comment}"
+                <form action="#" th:action="@{__${requestURI}__/comments/new}" th:object="${comment}"
                       method="post">
 
                     <div class="form_row">

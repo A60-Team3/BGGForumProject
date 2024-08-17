@@ -44,19 +44,19 @@ public class AuthenticationMvcController {
 
     @GetMapping("/register")
     public ModelAndView showRegisterPage(@ModelAttribute("userRegisterModel") RegistrationDTO registrationDTO, Model model) {
-        return new ModelAndView("register");
+        return new ModelAndView("user-create");
     }
 
     @PostMapping("/register")
     public String handleRegister(@ModelAttribute("userRegisterModel") @Valid RegistrationDTO register,
                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "register";
+            return "user-create";
         }
 
         if (!register.password().equals(register.passwordConfirm())) {
             bindingResult.rejectValue("passwordConfirm", "password_error", "Password confirmation should match password.");
-            return "register";
+            return "user-create";
         }
 
         try {
@@ -65,7 +65,7 @@ public class AuthenticationMvcController {
             return "redirect:/auth/login?success";
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("username", "username_error", e.getMessage());
-            return "register";
+            return "user-create";
         }
     }
 }

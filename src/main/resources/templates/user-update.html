@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{/fragments/head.html :: head(${user.firstName + ' ' + user.lastName})}"></head>
+<body>
+<div id="templatemo_wrapper">
+    <div th:replace="~{/fragments/navbar.html}"></div>
+    <div id="templatemo_left_column">
+
+        <div class="profile-container-update">
+            <div th:if="${user.username == #authentication.name}">
+                <label for="profile-upload">
+                    <img class="profile-picture"
+                         th:src="${user.photoUrl != null ? user.photoUrl : '/images/blank_profile.png'}"
+                         src="../static/images/blank_profile.png"
+                         alt="profile_picture">
+                </label>
+
+                <form id="profile-form"
+                      method="post"
+                      enctype="multipart/form-data"
+                      th:object="${userUpdateDto}">
+                    <input type="file" id="profile-upload" name="profilePicture" style="display: none;" onchange="uploadPhoto()"/>
+                </form>
+            </div>
+
+            <div th:unless="${user.username == #authentication.name}">
+                <img class="profile-picture"
+                     th:src="${user.photoUrl != null ? user.photoUrl : '/images/blank_profile.png'}"
+                     src="../static/images/blank_profile.png"
+                     alt="profile_picture">
+            </div>
+        </div>
+
+        <div id="templatemo_sidebar">
+            <ul class="templatemo_list">
+                <li>
+                    <h5 th:text="'Username: ' + ${user.username}">Username </h5>
+                </li>
+                <li>
+                    <h5 th:text="'Full Name: ' + ${user.firstName} + ' ' + ${user.lastName}">Full Name </h5>
+                </li>
+
+                <li>
+                    <h5 th:text="'Email: ' + ${user.email}">Email</h5>
+                </li>
+                <li >
+                    <h5 th:text="'Phone number: ' + ${(user.phoneNumber == null) ? ' N/A ' : user.phoneNumber.number}">
+                        Cellphone</h5>
+                </li>
+                <li>
+                    <h5 th:text="'Joined: ' + ${#temporals.format(user.registeredAt, 'MMM dd YYYY')}">
+                        Registered</h5>
+                </li>
+                <li>
+                    <h5 th:text="'Last Edit: ' + ${#temporals.format(user.updatedAt, 'MMM dd YYYY')}">
+                        Edited on: </h5>
+                </li>
+                <li>
+                    <h5> User Roles:
+                        <span th:each="role, iterStat : ${user.roles}">
+                                <span th:text="${role.authority}">Role</span>
+                                <span th:if="${!iterStat.last}">,</span>
+                        </span>
+                    </h5>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+
+    <div id="templatemo_right_column">
+        <div id="templatemo_main">
+                <div>
+                    <h4>Edit Your Information</h4>
+
+                    <form class="form-check" action="#" th:action="@{__${requestURI}__}" th:object="${userUpdateDto}"
+                          method="post">
+                        <label for="username" th:text="#{user.label.username}">Username</label>
+                        <br/>
+                        <input type="text" th:value="${user.username}" readonly="readonly" disabled = "disabled" id="username"/>
+                        <span class="label-error">Cannot be changed!</span>
+                        <br/><br/>
+
+                        <label for="password" th:text="#{user.label.password}">Password</label>
+                        <br/>
+                        <input type="password" th:field="*{password}" id="password"/>
+                        <small class="label-error" th:errors="*{password}">Password error placeholder</small>
+                        <br/><br/>
+
+                        <label for="firstName" th:text="#{user.label.first-name}">First Name</label>
+                        <br/>
+                        <input type="text" th:field="*{firstName}" id="firstName"/>
+                        <small class="label-error" th:errors="*{firstName}">First name error placeholder</small>
+                        <br/><br/>
+
+                        <label for="lastName" th:text="#{user.label.last-name}">Last Name</label>
+                        <br/>
+                        <input type="text" th:field="*{lastName}" id="lastName"/>
+                        <small class="label-error" th:errors="*{lastName}">Last name error placeholder</small>
+                        <br/><br/>
+
+                        <label for="email" th:text="#{user.label.email}">Email</label>
+                        <br/>
+                        <input type="text" th:field="*{email}" id="email"/>
+                        <small class="label-error" th:errors="*{email}">Email error placeholder</small>
+                        <br/><br/>
+
+                        <label for="phone" th:text="#{user.label.phone}">Phone Number</label>
+                        <br/>
+                        <input type="tel" th:field="*{phoneNumber}" id="phone" name="phone" th:pattern="*{phoneNumberRegex}"/>
+                        <small class="label-error" th:errors="*{password}">Phone number error placeholder</small>
+                        <br/><br/>
+
+                        <input type="submit" value="Update"/>
+                    </form>
+                </div>
+        </div>
+    </div>
+
+
+    <footer th:replace="~{/fragments/footer}"></footer>
+
+</div>
+</body>
+<div th:replace="~{/fragments/scripts.html}"></div>
+</html>

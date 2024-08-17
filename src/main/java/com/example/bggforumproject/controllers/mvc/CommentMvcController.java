@@ -8,6 +8,7 @@ import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.models.Comment;
 import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.security.CustomUserDetails;
 import com.example.bggforumproject.service.contacts.CommentService;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +36,14 @@ public class CommentMvcController {
         this.commentService = commentService;
         this.userService = userService;
         this.mapper = mapper;
+    }
+
+    @ModelAttribute("principalPhoto")
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        if (customUserDetails.getPhotoUrl() != null) {
+            return customUserDetails.getPhotoUrl();
+        }
+        return "/images/blank_profile.png";
     }
 
     @ModelAttribute("requestURI")
@@ -108,7 +118,7 @@ public class CommentMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "error-page";
         }
 
     }
@@ -133,14 +143,14 @@ public class CommentMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "error-page";
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("content", "duplicate_comment", e.getMessage());
             return "comment-edit";
         } catch (AuthorizationException e) {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "error-page";
         }
 
     }
@@ -158,11 +168,11 @@ public class CommentMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "error-page";
         } catch (AuthorizationException e) {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "error-page";
         }
     }
 }

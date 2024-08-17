@@ -245,14 +245,9 @@ em {
     margin: 0 10px 0 100px;
     padding: 20px 30px 0 0;
     background: url(../images/templatemo_menu.png) top repeat-x;
-}
-
-#templatemo_menu ul {
-    float: right;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: inline-block;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #templatemo_menu ul li {
@@ -267,7 +262,7 @@ em {
     width: 112px;
     height: 48px;
     padding: 0;
-    margin: 0 5px 0 0;
+    margin: 0 5px;
     font-size: 14px;
     text-align: center;
     text-decoration: none;
@@ -289,6 +284,12 @@ em {
 #templatemo_left_column {
     float: left;
     width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0; /* Adds padding around the column if needed */
+    box-sizing: border-box; /* Ensures padding is included in the element's total width/height */
 }
 
 #templatemo_right_column {
@@ -791,6 +792,10 @@ em {
     padding: 0 10px;
     margin-left: 20px;
 
+    display: flex; /* Flexbox to help with centering if needed */
+    justify-content: center; /* Center the image horizontally */
+    align-items: center; /* Center the image vertically */
+
     width: 60%; /* or set a specific width */
     max-width: 300px; /* optional: limits the maximum width */
     height: auto; /* maintains aspect ratio */
@@ -798,12 +803,95 @@ em {
     overflow: hidden; /* hides any overflow */
 }
 
+/* Profile menu stays on the left */
+.profile-menu {
+    padding: 0;
+    list-style: none;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* Main menu stays on the right */
+.main-menu {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: block;
+    align-items: center;
+    float: right;
+}
+
+/* Styling for the username */
+.navbar-username {
+    color: #e4decd; /* Adjust color as needed */
+    height: 35px;
+    font-weight: bold;
+    vertical-align: middle;
+    display: inline-block;
+}
+
 .profile-picture {
     width: 100%; /* make the image take up the full width of the container */
     height: auto; /* maintain the aspect ratio */
-    display: block; /* removes any whitespace below the image */
     object-fit: cover; /* ensures the image covers the container while maintaining aspect ratio */
+    transition: opacity 0.3s ease; /* Smooth transition for hover effect */
+    margin-left: 50px;
 }
 
+.navbar-picture {
+    width: 30px; /* make the image take up the full width of the container */
+    height: auto; /* maintain the aspect ratio */
+    object-fit: cover; /* ensures the image covers the container while maintaining aspect ratio */
+    transition: opacity 0.3s ease; /* Smooth transition for hover effect */
+    margin: 0 5px 0 10px;
+    padding-bottom: 20px;
+}
+
+.profile-container-update {
+
+    padding: 0 10px;
+    margin-left: 20px;
+
+    display: flex; /* Flexbox to help with centering if needed */
+    justify-content: center; /* Center the image horizontally */
+    align-items: center; /* Center the image vertically */
+
+    width: 60%; /* or set a specific width */
+    max-width: 300px; /* optional: limits the maximum width */
+    height: auto; /* maintains aspect ratio */
+    border-radius: 50%; /* optional: makes the container circular if desired */
+    overflow: hidden; /* hides any overflow */
+}
+
+.profile-container-update:hover .profile-picture {
+    opacity: 0.7; /* Slightly transparent on hover */
+}
+
+.profile-container-update:hover{
+    cursor: pointer; /* Change cursor to pointer to indicate clickability */
+    position: relative;
+}
+
+.profile-container-update::after {
+    content: "Change Picture";
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px 10px;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.profile-container-update:hover::after {
+    opacity: 1; /* Show the "Change Picture" text on hover */
+}
 /*custom css*/
 

@@ -1,19 +1,14 @@
 package com.example.bggforumproject.controllers.mvc;
 
 import com.example.bggforumproject.dtos.request.FilterDto;
-import com.example.bggforumproject.dtos.response.UserBlockOutDTO;
-import com.example.bggforumproject.dtos.response.UserOutDTO;
 import com.example.bggforumproject.helpers.filters.UserFilterOptions;
 import com.example.bggforumproject.models.Role;
 import com.example.bggforumproject.models.User;
-import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.RoleRepository;
+import com.example.bggforumproject.security.CustomUserDetails;
 import com.example.bggforumproject.service.contacts.UserService;
-import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -37,6 +31,14 @@ public class AdminMvcController {
     public AdminMvcController(UserService userService, RoleRepository roleRepository) {
         this.userService = userService;
         this.roleRepository = roleRepository;
+    }
+
+    @ModelAttribute("principalPhoto")
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        if (customUserDetails.getPhotoUrl() != null) {
+            return customUserDetails.getPhotoUrl();
+        }
+        return "/images/blank_profile.png";
     }
 
     @ModelAttribute("requestURI")

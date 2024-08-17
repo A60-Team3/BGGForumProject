@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<form th:replace="~{/fragments/head.html :: head('Error Page')}"></form>
+<body>
+<div id="templatemo_wrapper">
+    <form th:replace="~{/fragments/navbar}"></form>
+    <div id="templatemo_left_column">
+        <div th:replace="~{/fragments/siteLogo}"></div>
+    </div>
+
+    <div id="templatemo_right_column">
+        <div id="templatemo_main">
+            <h1 class="label-error" th:text="${statusCode}">HTTP Status Code</h1>
+            <h3 class="error" th:text="${error}">Error placeholder</h3>
+        </div>
+    </div>
+    <footer th:replace="~{/fragments/footer}"></footer>
+</div>
+<div th:replace="~{/fragments/scripts.html}"></div>
+</body>
+</html>

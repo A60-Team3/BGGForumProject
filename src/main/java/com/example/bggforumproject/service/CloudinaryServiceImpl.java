@@ -20,10 +20,11 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @Override
     public String uploadImage(MultipartFile multipartFile) throws IOException {
         try {
-            Map result = this.cloudinary
+            return this.cloudinary
                     .uploader()
-                    .upload(multipartFile.getBytes(), Collections.emptyMap());
-            return result.get("secure_url").toString();
+                    .upload(multipartFile.getBytes(), Collections.emptyMap())
+                    .get("secure_url")
+                    .toString();
         } catch (Exception e) {
             throw new IllegalFileUploadException("Failed to upload file");
         }

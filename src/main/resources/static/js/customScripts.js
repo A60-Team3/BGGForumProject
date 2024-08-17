@@ -14,3 +14,7 @@ function logout() {
     document.body.appendChild(form);
     form.submit();
 }
+
+function uploadPhoto(){
+    document.getElementById('profile-form').submit();
+}

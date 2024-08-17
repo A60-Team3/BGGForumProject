@@ -18,26 +18,32 @@
 
         <div id="templatemo_sidebar">
             <ul class="templatemo_list">
-                <li>
-                    <h5 th:text="'Username: ' + ${shownUser.username}">Username </h5>
+                <li th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''MODERATOR'')') or shownUser.username == #authentication.name}">
+                    <a sec:authorize="hasRole('ADMIN')"
+                       th:href="@{/BGGForum/admin(username=${shownUser.username})}">
+                        <h5 th:text="'Username: ' + ${shownUser.username}">Username </h5>
+                    </a>
+                    <h5 sec:authorize="!hasRole('ADMIN')" th:text="'Username: ' + ${shownUser.username}">Username </h5>
                 </li>
                 <li>
                     <h5 th:text="'Full Name: ' + ${shownUser.firstName} + ' ' + ${shownUser.lastName}">Full Name </h5>
                 </li>
-                <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+
+                <li th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''MODERATOR'')') or shownUser.username == #authentication.name}">
                     <h5 th:text="'Email: ' + ${shownUser.email}">Email</h5>
                 </li>
-                <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
-                    <h5 th:text="'Phone number: ' + ${shownUser.phoneNumber.number}">Cellphone</h5>
+                <li th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''MODERATOR'')') or shownUser.username == #authentication.name}">
+                    <h5 th:text="'Phone number: ' + ${(shownUser.phoneNumber == null) ? ' N/A ' : shownUser.phoneNumber.number}">
+                        Cellphone</h5>
                 </li>
                 <li>
                     <h5 th:text="'Joined: ' + ${#temporals.format(shownUser.registeredAt, 'MMM dd YYYY')}">
                         Registered</h5>
                 </li>
-                <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                <li sec:authorize="hasAnyRole('ADMIN','MODERATOR')">
                     <h5 th:text="'User Access: ' + ${(shownUser.isBlocked) ? 'Blocked' : 'Allowed'}"></h5>
                 </li>
-                <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                <li sec:authorize="hasRole('ADMIN')">
                     <h5 th:text="'User Status: ' + ${(shownUser.isBlocked) ? 'Archived' : 'Active'}"></h5>
                 </li>
                 <li>
@@ -58,12 +64,18 @@
                     <h5 th:text="'Fancied: ' + ${reactedPosts.size()} + ' articles.'">Total Posts </h5>
                 </li>
             </ul>
+
+            <div th:if="${shownUser.username == #authentication.name}">
+                <form id="profile-form" th:action="@{__${requestURI}__/update}" method="get">
+                    <input class="btn btn-secondary" type="submit" value="Edit"/>
+                </form>
+            </div>
         </div>
     </div>
 
     <div id="templatemo_right_column">
         <div id="templatemo_main">
-            <div th:if="${!shownUser.roles.?[authority == 'ADMIN'].isEmpty() || shownUser.username == #authentication.name}">
+            <div th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''MODERATOR'')') or shownUser.username == #authentication.name}">
                 <div th:if="${userPosts.isEmpty()}">
                     <h3>No Posts</h3>
                 </div>

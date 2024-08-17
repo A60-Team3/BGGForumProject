@@ -81,7 +81,7 @@
             <div th:if="${admins.isEmpty()}">No Admins</div>
             <div th:unless="${admins.isEmpty()}">
                 <ul class="templatemo_list" th:each="admin : ${admins}">
-                    <li><a href="#" th:href="@{/users/__${admin.id}__}" th:text="${admin.username}">Admins</a></li>
+                    <li><a href="#" th:href="@{/BGGForum/users/__${admin.id}__}" th:text="${admin.username}">Admins</a></li>
                 </ul>
             </div>
 
@@ -91,7 +91,7 @@
             <div th:if="${mods.isEmpty()}">No Moderators</div>
             <div th:unless="${mods.isEmpty()}">
                 <ul class="templatemo_list" th:each="deputy : ${mods}">
-                    <li><a href="#" th:href="@{/users/__${deputy.id}__}" th:text="${deputy.username}">Moderators</a>
+                    <li><a href="#" th:href="@{/BGGForum/users/__${deputy.id}__}" th:text="${deputy.username}">Moderators</a>
                     </li>
                 </ul>
             </div>
@@ -125,14 +125,14 @@
                     <div class="row" th:each="user : ${users}">
                         <div class="cell">
                             <img class="img-fluid rounded mb-5"
-                                 th:src="${user.photoUrl != null ? user.photoUrl : '/images/blank_profile.png'}"
+                                 th:src="${user.photoUrl != null ? user.photoUrl.photoUrl : '/images/blank_profile.png'}"
                                  src="../static/images/blank_profile.png"
                                  alt="profile_picture">
                         </div>
                         <div class="cell" th:text="${user.firstName} + ' ' + ${user.lastName}">Full Name</div>
                         <div class="cell" th:text="${user.email}">E-mail</div>
                         <div class="cell">
-                            <a href="#" th:href="@{/users/__${user.id}__}" th:text="${user.username}"></a>
+                            <a href="#" th:href="@{/BGGForum/users/__${user.id}__}" th:text="${user.username}"></a>
                             <div sec:authorize="hasRole('ADMIN')">
                                 <form action="#"
                                       th:action="@{__${requestURI}__/__${user.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
@@ -151,7 +151,7 @@
                                 <span th:if="${!iterStat.last}">,</span>
                             </span>
                             <div sec:authorize="hasRole('ADMIN')">
-                                <div th:if="${user.roles.?[authority == 'ADMIN' || authority == 'MODERATOR'].isEmpty()}">
+                                <div th:if="${user.roles.?[authority != 'USER'].isEmpty()}">
                                     <form action="#"
                                           th:action="@{__${requestURI}__/__${user.id}__/promote(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
                                           method="post">

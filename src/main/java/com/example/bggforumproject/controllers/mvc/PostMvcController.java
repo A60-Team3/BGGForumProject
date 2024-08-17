@@ -11,6 +11,7 @@ import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.*;
+import com.example.bggforumproject.security.CustomUserDetails;
 import com.example.bggforumproject.service.contacts.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -52,6 +53,14 @@ public class PostMvcController {
         this.reactionService = reactionService;
         this.tagService = tagService;
         this.mapper = mapper;
+    }
+
+    @ModelAttribute("principalPhoto")
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        if (customUserDetails.getPhotoUrl() != null) {
+            return customUserDetails.getPhotoUrl();
+        }
+        return "/images/blank_profile.png";
     }
 
     @ModelAttribute("isAdmin")
@@ -186,7 +195,7 @@ public class PostMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "error-page";
         }
     }
 
@@ -209,14 +218,14 @@ public class PostMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "error-page";
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("title", "duplicate_post", e.getMessage());
             return "BeerUpdateView";
         } catch (AuthorizationException e) {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "error-page";
         }
     }
 
@@ -237,11 +246,11 @@ public class PostMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "error-page";
         } catch (AuthorizationException e) {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "error-page";
         }
     }
 

@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class ImageUploadHelper {
     public static final long MAX_FILE_SIZE = 2 * 1024 * 1024;
 
-    public static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
+    public static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|jpeg))$)";
 
     public static final String DATE_FORMAT = "yyyyMMddHHmmss";
 
@@ -35,7 +35,7 @@ public class ImageUploadHelper {
                 .orElse("");
 
         if (!isAllowedExtension(fileName, pattern)) {
-            throw new IllegalFileUploadException("Only jpg, png, gif, bmp files are allowed");
+            throw new IllegalFileUploadException("Only jpg, png, gif, jpeg files are allowed");
         }
     }
 

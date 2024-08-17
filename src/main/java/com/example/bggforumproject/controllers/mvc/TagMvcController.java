@@ -4,12 +4,14 @@ import com.example.bggforumproject.dtos.response.TagDTO;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.security.CustomUserDetails;
 import com.example.bggforumproject.service.contacts.TagService;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +31,14 @@ public class TagMvcController {
         this.tagService = tagService;
         this.userService = userService;
         this.mapper = mapper;
+    }
+
+    @ModelAttribute("principalPhoto")
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        if (customUserDetails.getPhotoUrl() != null) {
+            return customUserDetails.getPhotoUrl();
+        }
+        return "/images/blank_profile.png";
     }
 
     @ModelAttribute("isAuthenticated")

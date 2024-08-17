@@ -3,10 +3,12 @@ package com.example.bggforumproject.controllers.mvc;
 import com.example.bggforumproject.models.Reaction;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.models.enums.ReactionType;
+import com.example.bggforumproject.security.CustomUserDetails;
 import com.example.bggforumproject.service.contacts.ReactionService;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,14 @@ public class ReactionMvcController {
     public ReactionMvcController(ReactionService reactionService, UserService userService) {
         this.reactionService = reactionService;
         this.userService = userService;
+    }
+
+    @ModelAttribute("principalPhoto")
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        if (customUserDetails.getPhotoUrl() != null) {
+            return customUserDetails.getPhotoUrl();
+        }
+        return "/images/blank_profile.png";
     }
 
     @ModelAttribute("isAuthenticated")
