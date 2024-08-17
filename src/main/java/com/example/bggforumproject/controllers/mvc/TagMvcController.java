@@ -77,25 +77,21 @@ public class TagMvcController {
         User user = userService.get(loggedUser.getUsername());
 
         if (bindingResult.hasErrors()){
-            return "post-edit";
+            return "redirect:/BGGForum/posts/{postId}/update#tag-input";
         }
         Tag tag = mapper.map(dto, Tag.class);
         tagService.addTagToPost(postId, tag.getName(), user);
 
-        return "redirect:/BGGForum/posts/{postId}/update";
+        return "redirect:/BGGForum/posts/{postId}/update#tag-input";
     }
 
-    @GetMapping("/{postId}/tags/{tagId}")
+    @GetMapping("/{postId}/tags/{tagId}/remove")
     public String deleteTagFromPost(@PathVariable long postId,
                                     @PathVariable long tagId,
-                                    HttpSession session){
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
-
-        User user = userService.get((String) session.getAttribute("currentUser"));
+                                    @AuthenticationPrincipal UserDetails loggedUser){
+        User user = userService.get(loggedUser.getUsername());
         tagService.deleteTagFromPost(tagId, postId, user);
-        return "redirect:/BGGForum/posts/tags";
+        return "redirect:/BGGForum/posts/{postId}";
 
     }
 

@@ -46,9 +46,9 @@
                     <form action="#" th:action="@{/BGGForum/posts/__${postId}__/tags}" th:object="${tag}"
                           method="post">
                         <label><strong>Add a tag (optional)</strong></label>
-                        <label class="error" th:errors="*{name}">Content error placeholder</label>
+                        <label class="error" th:errors="*{name}">Name error placeholder</label>
                         <br/>
-                        <input type="text" name="tag" th:field="*{name}">
+                        <input type="text" name="tag" id="tag-input" th:field="*{name}">
                         <input type="submit" name="Submit" value="Add tag" class="submit_btn"/>
                     </form>
 

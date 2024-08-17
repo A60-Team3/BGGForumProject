@@ -941,4 +941,47 @@ em {
 .game-bg-2 {
     background-image: url('../images/background-right.png');
 }
+
+
+.tag-name {
+    display: inline-block;
+    background-color: #f1f1f1;
+    padding: 5px 10px;
+    margin: 2px;
+    border-radius: 15px;
+    position: relative;
+}
+
+.tag-name:hover{
+    background-color: lightgray;
+}
+
+.tag-name:active{
+    background-color:gray;
+}
+
+.tag-name span {
+    vertical-align: middle;
+}
+
+.remove-tag-button {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.remove-tag-button img {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+}
+
+.tag-name .tag-link a{
+    text-decoration: none;
+    color: black;
+}
 /*custom css*/

@@ -25,7 +25,8 @@
                 <span class="dislike-icon"><img src="/images/thumbs-down-14924.png" width="30px" height="auto"></span>
                 <span class="dislikes" th:text="${dislikes}">256</span>
                 <span class="post-actions">
-                    <span class="reply" th:if="${post.userId.username == #authentication.name}"><a href="#" th:href="@{__${requestURI}__/update}">&#9998;Edit</a>
+                    <span class="reply" th:if="${post.userId.username == #authentication.name}"><a href="#"
+                                                                                                   th:href="@{__${requestURI}__/update}">&#9998;Edit</a>
                     </span>
                     <span class="reply" th:if="${isAdmin || post.userId.username == #authentication.name}"><a
                             href="#" th:href="@{__${requestURI}__/delete}">&#128465;Delete</a></span>
@@ -33,12 +34,20 @@
                 <span class="comment"><a href="#comment_section" th:text="${comments.content.size()}">256</a></span>
 
                 <h2 th:text="${post.getTitle()}">Aliquam lorem ante dapibus in viverra </h2>
-                <span th:text="${#temporals.format(post.getCreatedAt(), 'dd-MM-yyyy')}">December 28, 2048</span> | <strong>Author:</strong> <span
+                <span th:text="${#temporals.format(post.getCreatedAt(), 'dd-MM-yyyy')}">December 28, 2048</span> |
+                <strong>Author:</strong> <span
                     th:text="${post.userId.firstName} + ' ' + ${post.userId.lastName}">John</span> | <strong
                     th:text="#{post.label.tag}">Category:</strong> <span th:each="tag, iterStat : ${post.getTags()}">
-                        <span th:text="${tag.getName()}">Tag Name</span>
-                        <span th:if="${!iterStat.last}">,</span>
+                <span class="tag-name">
+                    <span class="tag-link"><a href="#" th:href="@{/BGGForum/posts?tags=__${tag.id}__}" th:text="${tag.getName()}">Tag Name</a></span>
+                    <span class="remove-tag-button" th:if="${isAdmin || post.userId.username == #authentication.name}">
+                        <a href="#" th:href="@{__${requestURI}__/tags/__${tag.id}__/remove}">
+                            <img src="/images/cancel-close-10373.png" alt="Remove tag">
+                        </a>
                     </span>
+                </span>
+                <!--<span th:if="${!iterStat.last}">,</span>-->
+                </span>
 
                 <div class="post-content" th:text="${post.getContent()}">
 
@@ -59,8 +68,9 @@
                             </div>
 
                             <div class="comment_text">
-                                <div class="comment_author"> <span th:text="${comment.getUserId().getUsername()}">Steve</span><span class="date"
-                                         th:text="${#temporals.format(comment.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}">December 10, 2048</span><!--<span
+                                <div class="comment_author"><span
+                                        th:text="${comment.getUserId().getUsername()}">Steve</span><span class="date"
+                                                                                                         th:text="${#temporals.format(comment.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}">December 10, 2048</span><!--<span
                                         class="time">12:30 AM</span>--></div>
                                 <p th:text="${comment.getContent()}">Phasellus mattis tellus eu risusLorem ipsum dolor
                                     sit amet, consectetur adipiscing
@@ -68,7 +78,8 @@
                                 <div class="reply" th:if="${comment.userId.username == #authentication.name}">
                                     <a href="#" th:href="@{__${requestURI}__/comments/__${comment.id}__/update}">&#9998;Edit</a>
                                 </div>
-                                <div class="reply" th:if="${isAdmin || comment.userId.username == #authentication.name}">
+                                <div class="reply"
+                                     th:if="${isAdmin || comment.userId.username == #authentication.name}">
                                     <a href="#" th:href="@{__${requestURI}__/comments/__${comment.id}__/delete}">&#128465;Delete</a>
                                 </div>
                             </div>
