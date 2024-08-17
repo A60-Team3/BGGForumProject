@@ -575,19 +575,33 @@ em {
     background: gray;
     border: 1px solid #fff;
     color: #fff;
+    text-decoration: none;
 }
-
+.comment_text .reply a:hover{
+    background: #a7a6a6;
+}
+.post-actions{
+    position: absolute;
+    top: -40px;
+    right: 170px;
+}
 .post-actions .reply a{
-    float:right;
     padding: 1px 10px;
     width:70px;
     height: 24px;
     text-align: center;
-    background: gray;
-    border: 1px solid #fff;
-    color: #fff;
+    background: none;
+    color: #000;
+    text-decoration: none;
 }
 
+.post-actions .reply a:hover{
+    background: lightgray;
+}
+
+.post-actions .reply a:active{
+    background: gray;
+}
 
 #comment_form {
     clear: both;
@@ -641,6 +655,11 @@ em {
 
 #comment_form .form_row {
     width: 100%;
+    margin-bottom: 15px;
+}
+
+#comment_form .form_row input[type="text"]{
+    width: 360px;
     margin-bottom: 15px;
 }
 

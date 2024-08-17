@@ -4,6 +4,7 @@ import com.example.bggforumproject.dtos.request.FilterDto;
 import com.example.bggforumproject.dtos.response.CommentDTO;
 import com.example.bggforumproject.dtos.response.PostCreateDTO;
 import com.example.bggforumproject.dtos.response.PostUpdateDTO;
+import com.example.bggforumproject.dtos.response.TagDTO;
 import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
@@ -191,7 +192,8 @@ public class PostMvcController {
             PostUpdateDTO dto = mapper.map(post, PostUpdateDTO.class);
             model.addAttribute("postId", id);
             model.addAttribute("post", dto);
-            return "edit-post";
+            model.addAttribute("tag", new TagDTO());
+            return "post-edit";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
@@ -208,20 +210,20 @@ public class PostMvcController {
 
         User user = userService.get(loggedUser.getUsername());
         if (bindingResult.hasErrors()) {
-            return "edit-post";
+            return "post-edit";
         }
 
         try {
             Post post = mapper.map(dto, Post.class);
             postService.update(id, post, user);
-            return "redirect:/BGGForum/posts";
+            return "redirect:/BGGForum/posts/{id}";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "error-page";
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("title", "duplicate_post", e.getMessage());
-            return "BeerUpdateView";
+            return "post-edit";
         } catch (AuthorizationException e) {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());

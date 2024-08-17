@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -71,17 +72,17 @@ public class TagMvcController {
     public String addTagToPost(@PathVariable long postId,
                                @Valid @ModelAttribute("tag") TagDTO dto,
                                BindingResult bindingResult,
-                               HttpSession session){
+                               @AuthenticationPrincipal UserDetails loggedUser){
 
-        User user = userService.get((String) session.getAttribute("currentUser"));
+        User user = userService.get(loggedUser.getUsername());
 
         if (bindingResult.hasErrors()){
-            return "add-tag";
+            return "post-edit";
         }
         Tag tag = mapper.map(dto, Tag.class);
         tagService.addTagToPost(postId, tag.getName(), user);
 
-        return "redirect:/BGGForum/posts/{postId}";
+        return "redirect:/BGGForum/posts/{postId}/update";
     }
 
     @GetMapping("/{postId}/tags/{tagId}")
