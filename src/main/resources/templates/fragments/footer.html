@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<footer th:fragment="footer">
+<div th:fragment="footer">
     <div class="cleaner_h20"></div>
     <div id="templatemo_footer">
         <small th:text="${'© Copyright ' + #dates.year(#dates.createNow()) + ' BGG Forum'}">BGG Forum</small>
+<!--        <span><small>Validate-->
+<!--            <a th:href="@{http://validator.w3.org/check(uri=#{__${requestURI}__})}">XHTML</a> &amp;-->
+<!--            <a th:href="@{http://jigsaw.w3.org/css-validator/check/__${requestURI}__}">CSS</a></small></span>-->
     </div>
     <div class="cleaner"></div>
-</footer>
-</html>
+</div>

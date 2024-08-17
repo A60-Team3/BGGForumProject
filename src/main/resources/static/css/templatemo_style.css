@@ -15,6 +15,8 @@ body {
     line-height: 1.5em;
     background-image: url(../images/templatemo_body.jpg);
     background-repeat: repeat;
+    display: flex;
+    flex-direction: column;
 }
 
 a, a:link, a:visited {
@@ -787,15 +789,15 @@ em {
 /* footer */
 
 #templatemo_footer {
-
     clear: both;
     width: 860px;
     height: 50px;
-    margin: 0 10px 0 50px;
+    margin: 0 10px 0 100px;
     padding: 30px 0 0 0;
     text-align: center;
     color: #FFFFFF;
     background: url(../images/templatemo_footer.png) space bottom;
+    z-index: 1000;
 }
 
 #templatemo_footer a {
@@ -912,5 +914,31 @@ em {
 .profile-container-update:hover::after {
     opacity: 1; /* Show the "Change Picture" text on hover */
 }
-/*custom css*/
 
+#background-images {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-repeat: no-repeat;
+
+}
+
+.game-bg {
+    filter: brightness(0.9);
+    transition: filter 0.3s ease, transform 0.2s ease-out;
+}
+
+.game-bg-1 {
+    background-image: url('../images/background-left.png');
+}
+
+.game-bg-2 {
+    background-image: url('../images/background-right.png');
+}
+/*custom css*/

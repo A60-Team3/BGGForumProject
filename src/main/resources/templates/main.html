@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
-<head th:replace="~{/fragments/head.html :: head(title = 'Welcome to BGG Forum')}"></head>
+<head th:replace="~{/fragments/head.html :: head(title = 'Welcome to BGG Forum')}"><title>Title</title></head>
 <body>
+
+<div th:replace="~{/fragments/background}"></div>
+
 <div id="templatemo_wrapper">
-    <div th:replace="~{/fragments/navbar.html}"></div>
+    <div th:replace="~{/fragments/navbar}"></div>
 
     <h4 class="post-filter message" th:if="${param.logout}" th:text="#{user.label.logout-success}"> Log out successful</h4>
 

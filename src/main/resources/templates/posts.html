@@ -5,6 +5,8 @@
 
 <head th:replace="~{/fragments/head.html :: head(title = 'Posts')}"></head>
 <body sec:authorize="isAuthenticated()">
+<div th:replace="~{/fragments/background}"></div>
+
 <div id="templatemo_wrapper">
 
     <div th:replace="~{/fragments/navbar.html}"></div>

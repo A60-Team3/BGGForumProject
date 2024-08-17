@@ -4,6 +4,7 @@
 
 <head th:replace="~{/fragments/head.html :: head('Admin Sanctuary')}"></head>
 <body sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+<div th:replace="~{/fragments/background}"></div>
 <div id="templatemo_wrapper">
     <div th:replace="~{/fragments/navbar.html}"></div>
     <div class="py-5 post-filter">
