@@ -1,10 +1,7 @@
 package com.example.bggforumproject.controllers.mvc;
 
 import com.example.bggforumproject.dtos.request.FilterDto;
-import com.example.bggforumproject.dtos.response.CommentDTO;
-import com.example.bggforumproject.dtos.response.PostCreateDTO;
-import com.example.bggforumproject.dtos.response.PostUpdateDTO;
-import com.example.bggforumproject.dtos.response.TagDTO;
+import com.example.bggforumproject.dtos.response.*;
 import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
@@ -31,10 +28,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/BGGForum/posts")
@@ -107,7 +101,11 @@ public class PostMvcController {
     @ModelAttribute("reactionTypes")
     public List<ReactionType> populateReactionTypes(){
         return List.of(ReactionType.class.getEnumConstants());
+    }
 
+    @ModelAttribute("reaction")
+    public ReactionDTO populateReactionDto(){
+        return new ReactionDTO();
     }
     //TODO: implement likes and dislikes counter
     /*

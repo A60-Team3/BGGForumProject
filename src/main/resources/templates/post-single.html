@@ -20,11 +20,51 @@
 
             <div class="post_section">
 
-                <span class="like-icon">
-                    <img src="/images/green-thumbs-up-11246.png" width="30px" height="auto">
-                </span>
+
+                    <form th:if="${userReaction == null}" th:action="@{__${requestURI}__/reactions/new}" th:method="post" th:object="${reaction}">
+                        <span class="like-icon">
+                            <input type="hidden" value="LIKE" name="reactionType">
+                            <input type="image" src="/images/green-thumbs-up-11246.png" alt="like" width="30px" height="auto">
+                        </span>
+                    </form>
+
+                    <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(0))}" th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/delete}" th:method="get" th:object="${reaction}">
+                        <span class="like-icon">
+                            <input type="hidden" value="LIKE" th:field="*{reactionType}">
+                            <input type="image" src="/images/green-thumbs-up-11246.png" alt="like" width="30px" height="auto">
+                        </span>
+                    </form>
+                    <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(1))}" th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/update}" th:method="post" th:object="${reaction}">
+                        <span class="like-icon">
+                            <input type="hidden" value="LIKE" name="reactionType">
+                            <input type="image" src="/images/green-thumbs-up-11246.png" alt="like" width="30px" height="auto">
+                        </span>
+                    </form>
+
+
                 <span class="likes" th:text="${likes}" th:classappend="${userReaction != null && userReaction.getReactionType().equals(reactionTypes.get(0))}?liked">256</span>
-                <span class="dislike-icon"><img src="/images/thumbs-down-14924.png" width="30px" height="auto"></span>
+
+                <form th:if="${userReaction == null}" th:action="@{__${requestURI}__/reactions/new}" th:method="post" th:object="${reaction}">
+                    <span class="dislike-icon">
+                        <input type="hidden" value="DISLIKE" name="reactionType">
+                        <input type="image" src="/images/thumbs-down-14924.png" alt="dislike" width="30px" height="auto">
+                    </span>
+                </form>
+
+                <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(1))}" th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/delete}" th:method="get" th:object="${reaction}">
+                    <span class="dislike-icon">
+                        <input type="hidden" value="DISLIKE" name="reactionType">
+                        <input type="image" src="/images/thumbs-down-14924.png" alt="dislike" width="30px" height="auto">
+                    </span>
+                </form>
+
+                <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(0))}" th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/update}" th:method="post" th:object="${reaction}">
+                    <span class="dislike-icon">
+                        <input type="hidden" value="DISLIKE" name="reactionType">
+                        <input type="image" src="/images/thumbs-down-14924.png" alt="dislike" width="30px" height="auto">
+                    </span>
+                </form>
+
                 <span class="dislikes" th:text="${dislikes}" th:classappend="${userReaction != null && userReaction.getReactionType().equals(reactionTypes.get(1))}?disliked">256</span>
                 <span class="post-actions">
                     <span class="reply" th:if="${post.userId.username == #authentication.name}">

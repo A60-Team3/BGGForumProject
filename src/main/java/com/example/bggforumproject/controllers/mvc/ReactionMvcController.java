@@ -1,5 +1,7 @@
 package com.example.bggforumproject.controllers.mvc;
 
+import com.example.bggforumproject.dtos.response.ReactionDTO;
+import com.example.bggforumproject.helpers.StringToReactionTypeConverter;
 import com.example.bggforumproject.models.ProfilePicture;
 import com.example.bggforumproject.models.Reaction;
 import com.example.bggforumproject.models.User;
@@ -10,9 +12,13 @@ import com.example.bggforumproject.service.contacts.ReactionService;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 
 @Controller
 @RequestMapping("/BGGForum/posts")
@@ -21,12 +27,17 @@ public class ReactionMvcController {
     private final ReactionService reactionService;
     private final UserService userService;
     private final PictureService pictureService;
+    private final ModelMapper mapper;
+    private final StringToReactionTypeConverter converter;
 
-    public ReactionMvcController(ReactionService reactionService, UserService userService, PictureService pictureService) {
+    public ReactionMvcController(ReactionService reactionService, UserService userService, PictureService pictureService, ModelMapper mapper, StringToReactionTypeConverter converter) {
         this.reactionService = reactionService;
         this.userService = userService;
         this.pictureService = pictureService;
+        this.mapper = mapper;
+        this.converter = converter;
     }
+
 
     @ModelAttribute("principalPhoto")
     public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
@@ -52,48 +63,39 @@ public class ReactionMvcController {
         return null;
     }
 
-    @PostMapping("/{postId}/reactions")
+    @PostMapping("/{postId}/reactions/new")
     public String createReaction(@PathVariable long postId,
-                                 @ModelAttribute("reaction")ReactionType reactionType,
-                                 HttpSession session){
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
+                                 @Valid @ModelAttribute("reaction") ReactionDTO reactionDto,
+                                 @AuthenticationPrincipal UserDetails loggedUser){
 
-        User user = userService.get((String) session.getAttribute("currentUser"));
+        ReactionType reactionType = converter.convert(reactionDto.getReactionType());
+
+        User user = userService.get(loggedUser.getUsername());
         Reaction reaction = new Reaction();
         reaction.setReactionType(reactionType);
-
         reactionService.create(reaction, user, postId);
 
         return "redirect:/BGGForum/posts/{postId}";
     }
 
-    @PostMapping("/{postId}/reactions/{reactionId}")
+    @PostMapping("/{postId}/reactions/{reactionId}/update")
     public String updateReaction(@PathVariable long postId,
                                  @PathVariable long reactionId,
-                                 @ModelAttribute("reaction") ReactionType reactionType,
-                                 HttpSession session){
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
-
-        User user = userService.get((String) session.getAttribute("currentUser"));
+                                 @ModelAttribute("reaction") ReactionDTO reactionDto,
+                                 @AuthenticationPrincipal UserDetails loggedUser){
+        User user = userService.get(loggedUser.getUsername());
+        ReactionType reactionType = converter.convert(reactionDto.getReactionType());
         reactionService.update(reactionId, user, postId, reactionType);
 
         return "redirect:/BGGForum/posts/{postId}";
     }
 
-    @GetMapping("/{postId}/reactions/{reactionId}")
+    @GetMapping("/{postId}/reactions/{reactionId}/delete")
     public String deleteReaction(@PathVariable long postId,
                                  @PathVariable long reactionId,
-                                 HttpSession session){
+                                 @AuthenticationPrincipal UserDetails loggedUser){
 
-        if(!populateIsAuthenticated(session)){
-            return "redirect:/auth/login";
-        }
-
-        User user = userService.get((String) session.getAttribute("currentUser"));
+        User user = userService.get(loggedUser.getUsername());
 
         reactionService.delete(reactionId, user, postId);
         return "redirect:/BGGForum/posts/{postId}";

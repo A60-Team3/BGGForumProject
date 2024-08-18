@@ -8,16 +8,16 @@ import jakarta.validation.constraints.NotNull;
 public class ReactionDTO {
 
     @NotNull(message = "Reaction type cannot be empty")
-    private ReactionType reactionType;
+    private String reactionType;
 
     public ReactionDTO() {
     }
 
-    public ReactionType getReactionType() {
+    public String getReactionType() {
         return reactionType;
     }
 
-    public void setReactionType(ReactionType reactionType) {
+    public void setReactionType(String reactionType) {
         this.reactionType = reactionType;
     }
 }

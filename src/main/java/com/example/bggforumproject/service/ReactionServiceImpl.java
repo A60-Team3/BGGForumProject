@@ -74,9 +74,9 @@ public class ReactionServiceImpl implements ReactionService {
             isDuplicate = false;
         }
 
-        if (isDuplicate){
+        /*if (isDuplicate){
             throw new EntityDuplicateException("Reaction", "userId", String.valueOf(user.getId()));
-        }
+        }*/
 
         reaction.setPostId(post);
         reaction.setUserId(user);

@@ -405,13 +405,13 @@ em {
 
 .post_section .like-icon{
     position: absolute;
-    top: -65px;
+    top: -45px;
     left: 0;
 }
 
 .post_section .dislike-icon{
     position: absolute;
-    top: -65px;
+    top: -45px;
     left: 100px;
 }
 
@@ -986,7 +986,7 @@ em {
 }
 
 .liked{
-    color: green;
+    color: #41e300;
 }
 
 .disliked{
