@@ -89,7 +89,7 @@
                         <div class="reply" th:if="${post.userId.username == #authentication.name}">
                             <a href="#" th:href="@{__${requestURI}__/__${post.id}__/update}">&#9998;Edit</a>
                         </div>
-                        <div class="reply" th:if="${#authorization.expression('hasAnyRole(''ADMIN'')') or post.userId.username == #authentication.name}"><a
+                        <div class="reply" th:if="${#authorization.expression('hasAnyRole(''ADMIN'')')or #authorization.expression('hasAnyRole(''MODERATOR'')') or post.userId.username == #authentication.name}"><a
                                 href="#" th:href="@{__${requestURI}__/__${post.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}">&#128465;Delete</a></div>
                     </div>
 <!--                        TODO fix paging deletion to redirect to proper page if last entry on page-->

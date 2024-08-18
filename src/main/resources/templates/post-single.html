@@ -70,7 +70,7 @@
                     <span class="reply" th:if="${post.userId.username == #authentication.name}">
                         <a href="#" th:href="@{__${requestURI}__/update}">&#9998;Edit</a>
                     </span>
-                    <span class="reply" th:if="${isAdmin || post.userId.username == #authentication.name}">
+                    <span class="reply" th:if="${isAdmin || isModerator || post.userId.username == #authentication.name}">
                         <a href="#" th:href="@{__${requestURI}__/delete}">&#128465;Delete</a>
                     </span>
                 </span>
@@ -86,7 +86,7 @@
                         <a href="#" th:href="@{/BGGForum/posts?tags=__${tag.id}__}"
                            th:text="${tag.getName()}">Tag Name</a>
                     </span>
-                    <span class="remove-tag-button" th:if="${isAdmin || post.userId.username == #authentication.name}">
+                    <span class="remove-tag-button" th:if="${isAdmin || isModerator || post.userId.username == #authentication.name}">
                         <a href="#" th:href="@{__${requestURI}__/tags/__${tag.id}__/remove}">
                             <img src="/images/cancel-close-10373.png" alt="Remove tag">
                         </a>
@@ -134,7 +134,7 @@
                                     <a href="#" th:href="@{__${requestURI}__/comments/__${currentCom.id}__/update}">&#9998;Edit</a>
                                 </div>
                                 <div class="reply"
-                                     th:if="${isAdmin || currentCom.userId.username == #authentication.name}">
+                                     th:if="${isAdmin || isModerator || currentCom.userId.username == #authentication.name}">
                                     <a href="#" th:href="@{__${requestURI}__/comments/__${currentCom.id}__/delete}">&#128465;Delete</a>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@
 
                     <div class="form_row">
                         <label><strong>Comment</strong></label>
-                        <label class="error" th:errors="*{content}">Content error placeholder</label>
+                        <label class="label-error" th:errors="*{content}">Content error placeholder</label>
                         <br/>
                         <textarea name="comment" rows="" cols="" th:field="*{content}"></textarea>
                     </div>
