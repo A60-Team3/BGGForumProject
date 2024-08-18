@@ -6,10 +6,8 @@ import com.example.bggforumproject.models.PhoneNumber;
 import com.example.bggforumproject.models.ProfilePicture;
 import com.example.bggforumproject.models.Role;
 import com.example.bggforumproject.models.User;
-import com.example.bggforumproject.repositories.contracts.RoleRepository;
 import com.example.bggforumproject.security.CustomUserDetails;
 import com.example.bggforumproject.service.contacts.PhoneService;
-import com.example.bggforumproject.service.contacts.PictureService;
 import com.example.bggforumproject.service.contacts.RoleService;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,19 +30,17 @@ public class AdminMvcController {
 
     private final UserService userService;
     private final RoleService roleService;
-    private final PictureService pictureService;
     private final PhoneService phoneService;
 
-    public AdminMvcController(UserService userService, RoleService roleService, PictureService pictureService, PhoneService phoneService){
+    public AdminMvcController(UserService userService, RoleService roleService, PhoneService phoneService){
         this.userService = userService;
         this.roleService = roleService;
-        this.pictureService = pictureService;
         this.phoneService = phoneService;
     }
 
     @ModelAttribute("principalPhoto")
-    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ProfilePicture profilePicture = userService.get(customUserDetails.getUsername()).getProfilePicture();
         if (profilePicture != null) {
             return profilePicture.getPhotoUrl();
         }
@@ -90,12 +86,12 @@ public class AdminMvcController {
 
         List<User> admins = userService.getAllAdmins();
         List<User> mods = userService.getAllModerators();
-        List<User> regulars = userService.getAll();
+        List<User> allUsers = userService.getAll();
 
         model.addAttribute("users", all.getContent());
         model.addAttribute("mods", mods);
         model.addAttribute("admins", admins);
-        model.addAttribute("regulars", regulars);
+        model.addAttribute("allUsers", allUsers);
         model.addAttribute("currentPage", all.getNumber() + 1);
         model.addAttribute("totalItems", all.getTotalElements());
         model.addAttribute("totalPages", all.getTotalPages());

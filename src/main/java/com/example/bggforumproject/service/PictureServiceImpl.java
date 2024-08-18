@@ -23,18 +23,21 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
-    public ProfilePicture get(long userId){
-        return pictureRepository.get(userId);
+    public ProfilePicture get(String url){
+        return pictureRepository.get(url);
     }
 
     @Override
-    public void savePhoto(String photoUrl, User user) {
-        ProfilePicture profilePicture = pictureRepository.get(user.getId());
+    public ProfilePicture savePhoto(String photoUrl, User user) {
+        ProfilePicture profilePicture =
+                user.getProfilePicture() != null
+                        ? pictureRepository.get(user.getProfilePicture().getPhotoUrl())
+                        : null;
 
         if (profilePicture == null) {
 
             profilePicture = new ProfilePicture(photoUrl);
-            profilePicture.setUser(user);
+            profilePicture.setUserId(user);
 
             pictureRepository.savePhoto(profilePicture);
         } else {
@@ -42,11 +45,13 @@ public class PictureServiceImpl implements PictureService {
             profilePicture.setPhotoUrl(photoUrl);
             pictureRepository.updatePhoto(profilePicture);
         }
+
+        return pictureRepository.get(photoUrl);
     }
 
     @Override
     public void removePhoto(User user) {
-        ProfilePicture profilePicture = pictureRepository.get(user.getId());
+        ProfilePicture profilePicture = pictureRepository.get(user.getProfilePicture().getPhotoUrl());
 
         if (profilePicture != null) {
             pictureRepository.deletePhoto(profilePicture);

@@ -41,7 +41,7 @@ public class AnonymousMvcController {
             return null;
         }
 
-        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+        ProfilePicture profilePicture = anonymousUserService.get(customUserDetails.getUsername()).getProfilePicture();
         if (profilePicture != null) {
             return profilePicture.getPhotoUrl();
         }

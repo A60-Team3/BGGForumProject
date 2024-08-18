@@ -82,7 +82,8 @@
             <div th:if="${admins.isEmpty()}">No Admins</div>
             <div th:unless="${admins.isEmpty()}">
                 <ul class="templatemo_list" th:each="admin : ${admins}">
-                    <li><a href="#" th:href="@{/BGGForum/users/__${admin.id}__}" th:text="${admin.username}">Admins</a></li>
+                    <li><a href="#" th:href="@{/BGGForum/users/__${admin.id}__}" th:text="${admin.username}">Admins</a>
+                    </li>
                 </ul>
             </div>
 
@@ -99,7 +100,7 @@
             <div class="cleaner_h20"></div>
 
             <h6 th:text="'Total filtered users: ' + ${totalItems}"></h6>
-            <h6 th:text="'Total registered users: ' + ${regulars.size}"></h6>
+            <h6 th:text="'Total registered users: ' + ${allUsers.size}"></h6>
         </div>
     </div>
 
@@ -125,10 +126,12 @@
 
                     <div class="row" th:each="user : ${users}">
                         <div class="cell">
-                            <img class="img-fluid rounded mb-5"
-                                 th:src="${principalPhoto != null ? principalPhoto : '/images/blank_profile.png'}"
-                                 src="../static/images/blank_profile.png"
-                                 alt="profile_picture">
+                            <th:block th:with="currentUserPic=${user.profilePicture}">
+                                <img class="img-fluid rounded mb-5"
+                                     th:src="${currentUserPic != null ? currentUserPic.photoUrl : '/images/blank_profile.png'}"
+                                     src="../static/images/blank_profile.png"
+                                     alt="profile_picture">
+                            </th:block>
                         </div>
                         <div class="cell" th:text="${user.firstName} + ' ' + ${user.lastName}">Full Name</div>
                         <div class="cell" th:text="${user.email}">E-mail</div>
@@ -162,7 +165,8 @@
                             </div>
                         </div>
                         <div class="cell">
-                            <div th:unless="${phones.?[user == user].isEmpty()}" th:text="${phones.?[user == user].get(0).number}"></div>
+                            <div th:unless="${phones.?[user == user].isEmpty()}"
+                                 th:text="${phones.?[user == user].get(0).number}"></div>
                         </div>
                         <div class="cell">
                             <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">

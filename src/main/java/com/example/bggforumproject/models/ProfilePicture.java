@@ -9,9 +9,8 @@ public class ProfilePicture extends BaseEntity {
     @Column(name = "photo_url", nullable = false)
     private String photoUrl;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToOne(mappedBy = "profilePicture")
+    private User userId;
 
     public ProfilePicture() {
     }
@@ -28,11 +27,11 @@ public class ProfilePicture extends BaseEntity {
         this.photoUrl = photoUrl;
     }
 
-    public User getUser() {
-        return user;
+    public User getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(User user) {
+        this.userId = user;
     }
 }

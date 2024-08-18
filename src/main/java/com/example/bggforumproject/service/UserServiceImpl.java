@@ -205,6 +205,8 @@ public class UserServiceImpl implements UserService {
         ImageUploadHelper.assertAllowed(multipartFile, ImageUploadHelper.IMAGE_PATTERN);
 
         String url = cloudinaryService.uploadImage(multipartFile);
-        pictureService.savePhoto(url, loggedUser);
+        ProfilePicture profilePicture = pictureService.savePhoto(url, loggedUser);
+        loggedUser.setProfilePicture(profilePicture);
+        userRepository.update(loggedUser);
     }
 }

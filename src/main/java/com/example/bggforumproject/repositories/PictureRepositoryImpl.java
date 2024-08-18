@@ -1,6 +1,5 @@
 package com.example.bggforumproject.repositories;
 
-import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.ProfilePicture;
 import com.example.bggforumproject.repositories.contracts.PictureRepository;
 import org.hibernate.Session;
@@ -28,11 +27,11 @@ public class PictureRepositoryImpl implements PictureRepository {
     }
 
     @Override
-    public ProfilePicture get(long userId) {
+    public ProfilePicture get(String userId) {
         try (Session session = sessionFactory.openSession()) {
-            Query<ProfilePicture> query = session.createQuery("from ProfilePicture where user.id = :userId", ProfilePicture.class);
+            Query<ProfilePicture> query = session.createQuery("from ProfilePicture where photoUrl = :url", ProfilePicture.class);
 
-            return query.setParameter("userId", userId).getSingleResultOrNull();
+            return query.setParameter("url", userId).getSingleResultOrNull();
         }
     }
 

@@ -110,31 +110,32 @@
                 </div>
                 <ol th:unless="${comments.isEmpty()}" class="comments first_level">
                     <li>
-                        <div class="comment_box commentbox1" th:each="comment : ${comments}">
-                            <!--<div class="gravatar">
-                                <img th:src="${pictures.?[user == comment.userId].isEmpty()
-                                                                        ? '/images/blank_profile.png'
-                                                                        : pictures.?[user == comment.userId].get(0).photoUrl}"
-                                     src="../static/images/blank_profile.png"
-                                     alt="profile_picture">
-                            </div>-->
+                        <div class="comment_box commentbox1" th:each="currentCom : ${comments}">
+                            <div class="gravatar">
+                                    <th:block th:with="currentUserPic=${currentCom.userId.profilePicture}">
+                                        <img th:src="${currentUserPic != null ? currentUserPic.photoUrl : '/images/blank_profile.png'}"
+                                             src="../static/images/blank_profile.png"
+                                             alt="profile_picture">
+                                    </th:block>
+                            </div>
 
                             <div class="comment_text">
                                 <div class="comment_author">
-                                    <span th:text="${comment.getUserId().getUsername()}">Steve</span>
+                                    <span th:text="${currentCom.getUserId().firstName + ' ' + currentCom.getUserId().lastName}">Steve</span>
                                     <span class="date"
-                                          th:text="${#temporals.format(comment.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}">December 10, 2048</span>
+                                          th:text="${#temporals.format(currentCom.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}">December 10, 2048</span>
                                     <!--<span class="time">12:30 AM</span>-->
                                 </div>
-                                <p th:text="${comment.getContent()}">Phasellus mattis tellus eu risusLorem ipsum dolor
+                                <p th:text="${currentCom.getContent()}">Phasellus mattis tellus eu risusLorem ipsum
+                                    dolor
                                     sit amet, consectetur adipiscing
                                     elit.</p>
-                                <div class="reply" th:if="${comment.userId.username == #authentication.name}">
-                                    <a href="#" th:href="@{__${requestURI}__/comments/__${comment.id}__/update}">&#9998;Edit</a>
+                                <div class="reply" th:if="${currentCom.userId.username == #authentication.name}">
+                                    <a href="#" th:href="@{__${requestURI}__/comments/__${currentCom.id}__/update}">&#9998;Edit</a>
                                 </div>
                                 <div class="reply"
-                                     th:if="${isAdmin || comment.userId.username == #authentication.name}">
-                                    <a href="#" th:href="@{__${requestURI}__/comments/__${comment.id}__/delete}">&#128465;Delete</a>
+                                     th:if="${isAdmin || currentCom.userId.username == #authentication.name}">
+                                    <a href="#" th:href="@{__${requestURI}__/comments/__${currentCom.id}__/delete}">&#128465;Delete</a>
                                 </div>
                             </div>
                             <div class="cleaner"></div>

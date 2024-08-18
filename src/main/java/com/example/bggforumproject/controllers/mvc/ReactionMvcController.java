@@ -26,22 +26,19 @@ public class ReactionMvcController {
 
     private final ReactionService reactionService;
     private final UserService userService;
-    private final PictureService pictureService;
     private final ModelMapper mapper;
     private final StringToReactionTypeConverter converter;
 
-    public ReactionMvcController(ReactionService reactionService, UserService userService, PictureService pictureService, ModelMapper mapper, StringToReactionTypeConverter converter) {
+    public ReactionMvcController(ReactionService reactionService, UserService userService, ModelMapper mapper, StringToReactionTypeConverter converter) {
         this.reactionService = reactionService;
         this.userService = userService;
-        this.pictureService = pictureService;
         this.mapper = mapper;
         this.converter = converter;
     }
 
-
     @ModelAttribute("principalPhoto")
-    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ProfilePicture profilePicture = userService.get(customUserDetails.getUsername()).getProfilePicture();
         if (profilePicture != null) {
             return profilePicture.getPhotoUrl();
         }
@@ -73,6 +70,7 @@ public class ReactionMvcController {
         User user = userService.get(loggedUser.getUsername());
         Reaction reaction = new Reaction();
         reaction.setReactionType(reactionType);
+
         reactionService.create(reaction, user, postId);
 
         return "redirect:/BGGForum/posts/{postId}";

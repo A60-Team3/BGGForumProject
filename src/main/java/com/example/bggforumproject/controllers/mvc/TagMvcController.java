@@ -28,19 +28,17 @@ public class TagMvcController {
 
     private final TagService tagService;
     private final UserService userService;
-    private final PictureService pictureService;
     private final ModelMapper mapper;
 
-    public TagMvcController(TagService tagService, UserService userService, PictureService pictureService, ModelMapper mapper) {
+    public TagMvcController(TagService tagService, UserService userService, ModelMapper mapper) {
         this.tagService = tagService;
         this.userService = userService;
-        this.pictureService = pictureService;
         this.mapper = mapper;
     }
 
     @ModelAttribute("principalPhoto")
-    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ProfilePicture profilePicture = userService.get(customUserDetails.getUsername()).getProfilePicture();
         if (profilePicture != null) {
             return profilePicture.getPhotoUrl();
         }

@@ -1,6 +1,7 @@
 package com.example.bggforumproject.service;
 
 import com.example.bggforumproject.models.Post;
+import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
@@ -44,5 +45,10 @@ public class AnonymousUserServiceImpl implements AnonymousUserService {
     @Override
     public Page<Post> getMostRecentlyCreated(int pageIndex, int pageSize) {
         return postRepository.getMostRecentlyCreated(pageIndex, pageSize);
+    }
+
+    @Override
+    public User get(String username) {
+        return userRepository.getByUsername(username);
     }
 }

@@ -38,27 +38,24 @@ public class PostMvcController {
     private final CommentService commentService;
     private final UserService userService;
     private final ReactionService reactionService;
-    private final PictureService pictureService;
     private final TagService tagService;
     private final ModelMapper mapper;
 
     @Autowired
     public PostMvcController(PostService postService, CommentService commentService,
-                             UserService userService, ReactionService reactionService, PictureService pictureService,
-                             TagService tagService,
-                             ModelMapper mapper) {
+                             UserService userService, ReactionService reactionService,
+                             TagService tagService, ModelMapper mapper) {
         this.postService = postService;
         this.commentService = commentService;
         this.userService = userService;
         this.reactionService = reactionService;
-        this.pictureService = pictureService;
         this.tagService = tagService;
         this.mapper = mapper;
     }
 
     @ModelAttribute("principalPhoto")
-    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ProfilePicture profilePicture = userService.get(customUserDetails.getUsername()).getProfilePicture();
         if (profilePicture != null) {
             return profilePicture.getPhotoUrl();
         }
@@ -99,12 +96,12 @@ public class PostMvcController {
     }
 
     @ModelAttribute("reactionTypes")
-    public List<ReactionType> populateReactionTypes(){
+    public List<ReactionType> populateReactionTypes() {
         return List.of(ReactionType.class.getEnumConstants());
     }
 
     @ModelAttribute("reaction")
-    public ReactionDTO populateReactionDto(){
+    public ReactionDTO populateReactionDto() {
         return new ReactionDTO();
     }
     //TODO: implement likes and dislikes counter
@@ -149,25 +146,20 @@ public class PostMvcController {
     }
 
     @GetMapping("/{postId}")
-    public String getSinglePost(@RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
+    public String getSinglePost(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
                                 @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
                                 @PathVariable long postId, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
-//        PostOutFullDTO postOutFullDTO = mapper.map(postService.get(id), PostOutFullDTO.class);
-
         Post post = postService.get(postId);
-        Page<Comment> all = commentService
-                .getAll(new CommentFilterOptions(null, null, null, null, postId, null, null));
 
-        List<ProfilePicture> allPictures = pictureService.getAll();
-        Page<Comment> commentsForPost = commentService.getCommentsForPost(postId, pageIndex - 1, pageSize);
+        Page<Comment> commentsForPost = commentService.getCommentsForPost(postId, pageIndex, pageSize);
         long likes = reactionService.getLikesCount(postId);
         long dislikes = reactionService.getDislikesCount(postId);
         Reaction userReaction = reactionService.getByPostAndUser(currentUser.getId(), postId);
+
         model.addAttribute("post", post);
-        model.addAttribute("pictures",allPictures);
         model.addAttribute("comments", commentsForPost);
         model.addAttribute("likes", likes);
         model.addAttribute("dislikes", dislikes);

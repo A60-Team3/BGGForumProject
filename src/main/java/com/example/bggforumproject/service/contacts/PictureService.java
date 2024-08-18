@@ -8,9 +8,9 @@ import java.util.List;
 public interface PictureService {
     List<ProfilePicture> getAll();
 
-    ProfilePicture get(long userId);
+    ProfilePicture get(String url);
 
-    void savePhoto(String photoUrl, User user);
+    ProfilePicture savePhoto(String photoUrl, User user);
 
     void removePhoto(User user);
 }

@@ -8,7 +8,7 @@ public interface PictureRepository {
 
     List<ProfilePicture> getAll();
 
-    ProfilePicture get(long userId);
+    ProfilePicture get(String userId);
 
     void savePhoto(ProfilePicture profilePicture);
 

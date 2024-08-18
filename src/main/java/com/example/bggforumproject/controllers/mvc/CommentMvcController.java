@@ -32,19 +32,19 @@ public class CommentMvcController {
 
     private final CommentService commentService;
     private final UserService userService;
-    private final PictureService pictureService;
     private final ModelMapper mapper;
 
-    public CommentMvcController(CommentService commentService, UserService userService, PictureService pictureService, ModelMapper mapper) {
+    public CommentMvcController(CommentService commentService,
+                                UserService userService,
+                                ModelMapper mapper) {
         this.commentService = commentService;
         this.userService = userService;
-        this.pictureService = pictureService;
         this.mapper = mapper;
     }
 
     @ModelAttribute("principalPhoto")
-    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ProfilePicture profilePicture = userService.get(customUserDetails.getUsername()).getProfilePicture();
         if (profilePicture != null) {
             return profilePicture.getPhotoUrl();
         }

@@ -924,23 +924,25 @@ em {
     z-index: -1;
     overflow: hidden;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     background-repeat: no-repeat;
 
 }
 
 .game-bg {
-    filter: brightness(0.9);
+    filter: brightness(0.6);
     transition: filter 0.3s ease, transform 0.2s ease-out;
+    background-image: url('../images/BG tiles copy.jpg');
+
 }
 
-.game-bg-1 {
-    background-image: url('../images/background-left.png');
-}
+/*.game-bg-1 {*/
+/*    background-image: url('../images/BG tiles copy.jpg');*/
+/*}*/
 
-.game-bg-2 {
-    background-image: url('../images/background-right.png');
-}
+/*.game-bg-2 {*/
+/*    background-image: url('../images/BG tiles copy.jpg');*/
+/*}*/
 
 
 .tag-name {

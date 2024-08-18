@@ -25,11 +25,13 @@ function getRandomPosition() {
 }
 
 function setRandomBackgroundPosition() {
-    const element = document.getElementById('background-images');
-    element.style.backgroundPosition = getRandomPosition();
+    const backgrounds = document.getElementsByClassName('game-bg');
+    for (let pic = 0; pic < backgrounds.length; pic++) {
+        backgrounds.item(pic).style.backgroundPosition = getRandomPosition()
+    }
 }
 
 setRandomBackgroundPosition();
 
 // Optionally, set random position every few seconds
-setInterval(setRandomBackgroundPosition, 10000); // 10 seconds
+setInterval(setRandomBackgroundPosition, 20000); // 20 seconds

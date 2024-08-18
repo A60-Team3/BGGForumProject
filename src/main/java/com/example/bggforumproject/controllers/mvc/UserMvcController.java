@@ -55,8 +55,8 @@ public class UserMvcController {
     }
 
     @ModelAttribute("principalPhoto")
-    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ProfilePicture profilePicture = userService.get(customUserDetails.getUsername()).getProfilePicture();
         if (profilePicture != null) {
             return profilePicture.getPhotoUrl();
         }
@@ -87,7 +87,10 @@ public class UserMvcController {
         List<Reaction> userReactions = reactionService.getAllByUser(userId);
 
         List<Long> userPosts = specificUserPosts.get().map(Post::getId).toList();
-        ProfilePicture profilePicture = pictureService.get(user.getId());
+        ProfilePicture profilePicture =
+                user.getProfilePicture() != null
+                        ? pictureService.get(user.getProfilePicture().getPhotoUrl())
+                        : null;
         String userPhone = phoneService.get(user.getId());
 
         List<Long> reactedPosts = userReactions.stream()
@@ -123,8 +126,10 @@ public class UserMvcController {
                                            @PathVariable long userId, Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.get(username);
-        ProfilePicture profilePicture = pictureService.get(user.getId());
-        String userPhone = phoneService.get(user.getId());
+        ProfilePicture profilePicture =
+                user.getProfilePicture() != null
+                        ? pictureService.get(user.getProfilePicture().getPhotoUrl())
+                        : null;        String userPhone = phoneService.get(user.getId());
 
         if (user.getId() != userId) {
             model.addAttribute("statusCode", HttpStatus.FORBIDDEN.getReasonPhrase());
@@ -168,10 +173,10 @@ public class UserMvcController {
         userService.update(userId, loggedUser, user);
 
         if (dto.phoneNumber() != null) {
-            phoneService.savePhone(dto.phoneNumber(),loggedUser);
+            phoneService.savePhone(dto.phoneNumber(), loggedUser);
         }
 
-        model.addAttribute("successMessage","User details successfully updated");
+        model.addAttribute("successMessage", "User details successfully updated");
 
         return "redirect:/BGGForum/users/" + user.getId() + "?success";
     }
@@ -195,7 +200,7 @@ public class UserMvcController {
             return "error-page";
         }
 
-        model.addAttribute("successMessage","Profile picture updated");
+        model.addAttribute("successMessage", "Profile picture updated");
 
         return "redirect:/BGGForum/users/" + user.getId();
     }
