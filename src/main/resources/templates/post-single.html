@@ -104,7 +104,11 @@
             </div>
 
             <div id="comment_section">
-                <ol class="comments first_level">
+
+                <div th:if="${comments.isEmpty()}">
+                    <h2 th:text="#{comments.title.empty}">No Comments</h2>
+                </div>
+                <ol th:unless="${comments.isEmpty()}" class="comments first_level">
                     <li>
                         <div class="comment_box commentbox1" th:each="comment : ${comments}">
                             <!--<div class="gravatar">
@@ -137,6 +141,7 @@
                         </div>
                     </li>
                 </ol>
+                <nav th:replace="~{/fragments/pagination.html :: pagination(pagingComments)}"></nav>
             </div>
 
             <div id="comment_form">

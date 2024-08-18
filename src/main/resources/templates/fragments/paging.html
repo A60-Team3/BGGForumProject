@@ -31,3 +31,9 @@
    th:title="${tooltip}" rel="tooltip">
     [[${label}]]
 </a>
+
+<a th:fragment="pagingComments(pageNum, label, tooltip)" class="page-link"
+   th:href="@{'__${requestURI}__' + '?' + 'pageIndex=' + ${pageNum + 1} + '&pageSize=' + ${pageSize}}"
+   th:title="${tooltip}" rel="tooltip">
+    [[${label}]]
+</a>

@@ -149,7 +149,7 @@ public class PostMvcController {
     }
 
     @GetMapping("/{postId}")
-    public String getSinglePost(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+    public String getSinglePost(@RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
                                 @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
                                 @PathVariable long postId, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -162,7 +162,7 @@ public class PostMvcController {
                 .getAll(new CommentFilterOptions(null, null, null, null, postId, null, null));
 
         List<ProfilePicture> allPictures = pictureService.getAll();
-        Page<Comment> commentsForPost = commentService.getCommentsForPost(postId, pageIndex, pageSize);
+        Page<Comment> commentsForPost = commentService.getCommentsForPost(postId, pageIndex - 1, pageSize);
         long likes = reactionService.getLikesCount(postId);
         long dislikes = reactionService.getDislikesCount(postId);
         Reaction userReaction = reactionService.getByPostAndUser(currentUser.getId(), postId);
@@ -173,6 +173,9 @@ public class PostMvcController {
         model.addAttribute("dislikes", dislikes);
         model.addAttribute("loggedUser", currentUser);
         model.addAttribute("userReaction", userReaction);
+        model.addAttribute("currentPage", commentsForPost.getNumber() + 1);
+        model.addAttribute("totalPages", commentsForPost.getTotalPages());
+        model.addAttribute("pageSize", pageSize);
         return "post-single";
     }
 
