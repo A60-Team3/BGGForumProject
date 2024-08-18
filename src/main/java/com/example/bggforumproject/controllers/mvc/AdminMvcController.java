@@ -2,10 +2,15 @@ package com.example.bggforumproject.controllers.mvc;
 
 import com.example.bggforumproject.dtos.request.FilterDto;
 import com.example.bggforumproject.helpers.filters.UserFilterOptions;
+import com.example.bggforumproject.models.PhoneNumber;
+import com.example.bggforumproject.models.ProfilePicture;
 import com.example.bggforumproject.models.Role;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.repositories.contracts.RoleRepository;
 import com.example.bggforumproject.security.CustomUserDetails;
+import com.example.bggforumproject.service.contacts.PhoneService;
+import com.example.bggforumproject.service.contacts.PictureService;
+import com.example.bggforumproject.service.contacts.RoleService;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
@@ -26,17 +31,22 @@ import java.util.List;
 public class AdminMvcController {
 
     private final UserService userService;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
+    private final PictureService pictureService;
+    private final PhoneService phoneService;
 
-    public AdminMvcController(UserService userService, RoleRepository roleRepository) {
+    public AdminMvcController(UserService userService, RoleService roleService, PictureService pictureService, PhoneService phoneService){
         this.userService = userService;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
+        this.pictureService = pictureService;
+        this.phoneService = phoneService;
     }
 
     @ModelAttribute("principalPhoto")
     public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        if (customUserDetails.getPhotoUrl() != null) {
-            return customUserDetails.getPhotoUrl();
+        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+        if (profilePicture != null) {
+            return profilePicture.getPhotoUrl();
         }
         return "/images/blank_profile.png";
     }
@@ -48,12 +58,16 @@ public class AdminMvcController {
 
     @ModelAttribute("roles")
     public List<String> collectRoleTypes() {
-        return roleRepository.findAll().stream().map(Role::getAuthority).toList();
+        return roleService.getAll().stream().map(Role::getAuthority).toList();
+    }
+    @ModelAttribute("phones")
+    public List<PhoneNumber> collectPhones(){
+        return phoneService.getAll();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping
-    public String getAdminPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+    public String getAdminPage(@RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
                                @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
                                @ModelAttribute("userFilterOptions") FilterDto dto, Model model
     ) {
@@ -72,7 +86,7 @@ public class AdminMvcController {
                 (dto.sortOrder() != null && dto.sortOrder().isEmpty()) ? null : dto.sortOrder()
         );
 
-        Page<User> all = userService.getAll(userFilterOptions, pageIndex, pageSize);
+        Page<User> all = userService.getAll(userFilterOptions, pageIndex - 1, pageSize);
 
         List<User> admins = userService.getAllAdmins();
         List<User> mods = userService.getAllModerators();

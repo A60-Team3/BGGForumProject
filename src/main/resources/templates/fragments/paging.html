@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <a th:fragment="pagingPost(pageNum, label, tooltip)" class="page-link"
    th:href="@{'__${requestURI}__' + '?' + ${(postFilterOptions.title != null && !postFilterOptions.title.isEmpty()) ? 'title=' + postFilterOptions.title + '&' : ''}
                         + ${(postFilterOptions.content != null && !postFilterOptions.content.isEmpty())  ? 'content=' + postFilterOptions.content + '&' : ''}
@@ -11,7 +9,7 @@
                         + ${(postFilterOptions.postIds != null && !postFilterOptions.postIds.isEmpty()) ? 'tags=' + postFilterOptions.postIds + '&' : ''}
                         + ${(postFilterOptions.sortBy != null && !postFilterOptions.sortBy.isEmpty()) ? 'sortBy=' + postFilterOptions.sortBy + '&' : ''}
                         + ${(postFilterOptions.sortOrder != null && !postFilterOptions.sortOrder.isEmpty()) ? 'sortOrder=' + postFilterOptions.sortOrder + '&' : ''}
-                        + 'pageIndex=' + ${pageNum} + '&pageSize=' + ${pageSize}}"
+                        + 'pageIndex=' + ${pageNum + 1} + '&pageSize=' + ${pageSize}}"
    th:title="${tooltip}" rel="tooltip">
     [[${label}]]
 </a>
@@ -29,8 +27,7 @@
                         + ${(userFilterOptions.roles != null && !userFilterOptions.roles.isEmpty()) ? 'roles=' + userFilterOptions.roles + '&' : ''}
                         + ${(userFilterOptions.sortBy != null && !userFilterOptions.sortBy.isEmpty()) ? 'sortBy=' + userFilterOptions.sortBy + '&' : ''}
                         + ${(userFilterOptions.sortOrder != null && !userFilterOptions.sortOrder.isEmpty()) ? 'sortOrder=' + userFilterOptions.sortOrder + '&' : ''}
-                        + 'pageIndex=' + ${pageNum} + '&pageSize=' + ${pageSize}}"
+                        + 'pageIndex=' + ${pageNum + 1} + '&pageSize=' + ${pageSize}}"
    th:title="${tooltip}" rel="tooltip">
     [[${label}]]
 </a>
-</html>

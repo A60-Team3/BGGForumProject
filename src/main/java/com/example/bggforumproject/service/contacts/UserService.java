@@ -5,7 +5,9 @@ import com.example.bggforumproject.models.Post;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.helpers.filters.UserFilterOptions;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface UserService {
@@ -34,5 +36,7 @@ public interface UserService {
     void softDelete(long id, User currentUser);
 
     void delete(long id, User user);
+
+    void uploadProfilePic(MultipartFile multipartFile, User user, long userId) throws IOException;
 }
 

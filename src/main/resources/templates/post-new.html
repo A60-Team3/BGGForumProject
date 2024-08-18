@@ -26,14 +26,14 @@
 
                     <div class="form_row">
                         <label><strong>Title</strong></label>
-                        <label class="error" th:errors="*{title}">Title error placeholder</label>
+                        <label class="label-error" th:errors="*{title}">Title error placeholder</label>
                         <br />
                         <textarea name="title" class="textarea-post-title" th:field="*{title}"></textarea>
                     </div>
 
                     <div class="form_row">
                         <label><strong>Content</strong></label>
-                        <label class="error" th:errors="*{content}">Content error placeholder</label>
+                        <label class="label-error" th:errors="*{content}">Content error placeholder</label>
                         <br/>
                         <textarea name="content" class="textarea-post-content" rows="" cols="" th:field="*{content}"></textarea>
                     </div>

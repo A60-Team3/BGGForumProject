@@ -2,23 +2,25 @@ package com.example.bggforumproject.service;
 
 import com.example.bggforumproject.exceptions.*;
 import com.example.bggforumproject.helpers.AuthorizationHelper;
+import com.example.bggforumproject.helpers.ImageUploadHelper;
 import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.UserFilterOptions;
-import com.example.bggforumproject.models.Comment;
-import com.example.bggforumproject.models.Post;
-import com.example.bggforumproject.models.Role;
-import com.example.bggforumproject.models.User;
+import com.example.bggforumproject.models.*;
 import com.example.bggforumproject.models.enums.RoleType;
 import com.example.bggforumproject.repositories.contracts.CommentRepository;
 import com.example.bggforumproject.repositories.contracts.PostRepository;
 import com.example.bggforumproject.repositories.contracts.RoleRepository;
 import com.example.bggforumproject.repositories.contracts.UserRepository;
+import com.example.bggforumproject.service.contacts.CloudinaryService;
+import com.example.bggforumproject.service.contacts.PictureService;
 import com.example.bggforumproject.service.contacts.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,16 +34,20 @@ public class UserServiceImpl implements UserService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final RoleRepository roleRepository;
+    private final CloudinaryService cloudinaryService;
+    private final PictureService pictureService;
     private final PasswordEncoder passwordEncoder;
     private final AuthorizationHelper authorizationHelper;
 
     public UserServiceImpl(UserRepository userRepository, AuthorizationHelper authorizationHelper, PostRepository postRepository,
-                           CommentRepository commentRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+                           CommentRepository commentRepository, RoleRepository roleRepository, CloudinaryService cloudinaryService, PictureService pictureService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.authorizationHelper = authorizationHelper;
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
         this.roleRepository = roleRepository;
+        this.cloudinaryService = cloudinaryService;
+        this.pictureService = pictureService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -108,9 +114,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(long id, User loggedUser, User user) {
 
-        if (loggedUser.getId() != id) {
-            throw new AuthorizationException(MODIFY_USER_ERROR_MESSAGE);
-        }
+//        if (loggedUser.getId() != id) {
+//            throw new AuthorizationException(MODIFY_USER_ERROR_MESSAGE);
+//        }
 
         authorizationHelper.validateEmailIsUnique(loggedUser.getId(), user.getEmail());
 
@@ -188,5 +194,17 @@ public class UserServiceImpl implements UserService {
         User userToDelete = userRepository.getById(id);
 
         userRepository.delete(userToDelete);
+    }
+
+    @Override
+    public void uploadProfilePic(MultipartFile multipartFile, User loggedUser, long userId) throws IOException {
+        if (loggedUser.getId() != userId) {
+            throw new AuthorizationException(MODIFY_USER_ERROR_MESSAGE);
+        }
+
+        ImageUploadHelper.assertAllowed(multipartFile, ImageUploadHelper.IMAGE_PATTERN);
+
+        String url = cloudinaryService.uploadImage(multipartFile);
+        pictureService.savePhoto(url, loggedUser);
     }
 }

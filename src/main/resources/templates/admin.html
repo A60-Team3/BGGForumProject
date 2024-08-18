@@ -126,7 +126,7 @@
                     <div class="row" th:each="user : ${users}">
                         <div class="cell">
                             <img class="img-fluid rounded mb-5"
-                                 th:src="${user.photoUrl != null ? user.photoUrl.photoUrl : '/images/blank_profile.png'}"
+                                 th:src="${principalPhoto != null ? principalPhoto : '/images/blank_profile.png'}"
                                  src="../static/images/blank_profile.png"
                                  alt="profile_picture">
                         </div>
@@ -162,7 +162,7 @@
                             </div>
                         </div>
                         <div class="cell">
-                            <div th:if="${user.phoneNumber != null}" th:text="${user.phoneNumber.number}"></div>
+                            <div th:unless="${phones.?[user == user].isEmpty()}" th:text="${phones.?[user == user].get(0).number}"></div>
                         </div>
                         <div class="cell">
                             <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">

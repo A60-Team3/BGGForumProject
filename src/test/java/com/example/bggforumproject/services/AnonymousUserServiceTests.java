@@ -88,7 +88,7 @@ public class AnonymousUserServiceTests {
         PostFilterOptions postFilterOptions =
                 new PostFilterOptions(
                         "microsoft", null, null, null, null, null,
-                        null, null, null, null
+                        null, null, null, null, null
                 );
 
         int pageIndex = 0;

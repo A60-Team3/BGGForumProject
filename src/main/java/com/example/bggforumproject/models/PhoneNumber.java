@@ -10,7 +10,7 @@ import java.util.Objects;
 public class PhoneNumber extends BaseEntity {
     private String number;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private User user;
 

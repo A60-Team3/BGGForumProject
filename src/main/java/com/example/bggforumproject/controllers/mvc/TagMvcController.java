@@ -2,9 +2,11 @@ package com.example.bggforumproject.controllers.mvc;
 
 import com.example.bggforumproject.dtos.response.TagDTO;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
+import com.example.bggforumproject.models.ProfilePicture;
 import com.example.bggforumproject.models.Tag;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.security.CustomUserDetails;
+import com.example.bggforumproject.service.contacts.PictureService;
 import com.example.bggforumproject.service.contacts.TagService;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,18 +28,21 @@ public class TagMvcController {
 
     private final TagService tagService;
     private final UserService userService;
+    private final PictureService pictureService;
     private final ModelMapper mapper;
 
-    public TagMvcController(TagService tagService, UserService userService, ModelMapper mapper) {
+    public TagMvcController(TagService tagService, UserService userService, PictureService pictureService, ModelMapper mapper) {
         this.tagService = tagService;
         this.userService = userService;
+        this.pictureService = pictureService;
         this.mapper = mapper;
     }
 
     @ModelAttribute("principalPhoto")
     public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        if (customUserDetails.getPhotoUrl() != null) {
-            return customUserDetails.getPhotoUrl();
+        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+        if (profilePicture != null) {
+            return profilePicture.getPhotoUrl();
         }
         return "/images/blank_profile.png";
     }

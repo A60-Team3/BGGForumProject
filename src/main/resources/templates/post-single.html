@@ -25,11 +25,12 @@
                 <span class="dislike-icon"><img src="/images/thumbs-down-14924.png" width="30px" height="auto"></span>
                 <span class="dislikes" th:text="${dislikes}">256</span>
                 <span class="post-actions">
-                    <span class="reply" th:if="${post.userId.username == #authentication.name}"><a href="#"
-                                                                                                   th:href="@{__${requestURI}__/update}">&#9998;Edit</a>
+                    <span class="reply" th:if="${post.userId.username == #authentication.name}">
+                        <a href="#" th:href="@{__${requestURI}__/update}">&#9998;Edit</a>
                     </span>
-                    <span class="reply" th:if="${isAdmin || post.userId.username == #authentication.name}"><a
-                            href="#" th:href="@{__${requestURI}__/delete}">&#128465;Delete</a></span>
+                    <span class="reply" th:if="${isAdmin || post.userId.username == #authentication.name}">
+                        <a href="#" th:href="@{__${requestURI}__/delete}">&#128465;Delete</a>
+                    </span>
                 </span>
                 <span class="comment"><a href="#comment_section" th:text="${comments.content.size()}">256</a></span>
 
@@ -39,7 +40,10 @@
                     th:text="${post.userId.firstName} + ' ' + ${post.userId.lastName}">John</span> | <strong
                     th:text="#{post.label.tag}">Category:</strong> <span th:each="tag, iterStat : ${post.getTags()}">
                 <span class="tag-name">
-                    <span class="tag-link"><a href="#" th:href="@{/BGGForum/posts?tags=__${tag.id}__}" th:text="${tag.getName()}">Tag Name</a></span>
+                    <span class="tag-link">
+                        <a href="#" th:href="@{/BGGForum/posts?tags=__${tag.id}__}"
+                           th:text="${tag.getName()}">Tag Name</a>
+                    </span>
                     <span class="remove-tag-button" th:if="${isAdmin || post.userId.username == #authentication.name}">
                         <a href="#" th:href="@{__${requestURI}__/tags/__${tag.id}__/remove}">
                             <img src="/images/cancel-close-10373.png" alt="Remove tag">
@@ -62,16 +66,20 @@
                     <li>
                         <div class="comment_box commentbox1" th:each="comment : ${comments}">
                             <div class="gravatar">
-                                <img th:src="${comment.userId.photoUrl != null ? comment.userId.photoUrl : '/images/blank_profile.png'}"
+                                <img th:src="${pictures.?[user == comment.userId].isEmpty()
+                                                                        ? '/images/blank_profile.png'
+                                                                        : pictures.?[user == comment.userId].get(0).photoUrl}"
                                      src="../static/images/blank_profile.png"
                                      alt="profile_picture">
                             </div>
 
                             <div class="comment_text">
-                                <div class="comment_author"><span
-                                        th:text="${comment.getUserId().getUsername()}">Steve</span><span class="date"
-                                                                                                         th:text="${#temporals.format(comment.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}">December 10, 2048</span><!--<span
-                                        class="time">12:30 AM</span>--></div>
+                                <div class="comment_author">
+                                    <span th:text="${comment.getUserId().getUsername()}">Steve</span>
+                                    <span class="date"
+                                          th:text="${#temporals.format(comment.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}">December 10, 2048</span>
+                                    <!--<span class="time">12:30 AM</span>-->
+                                </div>
                                 <p th:text="${comment.getContent()}">Phasellus mattis tellus eu risusLorem ipsum dolor
                                     sit amet, consectetur adipiscing
                                     elit.</p>

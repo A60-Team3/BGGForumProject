@@ -52,16 +52,7 @@ public class User extends BaseEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> authorities;
 
-    @OneToOne
-    @JoinColumn(name = "id")
-    private ProfilePicture photoUrl;
-
-    @OneToOne
-    @JoinColumn(name = "id")
-    private PhoneNumber phoneNumber;
-
     public User() {
-
     }
 
     public User(String firstName, String lastName, String email, String username, String password) {
@@ -150,24 +141,8 @@ public class User extends BaseEntity implements UserDetails {
         this.authorities = roles;
     }
 
-    public Set<Role> getRoles(){
+    public Set<Role> getRoles() {
         return authorities;
-    }
-
-    public ProfilePicture getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public void setPhotoUrl(ProfilePicture photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
-    public PhoneNumber getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(PhoneNumber phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     @Override
@@ -205,11 +180,11 @@ public class User extends BaseEntity implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return isBlocked == user.isBlocked && isDeleted == user.isDeleted && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(registeredAt, user.registeredAt) && Objects.equals(updatedAt, user.updatedAt) && Objects.equals(authorities, user.authorities) && Objects.equals(photoUrl, user.photoUrl) && Objects.equals(phoneNumber, user.phoneNumber);
+        return Objects.equals(email, user.email) && Objects.equals(username, user.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, email, username, password, registeredAt, updatedAt, isBlocked, isDeleted, authorities, photoUrl, phoneNumber);
+        return Objects.hash(email, username);
     }
 }

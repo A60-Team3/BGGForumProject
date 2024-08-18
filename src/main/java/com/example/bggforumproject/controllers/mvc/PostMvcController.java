@@ -40,26 +40,29 @@ public class PostMvcController {
     private final CommentService commentService;
     private final UserService userService;
     private final ReactionService reactionService;
+    private final PictureService pictureService;
     private final TagService tagService;
     private final ModelMapper mapper;
 
     @Autowired
     public PostMvcController(PostService postService, CommentService commentService,
-                             UserService userService, ReactionService reactionService,
+                             UserService userService, ReactionService reactionService, PictureService pictureService,
                              TagService tagService,
                              ModelMapper mapper) {
         this.postService = postService;
         this.commentService = commentService;
         this.userService = userService;
         this.reactionService = reactionService;
+        this.pictureService = pictureService;
         this.tagService = tagService;
         this.mapper = mapper;
     }
 
     @ModelAttribute("principalPhoto")
     public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        if (customUserDetails.getPhotoUrl() != null) {
-            return customUserDetails.getPhotoUrl();
+        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+        if (profilePicture != null) {
+            return profilePicture.getPhotoUrl();
         }
         return "/images/blank_profile.png";
     }
@@ -110,7 +113,7 @@ public class PostMvcController {
     }*/
 
     @GetMapping
-    public String getPosts(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+    public String getPosts(@RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
                            @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
                            @ModelAttribute("postFilterOptions") FilterDto dto, Model model) {
         PostFilterOptions postFilterOptions = new PostFilterOptions(
@@ -127,12 +130,11 @@ public class PostMvcController {
                 (dto.sortOrder() != null && dto.sortOrder().isEmpty()) ? null : dto.sortOrder()
         );
 
-        Page<Post> posts = postService.get(postFilterOptions, pageIndex, pageSize);
+        Page<Post> posts = postService.get(postFilterOptions, pageIndex - 1, pageSize);
 
         model.addAttribute("posts", posts.getContent());
         model.addAttribute("pagePosts", posts);
         model.addAttribute("currentPage", posts.getNumber() + 1);
-        model.addAttribute("totalItems", posts.getTotalElements());
         model.addAttribute("totalPages", posts.getTotalPages());
         model.addAttribute("pageSize", pageSize);
 
@@ -152,10 +154,12 @@ public class PostMvcController {
         Page<Comment> all = commentService
                 .getAll(new CommentFilterOptions(null, null, null, null, postId, null, null));
 
+        List<ProfilePicture> allPictures = pictureService.getAll();
         Page<Comment> commentsForPost = commentService.getCommentsForPost(postId, pageIndex, pageSize);
         long likes = reactionService.getLikesCount(postId);
         long dislikes = reactionService.getDislikesCount(postId);
         model.addAttribute("post", post);
+        model.addAttribute("pictures",allPictures);
         model.addAttribute("comments", commentsForPost);
         model.addAttribute("likes", likes);
         model.addAttribute("dislikes", dislikes);

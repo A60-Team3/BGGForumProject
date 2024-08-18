@@ -7,13 +7,12 @@
 <body>
 <div th:replace="~{/fragments/background}"></div>
 <div id="templatemo_wrapper">
-    <div th:replace="~{/fragments/navbar.html}"></div>
+    <div th:replace="~{/fragments/navbar}"></div>
     <div id="templatemo_left_column">
 
         <div class="profile-container">
             <img class="profile-picture"
-                 th:src="${shownUser.photoUrl != null ? shownUser.photoUrl : '/images/blank_profile.png'}"
-                 src="../static/images/blank_profile.png"
+                 th:src="${userPicture != null ? userPicture.photoUrl : '/images/blank_profile.png'}"
                  alt="profile_picture">
         </div>
 
@@ -34,7 +33,7 @@
                     <h5 th:text="'Email: ' + ${shownUser.email}">Email</h5>
                 </li>
                 <li th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''MODERATOR'')') or shownUser.username == #authentication.name}">
-                    <h5 th:text="'Phone number: ' + ${(shownUser.phoneNumber == null) ? ' N/A ' : shownUser.phoneNumber.number}">
+                    <h5 th:text="'Phone number: ' + ${(userPhone == null) ? ' N/A ' : userPhone}">
                         Cellphone</h5>
                 </li>
                 <li>
@@ -92,13 +91,17 @@
                     <h3><a th:href="@{/BGGForum/posts(postIds=${commentedPosts})}">See what you commented on.</a></h3>
                 </div>
 
-                <div th:if="${reactedPosts.isEmpty()}">
+                <div th:if="${commentedPosts.isEmpty()}">
                     <h3>No Reactions</h3>
                 </div>
 
                 <div th:unless="${reactedPosts.isEmpty()}">
-                    <h3><a th:href="@{/BGGForum/posts(postIds=${commentedPosts})}">See what attracts you.</a></h3>
+                    <h3><a th:href="@{/BGGForum/posts(postIds=${reactedPosts})}">See what affects you.</a></h3>
                 </div>
+
+                <h4 th:if="${param.success}"
+                     th:text="${successMessage}">
+                </h4>
             </div>
         </div>
     </div>

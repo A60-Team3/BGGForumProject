@@ -18,8 +18,13 @@ public record UserUpdateDTO(
         @Size(min = 4, max = 32, message = "Last name must be between 4 and 32 characters")
         String lastName,
 
+        String username,
+
         @Size(min = 6, message = "Password must be at least 6 characters long")
         String password,
+
+        @NotBlank(message = "This field is mandatory")
+        String passwordConfirm,
 
         @Email(regexp = emailRegex, message = "Email should be valid")
         @Size(max = 255, message = "Email should not be more than 255 characters")

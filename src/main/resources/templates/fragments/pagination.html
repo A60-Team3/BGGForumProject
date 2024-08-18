@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <nav th:fragment="pagination(options)" aria-label="Pagination" th:if="${totalPages > 0}">
     <ul class="pagination justify-content-center">
         <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
@@ -32,4 +30,3 @@
         </li>
     </ul>
 </nav>
-</html>

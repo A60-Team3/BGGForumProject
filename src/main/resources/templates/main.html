@@ -52,7 +52,7 @@
                     <div th:text="#{post.label.created}  + ': ' + ${#temporals.format(post.createdAt,'dd-MM-yyyy HH:mm')}">
                         Time of Creation
                     </div>
-                    <div th:text="#{post.label.createdBy}  + ': ' + ${post.userId.username}">
+                    <div th:text="#{post.label.createdBy}  + ': ' + ${post.userId.firstName} + ' ' +  ${post.userId.lastName}">
                         Creator
                     </div>
                     <span th:text="#{post.label.tag}  + ': '">Tags:</span>

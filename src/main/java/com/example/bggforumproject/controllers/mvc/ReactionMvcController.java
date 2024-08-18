@@ -1,9 +1,11 @@
 package com.example.bggforumproject.controllers.mvc;
 
+import com.example.bggforumproject.models.ProfilePicture;
 import com.example.bggforumproject.models.Reaction;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.models.enums.ReactionType;
 import com.example.bggforumproject.security.CustomUserDetails;
+import com.example.bggforumproject.service.contacts.PictureService;
 import com.example.bggforumproject.service.contacts.ReactionService;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,16 +20,19 @@ public class ReactionMvcController {
 
     private final ReactionService reactionService;
     private final UserService userService;
+    private final PictureService pictureService;
 
-    public ReactionMvcController(ReactionService reactionService, UserService userService) {
+    public ReactionMvcController(ReactionService reactionService, UserService userService, PictureService pictureService) {
         this.reactionService = reactionService;
         this.userService = userService;
+        this.pictureService = pictureService;
     }
 
     @ModelAttribute("principalPhoto")
     public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        if (customUserDetails.getPhotoUrl() != null) {
-            return customUserDetails.getPhotoUrl();
+        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+        if (profilePicture != null) {
+            return profilePicture.getPhotoUrl();
         }
         return "/images/blank_profile.png";
     }

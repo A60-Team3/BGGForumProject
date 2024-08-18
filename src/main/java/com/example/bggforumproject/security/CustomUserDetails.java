@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 public class CustomUserDetails extends User {
     private final Long id;
-    private final String photoUrl;
 
     public CustomUserDetails(com.example.bggforumproject.models.User user) {
         super(user.getUsername(), user.getPassword(),
@@ -19,19 +18,9 @@ public class CustomUserDetails extends User {
         );
 
         this.id = user.getId();
-        if (user.getPhotoUrl() != null){
-            this.photoUrl = user.getPhotoUrl().getPhotoUrl();
-        } else {
-            this.photoUrl = null;
-        }
     }
-
 
     public Long getId() {
         return id;
-    }
-
-    public String getPhotoUrl() {
-        return photoUrl;
     }
 }

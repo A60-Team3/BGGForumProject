@@ -30,7 +30,7 @@ public class ImageUploadHelper {
         }
 
         String fileName = file.getOriginalFilename();
-        String extension = Arrays.stream(fileName.split("//."))
+        String extension = Arrays.stream(fileName.split("\\."))
                 .reduce((a, b) -> b)
                 .orElse("");
 

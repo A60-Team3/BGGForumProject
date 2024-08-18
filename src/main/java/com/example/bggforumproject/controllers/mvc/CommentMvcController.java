@@ -7,9 +7,11 @@ import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.models.Comment;
+import com.example.bggforumproject.models.ProfilePicture;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.security.CustomUserDetails;
 import com.example.bggforumproject.service.contacts.CommentService;
+import com.example.bggforumproject.service.contacts.PictureService;
 import com.example.bggforumproject.service.contacts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -30,18 +32,21 @@ public class CommentMvcController {
 
     private final CommentService commentService;
     private final UserService userService;
+    private final PictureService pictureService;
     private final ModelMapper mapper;
 
-    public CommentMvcController(CommentService commentService, UserService userService, ModelMapper mapper) {
+    public CommentMvcController(CommentService commentService, UserService userService, PictureService pictureService, ModelMapper mapper) {
         this.commentService = commentService;
         this.userService = userService;
+        this.pictureService = pictureService;
         this.mapper = mapper;
     }
 
     @ModelAttribute("principalPhoto")
     public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        if (customUserDetails.getPhotoUrl() != null) {
-            return customUserDetails.getPhotoUrl();
+        ProfilePicture profilePicture = pictureService.get(customUserDetails.getId());
+        if (profilePicture != null) {
+            return profilePicture.getPhotoUrl();
         }
         return "/images/blank_profile.png";
     }
@@ -72,7 +77,6 @@ public class CommentMvcController {
         model.addAttribute("comments", comments.getContent());
         model.addAttribute("pageComments", comments);
         model.addAttribute("currentPage", comments.getNumber() + 1);
-        model.addAttribute("totalItems", comments.getTotalElements());
         model.addAttribute("totalPages", comments.getTotalPages());
         model.addAttribute("pageSize", pageSize);
 

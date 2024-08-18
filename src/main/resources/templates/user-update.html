@@ -14,23 +14,22 @@
             <div th:if="${user.username == #authentication.name}">
                 <label for="profile-upload">
                     <img class="profile-picture"
-                         th:src="${user.photoUrl != null ? user.photoUrl : '/images/blank_profile.png'}"
-                         src="../static/images/blank_profile.png"
+                         th:src="${userPicture != null ? userPicture.photoUrl : '/images/blank_profile.png'}"
                          alt="profile_picture">
                 </label>
 
                 <form id="profile-form"
+                      th:action="@{__${requestURI}__/upload}"
                       method="post"
                       enctype="multipart/form-data"
                       th:object="${userUpdateDto}">
-                    <input type="file" id="profile-upload" name="profilePicture" style="display: none;" onchange="uploadPhoto()"/>
+                    <input type="file" th:field="*{profilePic}" id="profile-upload" name="profilePicture" style="display: none;" onchange="uploadPhoto()"/>
                 </form>
             </div>
 
             <div th:unless="${user.username == #authentication.name}">
                 <img class="profile-picture"
-                     th:src="${user.photoUrl != null ? user.photoUrl : '/images/blank_profile.png'}"
-                     src="../static/images/blank_profile.png"
+                     th:src="${userPicture != null ? userPicture.photoUrl : '/images/blank_profile.png'}"
                      alt="profile_picture">
             </div>
         </div>
@@ -48,7 +47,7 @@
                     <h5 th:text="'Email: ' + ${user.email}">Email</h5>
                 </li>
                 <li >
-                    <h5 th:text="'Phone number: ' + ${(user.phoneNumber == null) ? ' N/A ' : user.phoneNumber.number}">
+                    <h5 th:text="'Phone number: ' + ${(userPhone == null) ? ' N/A ' : userPhone}">
                         Cellphone</h5>
                 </li>
                 <li>
@@ -81,38 +80,51 @@
                           method="post">
                         <label for="username" th:text="#{user.label.username}">Username</label>
                         <br/>
-                        <input type="text" th:value="${user.username}" readonly="readonly" disabled = "disabled" id="username"/>
+                        <input type="text" th:value="${user.username}" readonly="readonly" id="username"/>
                         <span class="label-error">Cannot be changed!</span>
                         <br/><br/>
 
                         <label for="password" th:text="#{user.label.password}">Password</label>
                         <br/>
-                        <input type="password" th:field="*{password}" id="password"/>
+                        <input type="password" th:value="${user.password}" th:field="*{password}"
+                               id="password"/>
                         <small class="label-error" th:errors="*{password}">Password error placeholder</small>
+                        <br/><br/>
+
+                        <label for="confirm" th:text="#{user.label.password-confirm}">Confirm Password</label>
+                        <br/>
+                        <input type="password" th:field="*{passwordConfirm}" id="confirm"/>
+                        <small class="label-error" th:errors="*{passwordConfirm}">Password confirm error
+                            placeholder</small>
                         <br/><br/>
 
                         <label for="firstName" th:text="#{user.label.first-name}">First Name</label>
                         <br/>
-                        <input type="text" th:field="*{firstName}" id="firstName"/>
+                        <input type="text" th:value="${user.firstName}" th:field="*{firstName}"
+                               id="firstName"/>
                         <small class="label-error" th:errors="*{firstName}">First name error placeholder</small>
                         <br/><br/>
 
                         <label for="lastName" th:text="#{user.label.last-name}">Last Name</label>
                         <br/>
-                        <input type="text" th:field="*{lastName}" id="lastName"/>
+                        <input type="text" th:value="${user.lastName}" th:field="*{lastName}"
+                               id="lastName"/>
                         <small class="label-error" th:errors="*{lastName}">Last name error placeholder</small>
                         <br/><br/>
 
                         <label for="email" th:text="#{user.label.email}">Email</label>
                         <br/>
-                        <input type="text" th:field="*{email}" id="email"/>
+                        <input type="text" th:value="${user.email}" th:field="*{email}"
+                               id="email"/>
                         <small class="label-error" th:errors="*{email}">Email error placeholder</small>
                         <br/><br/>
 
                         <label for="phone" th:text="#{user.label.phone}">Phone Number</label>
                         <br/>
-                        <input type="tel" th:field="*{phoneNumber}" id="phone" name="phone" th:pattern="*{phoneNumberRegex}"/>
-                        <small class="label-error" th:errors="*{password}">Phone number error placeholder</small>
+                        <input type="tel" th:value="${userPhone}" th:field="*{phoneNumber}"
+                               id="phone"
+                               name="phone" th:pattern="*{phoneNumberRegex}"/>
+                        <small class="label-error" th:errors="*{phoneNumber}">Phone number error placeholder</small>
                         <br/><br/>
 
                         <input type="submit" value="Update"/>

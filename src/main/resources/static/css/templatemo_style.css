@@ -858,7 +858,6 @@ em {
     height: auto; /* maintain the aspect ratio */
     object-fit: cover; /* ensures the image covers the container while maintaining aspect ratio */
     transition: opacity 0.3s ease; /* Smooth transition for hover effect */
-    margin-left: 50px;
 }
 
 .navbar-picture {
