@@ -588,11 +588,12 @@ em {
     right: 170px;
 }
 .post-actions .reply a{
-    padding: 1px 10px;
+    padding: 5px 10px;
     width:70px;
     height: 24px;
     text-align: center;
     background: none;
+    border-radius: 15px;
     color: #000;
     text-decoration: none;
 }
@@ -982,5 +983,13 @@ em {
 .tag-name .tag-link a{
     text-decoration: none;
     color: black;
+}
+
+.liked{
+    color: green;
+}
+
+.disliked{
+    color: red;
 }
 /*custom css*/

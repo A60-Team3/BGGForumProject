@@ -42,6 +42,11 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
+    public Reaction getByPostAndUser(long userId, long postId) {
+        return reactionRepository.getByPostAndUser(userId, postId);
+    }
+
+    @Override
     public long getLikesCount(long postId) {
         postRepository.get(postId);
         return reactionRepository.getLikesCount(postId);

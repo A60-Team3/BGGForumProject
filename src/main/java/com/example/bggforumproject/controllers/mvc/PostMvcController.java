@@ -12,6 +12,7 @@ import com.example.bggforumproject.helpers.filters.CommentFilterOptions;
 import com.example.bggforumproject.helpers.filters.PostFilterOptions;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.*;
+import com.example.bggforumproject.models.enums.ReactionType;
 import com.example.bggforumproject.security.CustomUserDetails;
 import com.example.bggforumproject.service.contacts.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +31,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/BGGForum/posts")
@@ -100,6 +104,11 @@ public class PostMvcController {
         return tagService.get(new TagFilterOptions(null, null, null, null, null));
     }
 
+    @ModelAttribute("reactionTypes")
+    public List<ReactionType> populateReactionTypes(){
+        return List.of(ReactionType.class.getEnumConstants());
+
+    }
     //TODO: implement likes and dislikes counter
     /*
     @ModelAttribute("likes")
@@ -158,12 +167,14 @@ public class PostMvcController {
         Page<Comment> commentsForPost = commentService.getCommentsForPost(postId, pageIndex, pageSize);
         long likes = reactionService.getLikesCount(postId);
         long dislikes = reactionService.getDislikesCount(postId);
+        Reaction userReaction = reactionService.getByPostAndUser(currentUser.getId(), postId);
         model.addAttribute("post", post);
         model.addAttribute("pictures",allPictures);
         model.addAttribute("comments", commentsForPost);
         model.addAttribute("likes", likes);
         model.addAttribute("dislikes", dislikes);
         model.addAttribute("loggedUser", currentUser);
+        model.addAttribute("userReaction", userReaction);
         return "post-single";
     }
 

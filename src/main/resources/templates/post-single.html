@@ -20,10 +20,12 @@
 
             <div class="post_section">
 
-                <span class="like-icon"><img src="/images/green-thumbs-up-11246.png" width="30px" height="auto"></span>
-                <span class="likes" th:text="${likes}">256</span>
+                <span class="like-icon">
+                    <img src="/images/green-thumbs-up-11246.png" width="30px" height="auto">
+                </span>
+                <span class="likes" th:text="${likes}" th:classappend="${userReaction != null && userReaction.getReactionType().equals(reactionTypes.get(0))}?liked">256</span>
                 <span class="dislike-icon"><img src="/images/thumbs-down-14924.png" width="30px" height="auto"></span>
-                <span class="dislikes" th:text="${dislikes}">256</span>
+                <span class="dislikes" th:text="${dislikes}" th:classappend="${userReaction != null && userReaction.getReactionType().equals(reactionTypes.get(1))}?disliked">256</span>
                 <span class="post-actions">
                     <span class="reply" th:if="${post.userId.username == #authentication.name}">
                         <a href="#" th:href="@{__${requestURI}__/update}">&#9998;Edit</a>
@@ -65,13 +67,13 @@
                 <ol class="comments first_level">
                     <li>
                         <div class="comment_box commentbox1" th:each="comment : ${comments}">
-                            <div class="gravatar">
+                            <!--<div class="gravatar">
                                 <img th:src="${pictures.?[user == comment.userId].isEmpty()
                                                                         ? '/images/blank_profile.png'
                                                                         : pictures.?[user == comment.userId].get(0).photoUrl}"
                                      src="../static/images/blank_profile.png"
                                      alt="profile_picture">
-                            </div>
+                            </div>-->
 
                             <div class="comment_text">
                                 <div class="comment_author">

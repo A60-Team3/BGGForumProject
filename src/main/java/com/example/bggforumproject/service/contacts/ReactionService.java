@@ -12,6 +12,8 @@ public interface ReactionService {
 
     List<Reaction> getAllByUser(long userId);
 
+    Reaction getByPostAndUser(long userId, long postId);
+
     long getLikesCount(long postId);
 
     long getDislikesCount(long postId);

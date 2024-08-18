@@ -92,7 +92,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
             List<Reaction> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("Reaction", "userId", String.valueOf(userId));
+                return null;
             }
 
             return result.get(0);
