@@ -180,16 +180,22 @@ public class PostMvcController {
     @PostMapping("/new")
     public String createPost(@Valid @ModelAttribute("post") PostCreateDTO dto,
                              BindingResult bindingResult,
+                             Model model,
                              @AuthenticationPrincipal UserDetails loggedUser) {
         User user = userService.get(loggedUser.getUsername());
 
         if (bindingResult.hasErrors()) {
             return "post-new";
         }
-        Post post = mapper.map(dto, Post.class);
-        postService.create(post, user);
-
-        return "redirect:/BGGForum/posts";
+        try {
+            Post post = mapper.map(dto, Post.class);
+            postService.create(post, user);
+            return "redirect:/BGGForum/posts";
+        } catch (EntityDuplicateException e) {
+            model.addAttribute("statusCode", HttpStatus.CONFLICT.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "error-page";
+        }
     }
 
     @GetMapping("/{id}/update")
@@ -218,6 +224,8 @@ public class PostMvcController {
 
         User user = userService.get(loggedUser.getUsername());
         if (bindingResult.hasErrors()) {
+            model.addAttribute("tag", new TagDTO());
+            model.addAttribute("postId", id);
             return "post-edit";
         }
 

@@ -1,6 +1,7 @@
 package com.example.bggforumproject.controllers.mvc;
 
 import com.example.bggforumproject.dtos.response.TagDTO;
+import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.ProfilePicture;
 import com.example.bggforumproject.models.Tag;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -75,6 +77,7 @@ public class TagMvcController {
     public String addTagToPost(@PathVariable long postId,
                                @Valid @ModelAttribute("tag") TagDTO dto,
                                BindingResult bindingResult,
+                               Model model,
                                @AuthenticationPrincipal UserDetails loggedUser){
 
         User user = userService.get(loggedUser.getUsername());
@@ -82,8 +85,14 @@ public class TagMvcController {
         if (bindingResult.hasErrors()){
             return "redirect:/BGGForum/posts/{postId}/update#tag-input";
         }
-        Tag tag = mapper.map(dto, Tag.class);
-        tagService.addTagToPost(postId, tag.getName(), user);
+        try {
+            Tag tag = mapper.map(dto, Tag.class);
+            tagService.addTagToPost(postId, tag.getName(), user);
+        } catch (EntityDuplicateException e) {
+            model.addAttribute("statusCode", HttpStatus.CONFLICT.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "error-page";
+        }
 
         return "redirect:/BGGForum/posts/{postId}/update#tag-input";
     }
