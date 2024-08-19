@@ -370,6 +370,7 @@ em {
     position: relative;
     padding: 0 60px 100px 0;
     margin: 40px 0;
+    word-wrap: break-word;
     background: url(../images/templatemo_post_bottom.png) bottom left no-repeat;
 }
 
@@ -1065,6 +1066,7 @@ em {
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    word-wrap: break-word;
 }
 
 .post h2 {
