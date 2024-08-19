@@ -35,3 +35,14 @@ setRandomBackgroundPosition();
 
 // Optionally, set random position every few seconds
 setInterval(setRandomBackgroundPosition, 20000); // 20 seconds
+
+document.addEventListener("DOMContentLoaded", function() {
+    const filterTitle = document.getElementById('filter-title');
+    const filterContent = document.getElementById('filter-content');
+
+    filterTitle.addEventListener('click', function() {
+        filterContent.classList.toggle('show');
+    });
+});
+
+

@@ -21,56 +21,75 @@
             <div class="post_section">
 
 
-                    <form th:if="${userReaction == null}" th:action="@{__${requestURI}__/reactions/new}" th:method="post" th:object="${reaction}">
+                <form th:if="${userReaction == null}" th:action="@{__${requestURI}__/reactions/new}" th:method="post"
+                      th:object="${reaction}">
                         <span class="like-icon">
                             <input type="hidden" value="LIKE" name="reactionType">
-                            <input type="image" src="/images/green-thumbs-up-11246.png" alt="like" width="30px" height="auto">
+                            <input type="image" src="/images/green-thumbs-up-11246.png" alt="like" width="30px"
+                                   height="auto">
                         </span>
-                    </form>
+                </form>
 
-                    <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(0))}" th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/delete}" th:method="get" th:object="${reaction}">
+                <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(0))}"
+                      th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/delete}" th:method="get"
+                      th:object="${reaction}">
                         <span class="like-icon">
                             <input type="hidden" value="LIKE" th:field="*{reactionType}">
-                            <input type="image" src="/images/green-thumbs-up-11246.png" alt="like" width="30px" height="auto">
+                            <input type="image" src="/images/green-thumbs-up-11246.png" alt="like" width="30px"
+                                   height="auto">
                         </span>
-                    </form>
-                    <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(1))}" th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/update}" th:method="post" th:object="${reaction}">
+                </form>
+                <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(1))}"
+                      th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/update}" th:method="post"
+                      th:object="${reaction}">
                         <span class="like-icon">
                             <input type="hidden" value="LIKE" name="reactionType">
-                            <input type="image" src="/images/green-thumbs-up-11246.png" alt="like" width="30px" height="auto">
+                            <input type="image" src="/images/green-thumbs-up-11246.png" alt="like" width="30px"
+                                   height="auto">
                         </span>
-                    </form>
+                </form>
 
 
-                <span class="likes" th:text="${likes}" th:classappend="${userReaction != null && userReaction.getReactionType().equals(reactionTypes.get(0))}?liked">256</span>
+                <span class="likes" th:text="${likes}"
+                      th:classappend="${userReaction != null && userReaction.getReactionType().equals(reactionTypes.get(0))}?liked">256</span>
 
-                <form th:if="${userReaction == null}" th:action="@{__${requestURI}__/reactions/new}" th:method="post" th:object="${reaction}">
+                <form th:if="${userReaction == null}" th:action="@{__${requestURI}__/reactions/new}" th:method="post"
+                      th:object="${reaction}">
                     <span class="dislike-icon">
                         <input type="hidden" value="DISLIKE" name="reactionType">
-                        <input type="image" src="/images/thumbs-down-14924.png" alt="dislike" width="30px" height="auto">
+                        <input type="image" src="/images/thumbs-down-14924.png" alt="dislike" width="30px"
+                               height="auto">
                     </span>
                 </form>
 
-                <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(1))}" th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/delete}" th:method="get" th:object="${reaction}">
+                <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(1))}"
+                      th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/delete}" th:method="get"
+                      th:object="${reaction}">
                     <span class="dislike-icon">
                         <input type="hidden" value="DISLIKE" name="reactionType">
-                        <input type="image" src="/images/thumbs-down-14924.png" alt="dislike" width="30px" height="auto">
+                        <input type="image" src="/images/thumbs-down-14924.png" alt="dislike" width="30px"
+                               height="auto">
                     </span>
                 </form>
 
-                <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(0))}" th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/update}" th:method="post" th:object="${reaction}">
+                <form th:if="${userReaction != null && userReaction.reactionType.equals(reactionTypes.get(0))}"
+                      th:action="@{__${requestURI}__/reactions/__${userReaction.id}__/update}" th:method="post"
+                      th:object="${reaction}">
                     <span class="dislike-icon">
                         <input type="hidden" value="DISLIKE" name="reactionType">
-                        <input type="image" src="/images/thumbs-down-14924.png" alt="dislike" width="30px" height="auto">
+                        <input type="image" src="/images/thumbs-down-14924.png" alt="dislike" width="30px"
+                               height="auto">
                     </span>
                 </form>
 
-                <span class="dislikes" th:text="${dislikes}" th:classappend="${userReaction != null && userReaction.getReactionType().equals(reactionTypes.get(1))}?disliked">256</span>
+                <span class="dislikes" th:text="${dislikes}"
+                      th:classappend="${userReaction != null && userReaction.getReactionType().equals(reactionTypes.get(1))}?disliked">256</span>
                 <span class="post-actions">
                     <span class="reply" th:if="${post.userId.username == #authentication.name}">
                         <a href="#" th:href="@{__${requestURI}__/update}">&#9998;Edit</a>
                     </span>
-                    <span class="reply" th:if="${isAdmin || isModerator || post.userId.username == #authentication.name}">
+                    <span class="reply"
+                          th:if="${isAdmin || isModerator || post.userId.username == #authentication.name}">
                         <a href="#" th:href="@{__${requestURI}__/delete}">&#128465;Delete</a>
                     </span>
                 </span>
@@ -79,21 +98,23 @@
                 <h2 th:text="${post.getTitle()}">Aliquam lorem ante dapibus in viverra </h2>
                 <span th:text="${#temporals.format(post.getCreatedAt(), 'dd-MM-yyyy')}">December 28, 2048</span> |
                 <strong>Author:</strong> <span
-                    th:text="${post.userId.firstName} + ' ' + ${post.userId.lastName}">John</span> | <strong
-                    th:text="#{post.label.tag}">Category:</strong> <span th:each="tag, iterStat : ${post.getTags()}">
+                    th:text="${post.userId.firstName} + ' ' + ${post.userId.lastName}">John</span> <br>
+                <div>
+                    <span th:each="tag, iterStat : ${post.getTags()}">
                 <span class="tag-name">
                     <span class="tag-link">
                         <a href="#" th:href="@{/BGGForum/posts?tags=__${tag.id}__}"
                            th:text="${tag.getName()}">Tag Name</a>
                     </span>
-                    <span class="remove-tag-button" th:if="${isAdmin || isModerator || post.userId.username == #authentication.name}">
+                    <span class="remove-tag-button"
+                          th:if="${isAdmin || isModerator || post.userId.username == #authentication.name}">
                         <a href="#" th:href="@{__${requestURI}__/tags/__${tag.id}__/remove}">
                             <img src="/images/cancel-close-10373.png" alt="Remove tag">
                         </a>
                     </span>
                 </span>
-                <!--<span th:if="${!iterStat.last}">,</span>-->
                 </span>
+                </div>
 
                 <div class="post-content" th:text="${post.getContent()}">
 
@@ -112,11 +133,11 @@
                     <li>
                         <div class="comment_box commentbox1" th:each="currentCom : ${comments}">
                             <div class="gravatar">
-                                    <th:block th:with="currentUserPic=${currentCom.userId.profilePicture}">
-                                        <img th:src="${currentUserPic != null ? currentUserPic.photoUrl : '/images/blank_profile.png'}"
-                                             src="../static/images/blank_profile.png"
-                                             alt="profile_picture">
-                                    </th:block>
+                                <th:block th:with="currentUserPic=${currentCom.userId.profilePicture}">
+                                    <img th:src="${currentUserPic != null ? currentUserPic.photoUrl : '/images/blank_profile.png'}"
+                                         src="../static/images/blank_profile.png"
+                                         alt="profile_picture">
+                                </th:block>
                             </div>
 
                             <div class="comment_text">

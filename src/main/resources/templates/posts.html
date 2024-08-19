@@ -13,57 +13,60 @@
 
     <div class="py-5 post-filter" sec:authorize="isAuthenticated()">
         <div class="container d-flex align-items-center flex-column">
-            <form action="#" th:action="@{__${requestURI}__}" method="get" th:object="${postFilterOptions}">
-                <h5 th:text="#{filter.label}">Filter Options</h5>
-                <div class="input-group">
-                    <input type="text" placeholder="Post Title" th:field="*{title}"/>
-                    <input type="text" placeholder="Post Content" th:field="*{content}"/>
-                    <select th:field="*{createCondition}">
-                        <option value="">None</option>
-                        <option value="<">'<'</option>
-                        <option value="<=>">'<='</option>
-                        <option value=">">'>'</option>
-                        <option value=">=">'>='</option>
-                        <option value="=">'='</option>
-                        <option value="!=">'!='</option>
-                    </select>
-                    <input type="datetime-local" th:field="*{created}"/>
-                    <select th:field="*{updateCondition}">
-                        <option value="">None</option>
-                        <option value="<">'<'</option>
-                        <option value="<=>">'<='</option>
-                        <option value=">">'>'</option>
-                        <option value=">=">'>='</option>
-                        <option value="=">'='</option>
-                        <option value="!=">'!='</option>
-                    </select>
-                    <input type="datetime-local" th:field="*{updated}"/>
-                    <select th:field="*{sortBy}">
-                        <option value="">Sort By</option>
-                        <option value="title">Title</option>
-                        <option value="content">Content</option>
-                        <option value="user">Creator</option>
-                        <option value="created">Date Created</option>
-                        <option value="updated">Date Updated</option>
-                    </select>
-                    <select th:field="*{sortOrder}">
-                        <option value="">Sort Order</option>
-                        <option value="asc">Ascending</option>
-                        <option value="desc">Descending</option>
-                    </select>
-                    <div>
-                        <label>Tags:</label>
+            <h5 id="filter-title" th:text="#{filter.label}">Filter Options</h5>
+            <div id="filter-content" class="filter-content">
+                <form action="#" th:action="@{__${requestURI}__}" method="get" th:object="${postFilterOptions}">
+                    <div class="input-group">
+                        <input type="text" placeholder="Post Title" th:field="*{title}"/>
+                        <input type="text" placeholder="Post Content" th:field="*{content}"/>
+                        <select th:field="*{createCondition}">
+                            <option value="">None</option>
+                            <option value="<">'<'</option>
+                            <option value="<=>">'<='</option>
+                            <option value=">">'>'</option>
+                            <option value=">=">'>='</option>
+                            <option value="=">'='</option>
+                            <option value="!=">'!='</option>
+                        </select>
+                        <input type="datetime-local" th:field="*{created}"/>
+                        <select th:field="*{updateCondition}">
+                            <option value="">None</option>
+                            <option value="<">'<'</option>
+                            <option value="<=>">'<='</option>
+                            <option value=">">'>'</option>
+                            <option value=">=">'>='</option>
+                            <option value="=">'='</option>
+                            <option value="!=">'!='</option>
+                        </select>
+                        <input type="datetime-local" th:field="*{updated}"/>
+                        <select th:field="*{sortBy}">
+                            <option value="">Sort By</option>
+                            <option value="title">Title</option>
+                            <option value="content">Content</option>
+                            <option value="user">Creator</option>
+                            <option value="created">Date Created</option>
+                            <option value="updated">Date Updated</option>
+                            <option value="likes">Likes</option>
+                            <option value="dislikes">Dislikes</option>
+                        </select>
+                        <select th:field="*{sortOrder}">
+                            <option value="">Sort Order</option>
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
+                        </select>
+                        <div>
                         <span th:each="tag : ${tags}">
                     <input type="checkbox" th:field="*{tags}" th:value="${tag.id}" id="tag-${tag.id}"/>
                     <label th:for="'tag-' + ${tag.id}" th:text="${tag.name}"></label>
                     </span>
+                        </div>
+                        <br/><br/>
                     </div>
-                    <br/><br/>
-                </div>
 
-                <input class="btn btn-primary BGG" type="submit" value="Search"/>
-                <a class="btn btn-done" th:href="@{__${requestURI}__}">Clear Filter</a>
-            </form>
+                    <input class="btn btn-primary BGG" type="submit" value="Search"/>
+                    <a class="btn btn-done" th:href="@{__${requestURI}__}">Clear Filter</a>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -77,22 +80,30 @@
                 <h2 th:text="#{posts.title.empty}">No Posts</h2>
             </div>
 
-            <div th:unless="${posts.isEmpty()}">
-                <div th:each="post : ${posts}">
-                    <label th:text="#{post.label.title}  + ': '">Title</label>
-                    <span>
-                        <a href="#" th:href="@{__${requestURI}__/__${post.id}__}" th:text="${post.title}">Post</a>
-                    </span>
+            <div class="posts-list" th:unless="${posts.isEmpty()}">
+                <div class="post" style="display: inherit" th:each="post : ${posts}">
+                    <div style="display: flex;justify-content: space-between;">
+                        <h2>
+                            <a href="#" th:href="@{__${requestURI}__/__${post.id}__}" th:text="${post.title}">Post</a>
+                        </h2>
+                        <div class="tags" th:each="tag, iterStat : ${post.tags}">
+                            <span th:text="${tag.name}">Tag Name</span>
+                        </div>
+                    </div>
                     <div th:text="#{post.label.content}  + ': ' + ${post.content}">Post content</div>
 
                     <div class="comment_text">
                         <div class="reply" th:if="${post.userId.username == #authentication.name}">
                             <a href="#" th:href="@{__${requestURI}__/__${post.id}__/update}">&#9998;Edit</a>
                         </div>
-                        <div class="reply" th:if="${#authorization.expression('hasAnyRole(''ADMIN'')')or #authorization.expression('hasAnyRole(''MODERATOR'')') or post.userId.username == #authentication.name}"><a
-                                href="#" th:href="@{__${requestURI}__/__${post.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}">&#128465;Delete</a></div>
+                        <div class="reply"
+                             th:if="${#authorization.expression('hasAnyRole(''ADMIN'')')or #authorization.expression('hasAnyRole(''MODERATOR'')') or post.userId.username == #authentication.name}">
+                            <a
+                                    href="#"
+                                    th:href="@{__${requestURI}__/__${post.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}">&#128465;Delete</a>
+                        </div>
                     </div>
-<!--                        TODO fix paging deletion to redirect to proper page if last entry on page-->
+                    <!--                        TODO fix paging deletion to redirect to proper page if last entry on page-->
                     <div th:text="#{post.label.created}  + ': ' + ${#temporals.format(post.createdAt,'dd-MM-yyyy HH:mm')}">
                         Time of Creation
                     </div>
@@ -103,12 +114,6 @@
                     <div th:text="#{post.label.createdBy}  + ': ' + ${post.userId.firstName} + ' ' + ${post.userId.lastName}">
                         Creator
                     </div>
-                    <span th:text="#{post.label.tag}  + ': '">Tags:</span>
-                    <span th:each="tag, iterStat : ${post.tags}">
-                        <span th:text="${tag.name}">Tag Name</span>
-                        <span th:if="${!iterStat.last}">,</span>
-                    </span>
-                    <br/><br/>
                 </div>
                 <nav th:replace="~{/fragments/pagination.html :: pagination(pagingPost)}"></nav>
             </div>

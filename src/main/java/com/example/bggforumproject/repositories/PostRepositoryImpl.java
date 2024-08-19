@@ -233,6 +233,8 @@ public class PostRepositoryImpl implements PostRepository {
             case "yearUpdated" -> "year(p.updatedAt)";
             case "monthUpdated" -> "month(p.updatedAt)";
             case "dayUpdated" -> "day(p.updatedAt)";
+            case "likes" -> "(SELECT COUNT(r.id) FROM Reaction r WHERE r.postId.id = p.id AND r.reactionType = 'LIKE')";
+            case "dislikes" -> "(SELECT COUNT(r.id) FROM Reaction r WHERE r.postId.id = p.id AND r.reactionType = 'DISLIKE')";
             default -> "p.id";
         };
 

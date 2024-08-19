@@ -1,7 +1,7 @@
 <div th:fragment="navbar" id="templatemo_menu">
     <div class="profile-menu">
         <li sec:authorize="isAuthenticated()">
-            <a th:href="@{/BGGForum/users/profile}">
+            <a th:href="@{/BGGForum/users/profile}" style="text-decoration: none">
                 <img class="navbar-picture"
                      th:src="${principalPhoto}"
                      alt="profile_picture">

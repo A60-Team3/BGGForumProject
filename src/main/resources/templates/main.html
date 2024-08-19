@@ -9,14 +9,76 @@
 <div id="templatemo_wrapper">
     <div th:replace="~{/fragments/navbar}"></div>
 
-    <h4 class="post-filter message" th:if="${param.logout}" th:text="#{user.label.logout-success}"> Log out successful</h4>
-    <h4 class="post-filter message" th:if="${param.deleted}" th:text="#{user.label.user-self-delete}"> Log out successful</h4>
+    <h4 class="post-filter message" th:if="${param.logout}" th:text="#{user.label.logout-success}"> Log out
+        successful</h4>
+    <h4 class="post-filter message" th:if="${param.deleted}" th:text="#{user.label.user-self-delete}"> Log out
+        successful</h4>
 
     <div sec:authorize="isAuthenticated()">
-        <h4  class="post-filter message" th:if="${param.success}"
-             th:text="#{user.label.login-success}">
+        <h4 class="post-filter message" th:if="${param.success}"
+            th:text="#{user.label.login-success}">
         </h4>
     </div>
+
+    <div class="py-5 post-filter">
+        <div class="container d-flex align-items-center flex-column">
+            <h5 id="filter-title" th:text="#{filter.label}">Filter Options</h5>
+            <div id="filter-content" class="filter-content">
+                <form action="#" th:action="@{__${requestURI}__}" method="get" th:object="${postFilterOptions}">
+                    <div class="input-group">
+                        <input type="text" placeholder="Post Title" th:field="*{title}"/>
+                        <input sec:authorize="isAuthenticated()" type="text" placeholder="Post Content" th:field="*{content}"/>
+                        <select sec:authorize="isAuthenticated()" th:field="*{createCondition}">
+                            <option value="">None</option>
+                            <option value="<">'<'</option>
+                            <option value="<=>">'<='</option>
+                            <option value=">">'>'</option>
+                            <option value=">=">'>='</option>
+                            <option value="=">'='</option>
+                            <option value="!=">'!='</option>
+                        </select>
+                        <input sec:authorize="isAuthenticated()" type="datetime-local" th:field="*{created}"/>
+                        <select sec:authorize="isAuthenticated()" th:field="*{updateCondition}">
+                            <option value="">None</option>
+                            <option value="<">'<'</option>
+                            <option value="<=>">'<='</option>
+                            <option value=">">'>'</option>
+                            <option value=">=">'>='</option>
+                            <option value="=">'='</option>
+                            <option value="!=">'!='</option>
+                        </select>
+                        <input sec:authorize="isAuthenticated()" type="datetime-local" th:field="*{updated}"/>
+                        <select th:field="*{sortBy}">
+                            <option value="">Sort By</option>
+                            <option sec:authorize="isAuthenticated()" value="title">Title</option>
+                            <option sec:authorize="isAuthenticated()" value="content">Content</option>
+                            <option sec:authorize="isAuthenticated()" value="user">Creator</option>
+                            <option value="created">Date Created</option>
+                            <option sec:authorize="isAuthenticated()" value="updated">Date Updated</option>
+                            <option value="likes">Likes</option>
+                            <option value="dislikes">Dislikes</option>
+                        </select>
+                        <select th:field="*{sortOrder}">
+                            <option sec:authorize="isAuthenticated()" value="">Sort Order</option>
+                            <option sec:authorize="isAuthenticated()" value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
+                        </select>
+                        <div sec:authorize="isAuthenticated()">
+                            <span th:each="tag : ${tags}">
+                                <input type="checkbox" th:field="*{tags}" th:value="${tag.id}" id="tag-${tag.id}"/>
+                                <label th:for="'tag-' + ${tag.id}" th:text="${tag.name}"></label>
+                            </span>
+                        </div>
+                        <br/><br/>
+                    </div>
+
+                    <input class="btn btn-primary BGG" type="submit" value="Search"/>
+                    <a class="btn btn-done" th:href="@{__${requestURI}__}">Clear Filter</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <div id="templatemo_left_column">
         <div th:replace="~{/fragments/siteLogo}"></div> <!-- end of header -->
@@ -34,34 +96,37 @@
 
     <div id="templatemo_right_column">
         <div id="templatemo_main">
-            <div th:if="${postsRecent.isEmpty()}">
+            <div th:if="${posts.isEmpty()}">
                 <h2 th:text="#{posts.title.empty}">No Posts</h2>
             </div>
 
-            <div th:unless="${postsRecent.isEmpty()}">
-                <h3>
-                    <span th:text="'Displaying 10 most recent from ' + ${totalPosts} + ' posts.'"></span><br/>
-                    <span sec:authorize="!isAuthenticated()">
-                        <a th:href="@{/auth/register}">Join</a> us to see the rest.
-                    </span>
-                </h3>
-                <div th:each="post : ${postsRecent}">
-                    <label th:text="#{post.label.title}  + ': '">Title</label>
-                    <span>
-                        <a href="#" th:href="@{/BGGForum/posts/__${post.id}__}" th:text="${post.title}">Post</a>
-                    </span>
-                    <div th:text="#{post.label.created}  + ': ' + ${#temporals.format(post.createdAt,'dd-MM-yyyy HH:mm')}">
-                        Time of Creation
+            <div class="posts-list" th:unless="${posts.isEmpty()}">
+
+                    <h2 th:text="'Displaying ' + ${queryCount} + ' from ' + ${totalPosts} + ' posts.'"></h2>
+
+                <div class="post" th:each="post : ${posts}">
+                    <div >
+                        <h2>
+                            <a href="#" th:href="@{/BGGForum/posts/__${post.id}__}" th:text="${post.title}">Post</a>
+                        </h2>
+                        <div class="tags" th:each="tag, iterStat : ${post.tags}">
+                            <span  th:text="${tag.name}">Tag Name</span>
+                        </div>
                     </div>
-                    <div th:text="#{post.label.createdBy}  + ': ' + ${post.userId.firstName} + ' ' +  ${post.userId.lastName}">
-                        Creator
+                    <div>
+
                     </div>
-                    <span th:text="#{post.label.tag}  + ': '">Tags:</span>
-                    <span th:each="tag, iterStat : ${post.tags}">
-                        <span th:text="${tag.name}">Tag Name</span>
-                        <span th:if="${!iterStat.last}">,</span>
-                    </span>
-                    <br/><br/>
+                    <div>
+                        <span th:text="${#temporals.format(post.createdAt,'dd-MM-yyyy, HH:mm')}">
+                            Time of Creation
+                        </span><br/>
+                        <span th:text="${post.userId.firstName} + ' ' +  ${post.userId.lastName}">
+                            Creator
+                        </span>
+                        <span th:with="authorPic=${post.userId.profilePicture}">
+                            <img class="author_pic" th:src="${authorPic != null ? authorPic.photoUrl : '/images/blank_profile.png'}"
+                                 alt="profile_picture"></span>
+                    </div>
                 </div>
                 <nav th:replace="~{/fragments/pagination.html :: pagination(pagingPost)}"></nav>
             </div>
