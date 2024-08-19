@@ -862,6 +862,14 @@ em {
     transition: opacity 0.3s ease; /* Smooth transition for hover effect */
 }
 
+.modal-picture {
+    width: 50%; /* make the image take up the full width of the container */
+    height: auto; /* maintain the aspect ratio */
+    object-fit: cover; /* ensures the image covers the container while maintaining aspect ratio */
+    transition: opacity 0.3s ease; /* Smooth transition for hover effect */
+    border-radius: 50%;
+}
+
 .navbar-picture {
     width: 30px; /* make the image take up the full width of the container */
     height: auto; /* maintain the aspect ratio */

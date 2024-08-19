@@ -52,6 +52,7 @@
                         <select th:field="*{sortOrder}">
                             <option value="">Sort Order</option>
                             <option value="asc">Ascending</option>
+
                             <option value="desc">Descending</option>
                         </select>
                         <div>
@@ -60,7 +61,6 @@
                     <label th:for="'tag-' + ${tag.id}" th:text="${tag.name}"></label>
                     </span>
                         </div>
-                        <br/><br/>
                     </div>
 
                     <input class="btn btn-primary BGG" type="submit" value="Search"/>
