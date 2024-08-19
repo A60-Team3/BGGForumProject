@@ -33,7 +33,6 @@ function setRandomBackgroundPosition() {
 
 setRandomBackgroundPosition();
 
-// Optionally, set random position every few seconds
 setInterval(setRandomBackgroundPosition, 20000); // 20 seconds
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -43,6 +42,26 @@ document.addEventListener("DOMContentLoaded", function() {
     filterTitle.addEventListener('click', function() {
         filterContent.classList.toggle('show');
     });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    function getQueryParam(param) {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    var userId = getQueryParam('openModal');
+
+    if (userId) {
+        var modalSelector = '#userModal' + userId;
+
+        var modalElement = document.querySelector(modalSelector);
+
+        if (modalElement) {
+            var modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        }
+    }
 });
 
 

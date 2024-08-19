@@ -52,7 +52,17 @@ public class DataLoader implements CommandLineRunner {
             authenticationService.registerUser(new User("Frank", "Wilson", "frank.wilson@example.com", "frank_wilson", "password123"));
             authenticationService.registerUser(new User("Grace", "Moore", "grace.moore@example.com", "grace_moore", "password123"));
             authenticationService.registerUser(new User("Hank", "Taylor", "hank.taylor@example.com", "hank_taylor", "password123"));
-            authenticationService.registerUser(new User("Ivylin", "Anderson", "ivy.anderson@example.com", "ivy_anderson", "password123"));
+            authenticationService.registerUser(new User("Michael", "Anderson", "ivy.anderson@example.com", "ivy_anderson", "password123"));
+            authenticationService.registerUser(new User("Jennifer", "Wong", "kevin.moore@example.com", "kevin.moor", "password123"));
+            authenticationService.registerUser(new User("Andrew", "Martinez", "ivy.anderyn@example.com", "ivy.andery", "password123"));
+            authenticationService.registerUser(new User("Samantha", "Young", "ivrany.anderson@example.com", "ivrany.anderson", "password123"));
+            authenticationService.registerUser(new User("Kevin", "Anderson", "daniel.young@example.com", "daniel.young", "password123"));
+            authenticationService.registerUser(new User("Kevin", "Garcia", "melissa.garcia@example.com", "melissa.garcia", "password123"));
+            authenticationService.registerUser(new User("Evan", "Garcia", "kevin.moone@example.com", "kevin.moone", "password123"));
+            authenticationService.registerUser(new User("Anderson", "Anderson", "melisa.garcia@example.com", "melisa.garcia", "password123"));
+            authenticationService.registerUser(new User("Jessica", "Garcia", "melissa.gardia@example.com", "melissa.gardia", "password123"));
+            authenticationService.registerUser(new User("Evan", "Smith", "melissa.gavancia@example.com", "melissa.gavancia", "password123"));
+            authenticationService.registerUser(new User("George", "Smith", "asa.gavancia@example.com", "mel.gavancia", "password123"));
 
 
             Resource resource = new ClassPathResource("data.sql");

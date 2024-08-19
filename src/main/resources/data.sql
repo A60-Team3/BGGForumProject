@@ -3,21 +3,6 @@
 #        ('MODERATOR'),
 #        ('USER');
 
-
-INSERT INTO userEntities (first_name, last_name, email, username, password)
-VALUES
-       ('Jack', 'Thomas', 'jack.thomas@example.com', 'jack_thomas', 'password123'),             -- Admin
-       ('Karen', 'Jackson', 'karen.jackson@example.com', 'karen_jackson', 'password123'),       -- User
-       ('Leo', 'White', 'leo.white@example.com', 'leo_white', 'password123'),                   -- User
-       ('Mia', 'Harris', 'mia.harris@example.com', 'mia_harris', 'password123'),                -- User
-       ('Nina', 'Martin', 'nina.martin@example.com', 'nina_martin', 'password123'),             -- User
-       ('Oscar', 'Garcia', 'oscar.garcia@example.com', 'oscar_garcia', 'password123'),          -- User
-       ('Paul', 'Martinez', 'paul.martinez@example.com', 'paul_martinez', 'password123'),       -- User
-       ('Quincy', 'Robinson', 'quincy.robinson@example.com', 'quincy_robinson', 'password123'), -- User
-       ('Rita', 'Clark', 'rita.clark@example.com', 'rita_clark', 'password123'),                -- User
-       ('Sam', 'Rodriguez', 'sam.rodriguez@example.com', 'sam_rodriguez', 'password123');       -- User
-
-
 INSERT INTO phones (number, user_id)
 VALUES ('123-456-7890', 1), -- Admin
        ('333-333-3333', 5), -- Admin

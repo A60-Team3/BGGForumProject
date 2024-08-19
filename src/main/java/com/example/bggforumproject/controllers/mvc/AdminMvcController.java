@@ -110,6 +110,7 @@ public class AdminMvcController {
 
         redirectAttributes.addAttribute("pageIndex", pageIndex + 1);
         redirectAttributes.addAttribute("pageSize", pageSize);
+        redirectAttributes.addAttribute("openModal", userId);
 
         currentUser = userService.promote(userId, currentUser);
 
@@ -129,6 +130,7 @@ public class AdminMvcController {
 
         redirectAttributes.addAttribute("pageIndex", pageIndex + 1);
         redirectAttributes.addAttribute("pageSize", pageSize);
+        redirectAttributes.addAttribute("openModal", userId);
 
         userService.blockUser(userId, currentUser);
 
@@ -139,6 +141,7 @@ public class AdminMvcController {
     @PostMapping("/{userId}/archive")
     public String archiveUser(@RequestParam(value = "pageIndex") int pageIndex,
                               @RequestParam(value = "pageSize") int pageSize,
+                              @RequestParam(value = "sectionId") String sectionId,
                               @PathVariable long userId,
                               RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -148,6 +151,8 @@ public class AdminMvcController {
 
         redirectAttributes.addAttribute("pageIndex", pageIndex + 1);
         redirectAttributes.addAttribute("pageSize", pageSize);
+        redirectAttributes.addAttribute("openModal", userId);
+
 
         return "redirect:/BGGForum/admin";
     }

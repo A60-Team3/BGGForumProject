@@ -22,7 +22,9 @@
                     </h5>
                     <h5 class="text-success" th:if="${param.success}" th:text="#{user.label.register-success}">Register
                         Success
-                    </h5>
+                    </h5><h5 class="text-success" th:if="${param.blocked}" th:text="#{user.label.blocked}">Register
+                    Success
+                </h5>
                     <form class="form-check" action="#" th:action="@{/BGGForum/login}" th:method="post">
                         <label th:text="#{user.label.username}">Username</label>
                         <br/>

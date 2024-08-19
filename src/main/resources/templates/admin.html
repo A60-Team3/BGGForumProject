@@ -110,7 +110,7 @@
             </div>
             <div th:unless="${users.isEmpty()}">
                 <div th:each="user : ${users}">
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                    <button th:id="${user.id}" type="button" class="btn btn-secondary" data-bs-toggle="modal"
                             th:data-bs-target="'#userModal' + ${user.id}">
                         <img class="modal-picture"
                              th:src="${user.profilePicture != null ? user.profilePicture.photoUrl : '/images/blank_profile.png'}"
@@ -119,37 +119,48 @@
                         <span th:text="${user.firstName} + ' ' + ${user.lastName}">View User Details</span>
                     </button>
 
-                    <div class="portfolio-modal modal fade" th:id="'userModal' + ${user.id}"
+                    <div th:with="userModalId=${'userModal' + user.id}"
+                         class="portfolio-modal modal fade" th:id="${userModalId}"
                          tabindex="-1" aria-labelledby="portfolioModal1"
-                         th:attr="aria-labelledby='userModal' + ${user.id}"
+                         th:attr="aria-labelledby=${userModalId}"
                          aria-hidden="true">
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header border-0">
                                     <button class="btn-close" type="button" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
-                                    <form action="#" sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')"
-                                          th:action="@{__${requestURI}__/__${user.id}__/block(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
-                                          method="post">
-                                        <input th:if="${user.isBlocked}" type="submit" class="btn btn-success mt-auto"
-                                               value="Free"/>
-                                        <input th:unless="${user.isBlocked}" type="submit"
-                                               class="btn btn-danger mt-auto lh-1" value="Block">
-                                    </form>
-                                    <form action="#" sec:authorize="hasRole('ADMIN')"
-                                          th:action="@{__${requestURI}__/__${user.id}__/archive(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
-                                          method="post">
-                                        <input th:unless="${user.isDeleted}" type="submit"
-                                               class="btn btn-danger mt-auto lh-1" value="Archive">
-                                        <input th:formaction="@{__${requestURI}__/__${user.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
-                                               type="submit"
-                                               class="btn btn-danger mt-auto lh-1" value="Delete">
-                                    </form>
+
                                 </div>
                                 <div class="modal-body text-center pb-5">
                                     <div class="container">
                                         <div class="justify-content-center">
                                             <div class="row col-lg-8">
+                                                <!--AdminButtons-->
+                                                <div>
+                                                    <div th:unless="${user.username == #authentication.name}">
+                                                        <form action="#" sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')"
+                                                              th:action="@{__${requestURI}__/__${user.id}__/block(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
+                                                              method="post">
+                                                            <input th:if="${user.isBlocked}" type="submit"
+                                                                   class="btn btn-success mt-auto lh-1" value="Free"/>
+                                                            <input th:unless="${user.isBlocked}" type="submit"
+                                                                   class="btn btn-danger mt-auto lh-1" value="Block">
+                                                        </form>
+                                                        <form action="#" sec:authorize="hasRole('ADMIN')"
+                                                              th:action="@{__${requestURI}__/__${user.id}__/archive(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
+                                                              method="post">
+                                                            <input th:unless="${user.isDeleted}" type="submit"
+                                                                   class="btn btn-danger mt-auto lh-1" value="Archive"/>
+                                                            <input th:formaction="@{__${requestURI}__/__${user.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
+                                                                   type="submit"
+                                                                   class="btn btn-danger mt-auto lh-1" value="Delete"/>
+                                                            <input th:if="${user.roles.?[authority != 'USER'].isEmpty()}"
+                                                                   th:formaction="@{__${requestURI}__/__${user.id}__/promote(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
+                                                                   type="submit"
+                                                                   class="btn btn-success mt-auto lh-1" value="Promote"/>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                                 <!-- Portfolio Modal - Title-->
                                                 <div class="portfolio-modal-title text-secondary text-uppercase mb-0"
                                                      th:text="${user.firstName} + ' ' + ${user.lastName}">Full Name

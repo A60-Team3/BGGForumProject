@@ -23,8 +23,10 @@
         <li sec:authorize="!isAuthenticated()">
             <a th:href="@{/BGGForum/register}">Register</a>
         </li>
-        <li sec:authorize="hasAnyRole('ADMIN','MODERATOR')">
-            <a th:href="@{/BGGForum/admin}">Admin</a></li>
+        <li sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/BGGForum/admin}">Admin</a>
+        </li><li sec:authorize="hasRole('MODERATOR')">
+            <a th:href="@{/BGGForum/admin}">Moderator</a></li>
         <li sec:authorize="!isAuthenticated()">
             <a th:href="@{/BGGForum/login}">Sign In</a>
         </li>

@@ -116,7 +116,7 @@
                     <small class="label-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error placeholder</small>
                     <br/><br/>
 
-                    <label for="phone" th:text="#{user.label.phone}">Phone Number</label>
+                    <label for="phone" sec:authorize="hasRole('ADMIN')" th:text="#{user.label.phone}">Phone Number</label>
                     <br/>
                     <input type="tel" th:field="*{phoneNumber}" id="phone" name="phone"
                            th:pattern="*{phoneNumberRegex}"/>
