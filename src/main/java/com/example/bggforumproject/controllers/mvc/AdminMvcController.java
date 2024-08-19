@@ -108,10 +108,10 @@ public class AdminMvcController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
-        redirectAttributes.addAttribute("pageIndex", pageIndex);
+        redirectAttributes.addAttribute("pageIndex", pageIndex + 1);
         redirectAttributes.addAttribute("pageSize", pageSize);
 
-        userService.promote(userId, currentUser);
+        currentUser = userService.promote(userId, currentUser);
 
         return "redirect:/BGGForum/admin";
     }
@@ -127,7 +127,7 @@ public class AdminMvcController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.get(authentication.getName());
 
-        redirectAttributes.addAttribute("pageIndex", pageIndex);
+        redirectAttributes.addAttribute("pageIndex", pageIndex + 1);
         redirectAttributes.addAttribute("pageSize", pageSize);
 
         userService.blockUser(userId, currentUser);
@@ -146,7 +146,7 @@ public class AdminMvcController {
 
         userService.softDelete(userId, currentUser);
 
-        redirectAttributes.addAttribute("pageIndex", pageIndex);
+        redirectAttributes.addAttribute("pageIndex", pageIndex + 1);
         redirectAttributes.addAttribute("pageSize", pageSize);
 
         return "redirect:/BGGForum/admin";
@@ -163,7 +163,7 @@ public class AdminMvcController {
 
         userService.delete(userId, currentUser);
 
-        redirectAttributes.addAttribute("pageIndex", pageIndex);
+        redirectAttributes.addAttribute("pageIndex", pageIndex + 1);
         redirectAttributes.addAttribute("pageSize", pageSize);
 
         return "redirect:/BGGForum/admin";

@@ -4,8 +4,10 @@ import com.example.bggforumproject.dtos.request.RegistrationDTO;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.models.User;
 import com.example.bggforumproject.service.contacts.AuthenticationService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,17 +16,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("/BGGForum")
 public class AuthenticationMvcController {
 
     private final AuthenticationService authenticationService;
     private final ModelMapper mapper;
+    private final View error;
 
-    public AuthenticationMvcController(AuthenticationService authenticationService, ModelMapper mapper) {
+    public AuthenticationMvcController(AuthenticationService authenticationService, ModelMapper mapper, View error) {
         this.authenticationService = authenticationService;
         this.mapper = mapper;
+        this.error = error;
     }
 
     @GetMapping("/login")
@@ -33,13 +38,10 @@ public class AuthenticationMvcController {
     }
 
     @GetMapping("/logout")
-    public String logoutUser() {
-        return "redirect:/auth/logout?true";
-    }
-
-    @PostMapping("/logout?true")
-    public String handleLogout() {
-        return "redirect:/BGGForum/main";
+    public String logoutUser(HttpSession httpSession) {
+        SecurityContextHolder.clearContext();
+        httpSession.invalidate();
+        return "redirect:/BGGForum/main?deleted";
     }
 
     @GetMapping("/register")
@@ -62,9 +64,12 @@ public class AuthenticationMvcController {
         try {
             User user = mapper.map(register, User.class);
             authenticationService.registerUser(user);
-            return "redirect:/auth/login?success";
+            return "redirect:/BGGForum/login?success";
         } catch (EntityDuplicateException e) {
-            bindingResult.rejectValue("username", "username_error", e.getMessage());
+            String field = e.getMessage().contains("email") ? "email" : "username";
+            String errorCode = e.getMessage().contains("email") ? "email_error" : "username_error";
+
+            bindingResult.rejectValue(field, errorCode, e.getMessage());
             return "user-create";
         }
     }

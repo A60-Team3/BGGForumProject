@@ -15,6 +15,7 @@ import com.example.bggforumproject.repositories.contracts.UserRepository;
 import com.example.bggforumproject.service.contacts.CloudinaryService;
 import com.example.bggforumproject.service.contacts.PictureService;
 import com.example.bggforumproject.service.contacts.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -92,11 +93,12 @@ public class UserServiceImpl implements UserService {
 
         User userToPromote = userRepository.getById(id);
 
-        Role role = new Role(RoleType.MODERATOR);
+        Role moderator = roleRepository.getByAuthority(RoleType.MODERATOR);
+        Role admin = new Role(RoleType.ADMIN);
 
-        if (userToPromote.getRoles().contains(role)) {
+        if (userToPromote.getRoles().contains(moderator) || userToPromote.getRoles().contains(admin)) {
             throw new EntityDuplicateException(
-                    String.format("User with id %d is already %s", id, role.getAuthority())
+                    String.format("User with id %d is already %s", id, moderator.getAuthority())
             );
         }
 
@@ -104,11 +106,11 @@ public class UserServiceImpl implements UserService {
                 .filter(userRole -> !userRole.getRole().equals(RoleType.USER))
                 .collect(Collectors.toSet()));
 
-        userToPromote.getRoles().add(role);
+        userToPromote.getRoles().add(moderator);
 
         userRepository.update(userToPromote);
 
-        return userToPromote;
+        return userRepository.getById(id);
     }
 
     @Override
@@ -189,13 +191,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(long id, User user) {
-        authorizationHelper.checkPermissions(user, RoleType.ADMIN);
-
         User userToDelete = userRepository.getById(id);
 
         userRepository.delete(userToDelete);
     }
 
+    @Transactional
     @Override
     public void uploadProfilePic(MultipartFile multipartFile, User loggedUser, long userId) throws IOException {
         if (loggedUser.getId() != userId) {

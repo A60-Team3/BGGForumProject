@@ -23,7 +23,8 @@
                       method="post"
                       enctype="multipart/form-data"
                       th:object="${userUpdateDto}">
-                    <input type="file" th:field="*{profilePic}" id="profile-upload" name="profilePicture" style="display: none;" onchange="uploadPhoto()"/>
+                    <input type="file" th:field="*{profilePic}" id="profile-upload" name="profilePicture"
+                           style="display: none;" onchange="uploadPhoto()"/>
                 </form>
             </div>
 
@@ -46,7 +47,7 @@
                 <li>
                     <h5 th:text="'Email: ' + ${user.email}">Email</h5>
                 </li>
-                <li >
+                <li>
                     <h5 th:text="'Phone number: ' + ${(userPhone == null) ? ' N/A ' : userPhone}">
                         Cellphone</h5>
                 </li>
@@ -73,63 +74,58 @@
 
     <div id="templatemo_right_column">
         <div id="templatemo_main">
-                <div>
-                    <h4>Edit Your Information</h4>
+            <div>
+                <h4>Edit Your Information</h4>
 
-                    <form class="form-check" action="#" th:action="@{__${requestURI}__}" th:object="${userUpdateDto}"
-                          method="post">
-                        <label for="username" th:text="#{user.label.username}">Username</label>
-                        <br/>
-                        <input type="text" th:value="${user.username}" readonly="readonly" id="username"/>
-                        <span class="label-error">Cannot be changed!</span>
-                        <br/><br/>
+                <form class="form-check" action="#" th:action="@{__${requestURI}__}" th:object="${userUpdateDto}"
+                      method="post">
+                    <label for="username" th:text="#{user.label.username}">Username</label>
+                    <br/>
+                    <input type="text" th:field="*{username}" readonly="readonly" disabled="disabled" id="username"/>
+                    <span class="label-error">Cannot be changed!</span>
+                    <br/><br/>
 
-                        <label for="password" th:text="#{user.label.password}">Password</label>
-                        <br/>
-                        <input type="password" th:value="${user.password}" th:field="*{password}"
-                               id="password"/>
-                        <small class="label-error" th:errors="*{password}">Password error placeholder</small>
-                        <br/><br/>
+                    <label for="password" th:text="#{user.label.password}">Password</label>
+                    <br/>
+                    <input type="password" th:field="*{password}" id="password"/>
+                    <small class="label-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error placeholder</small>
+                    <br/><br/>
 
-                        <label for="confirm" th:text="#{user.label.password-confirm}">Confirm Password</label>
-                        <br/>
-                        <input type="password" th:field="*{passwordConfirm}" id="confirm"/>
-                        <small class="label-error" th:errors="*{passwordConfirm}">Password confirm error
-                            placeholder</small>
-                        <br/><br/>
+                    <label for="confirm" th:text="#{user.label.password-confirm}">Confirm Password</label>
+                    <br/>
+                    <input type="password" th:field="*{passwordConfirm}" id="confirm"/>
+                    <small class="label-error" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}">Password confirm error
+                        placeholder</small>
+                    <br/><br/>
 
-                        <label for="firstName" th:text="#{user.label.first-name}">First Name</label>
-                        <br/>
-                        <input type="text" th:value="${user.firstName}" th:field="*{firstName}"
-                               id="firstName"/>
-                        <small class="label-error" th:errors="*{firstName}">First name error placeholder</small>
-                        <br/><br/>
+                    <label for="firstName" th:text="#{user.label.first-name}">First Name</label>
+                    <br/>
+                    <input type="text" th:field="*{firstName}" id="firstName"/>
+                    <small class="label-error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">First name error placeholder</small>
+                    <br/><br/>
 
-                        <label for="lastName" th:text="#{user.label.last-name}">Last Name</label>
-                        <br/>
-                        <input type="text" th:value="${user.lastName}" th:field="*{lastName}"
-                               id="lastName"/>
-                        <small class="label-error" th:errors="*{lastName}">Last name error placeholder</small>
-                        <br/><br/>
+                    <label for="lastName" th:text="#{user.label.last-name}">Last Name</label>
+                    <br/>
+                    <input type="text" th:field="*{lastName}" id="lastName"/>
+                    <small class="label-error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Last name error placeholder</small>
+                    <br/><br/>
 
-                        <label for="email" th:text="#{user.label.email}">Email</label>
-                        <br/>
-                        <input type="text" th:value="${user.email}" th:field="*{email}"
-                               id="email"/>
-                        <small class="label-error" th:errors="*{email}">Email error placeholder</small>
-                        <br/><br/>
+                    <label for="email" th:text="#{user.label.email}">Email</label>
+                    <br/>
+                    <input type="text" th:field="*{email}" id="email"/>
+                    <small class="label-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error placeholder</small>
+                    <br/><br/>
 
-                        <label for="phone" th:text="#{user.label.phone}">Phone Number</label>
-                        <br/>
-                        <input type="tel" th:value="${userPhone}" th:field="*{phoneNumber}"
-                               id="phone"
-                               name="phone" th:pattern="*{phoneNumberRegex}"/>
-                        <small class="label-error" th:errors="*{phoneNumber}">Phone number error placeholder</small>
-                        <br/><br/>
+                    <label for="phone" th:text="#{user.label.phone}">Phone Number</label>
+                    <br/>
+                    <input type="tel" th:field="*{phoneNumber}" id="phone" name="phone"
+                           th:pattern="*{phoneNumberRegex}"/>
+                    <small class="label-error" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Phone number error placeholder</small>
+                    <br/><br/>
 
-                        <input type="submit" value="Update"/>
-                    </form>
-                </div>
+                    <input class="btn btn-secondary" type="submit" value="Update"/>
+                </form>
+            </div>
         </div>
     </div>
 

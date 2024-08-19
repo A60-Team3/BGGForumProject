@@ -23,7 +23,7 @@
                     <h5 class="text-success" th:if="${param.success}" th:text="#{user.label.register-success}">Register
                         Success
                     </h5>
-                    <form class="form-check" action="#" th:action="@{/auth/login}" th:method="post">
+                    <form class="form-check" action="#" th:action="@{/BGGForum/login}" th:method="post">
                         <label th:text="#{user.label.username}">Username</label>
                         <br/>
                         <input type="text" id="username" name="username" placeholder="Username" autofocus="autofocus"/>
@@ -40,7 +40,7 @@
                     <br/><br/>
                     <div>
                         <h4>Not yet registered?
-                            <a th:href="@{/auth/register}" th:text="#{user.label.register-link}">Register</a>
+                            <a th:href="@{/BGGForum/register}" th:text="#{user.label.register-link}">Register</a>
                         </h4>
                     </div>
                 </div>

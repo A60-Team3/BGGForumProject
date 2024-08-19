@@ -1,26 +1,19 @@
 package com.example.bggforumproject.controllers.mvc;
 
 import com.example.bggforumproject.dtos.request.UserUpdateDTO;
-import com.example.bggforumproject.dtos.response.UserOutDTO;
 import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityNotFoundException;
 import com.example.bggforumproject.exceptions.IllegalFileUploadException;
 import com.example.bggforumproject.models.*;
 import com.example.bggforumproject.security.CustomUserDetails;
 import com.example.bggforumproject.service.contacts.*;
-import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -122,34 +115,51 @@ public class UserMvcController {
 
     @PreAuthorize("#userId == principal.getId()")
     @GetMapping("/{userId}/update")
-    public ModelAndView showUserUpdatePage(@ModelAttribute("userUpdateDto") UserUpdateDTO dto,
-                                           @PathVariable long userId, Model model) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.get(username);
+    public String showUserUpdatePage(
+                                           @PathVariable long userId, Model model,
+                                            @AuthenticationPrincipal CustomUserDetails principal) {
+
+        if (principal.getId() != userId) {
+            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.getReasonPhrase());
+            model.addAttribute("error", "Only Owner can update his info");
+            return "error-page";
+        }
+
+        User user = userService.get(principal.getUsername());
+
         ProfilePicture profilePicture =
                 user.getProfilePicture() != null
                         ? pictureService.get(user.getProfilePicture().getPhotoUrl())
-                        : null;        String userPhone = phoneService.get(user.getId());
+                        : null;
 
-        if (user.getId() != userId) {
-            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.getReasonPhrase());
-            model.addAttribute("error", "Only Owner can update his info");
-            return new ModelAndView("error-page");
-        }
+        String userPhone = phoneService.get(user.getId());
+        UserUpdateDTO dto = new UserUpdateDTO(user.getFirstName(), user.getLastName(),
+                user.getUsername(),user.getPassword(),null, user.getEmail(),
+                userPhone,null);
 
         model.addAttribute("user", user);
         model.addAttribute("userPicture", profilePicture);
         model.addAttribute("userPhone", userPhone);
+        model.addAttribute("userUpdateDto", dto);
 
-        return new ModelAndView("user-update");
+        return "user-update";
     }
 
+    @PreAuthorize("#userId == principal.getId()")
     @PostMapping("/{userId}/update")
     public String update(@PathVariable long userId,
                          @ModelAttribute("userUpdateDto") UserUpdateDTO dto,
                          BindingResult bindingResult,
                          Model model,
-                         @AuthenticationPrincipal UserDetails userDetails) {
+                         @AuthenticationPrincipal CustomUserDetails principal) {
+        User loggedUser = userService.get(principal.getUsername());
+        model.addAttribute("user", loggedUser);
+
+        if (userId != principal.getId()) {
+            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.getReasonPhrase());
+            model.addAttribute("error", "You can edit only your own info");
+            return "error-page";
+        }
 
         if (bindingResult.hasErrors()) {
             return "user-update";
@@ -160,15 +170,9 @@ public class UserMvcController {
             return "user-update";
         }
 
-        User loggedUser = userService.get(userDetails.getUsername());
-
-        if (userId != loggedUser.getId()) {
-            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.getReasonPhrase());
-            model.addAttribute("error", "You can edit only your own info");
-            return "error-page";
-        }
 
         User user = mapper.map(dto, User.class);
+        user.setUsername(loggedUser.getUsername());
 
         userService.update(userId, loggedUser, user);
 
@@ -178,7 +182,7 @@ public class UserMvcController {
 
         model.addAttribute("successMessage", "User details successfully updated");
 
-        return "redirect:/BGGForum/users/" + user.getId() + "?success";
+        return "redirect:/BGGForum/users/" + principal.getId() + "?success";
     }
 
     @PostMapping("/{userId}/update/upload")
@@ -203,5 +207,21 @@ public class UserMvcController {
         model.addAttribute("successMessage", "Profile picture updated");
 
         return "redirect:/BGGForum/users/" + user.getId();
+    }
+
+    @PostMapping("/{userId}/delete")
+    public String deleteUser(@PathVariable long userId, Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userService.get(username);
+
+        if (userId != currentUser.getId()) {
+            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.getReasonPhrase());
+            model.addAttribute("error", "You can only delete yourself");
+            return "error-page";
+        }
+
+        userService.delete(userId, currentUser);
+
+        return "redirect:/BGGForum/logout";
     }
 }

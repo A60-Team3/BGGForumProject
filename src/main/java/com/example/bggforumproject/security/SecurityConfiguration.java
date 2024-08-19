@@ -40,7 +40,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
         http
                 .authorizeHttpRequests(auth -> {
                     auth.
-                            requestMatchers("/auth/register", "/BGGForum/main", "/BGGForum", "/", "/auth/login")
+                            requestMatchers("/BGGForum/register", "/BGGForum/main", "/BGGForum", "/", "/BGGForum/login")
                             .permitAll()
                             .requestMatchers("/BGGForum/posts/most-commented", "/BGGForum/posts/most-recently-created")
                             .permitAll()
@@ -50,13 +50,13 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                     auth.anyRequest().authenticated();
                 })
                .formLogin(formLogin ->
-                        formLogin.loginPage("/auth/login")
+                        formLogin.loginPage("/BGGForum/login")
                                 .defaultSuccessUrl("/BGGForum/main?success", true)
-                                .failureUrl("/auth/login?error")
+                                .failureUrl("/BGGForum/login?error")
                                 .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/auth/logout")
+                        .logoutUrl("/BGGForum/logout")
                         .addLogoutHandler(new SecurityContextLogoutHandler())
                         .deleteCookies("JSESSIONID")
                         .logoutSuccessUrl("/BGGForum/main?logout")

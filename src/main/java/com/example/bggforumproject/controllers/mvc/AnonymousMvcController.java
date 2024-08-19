@@ -11,7 +11,10 @@ import com.example.bggforumproject.service.contacts.PictureService;
 import com.example.bggforumproject.service.contacts.TagService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,12 +39,13 @@ public class AnonymousMvcController {
     }
 
     @ModelAttribute("principalPhoto")
-    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        if (customUserDetails == null){
+    public String principalPhoto(@AuthenticationPrincipal CustomUserDetails principal) {
+
+        if (principal == null) {
             return null;
         }
 
-        ProfilePicture profilePicture = anonymousUserService.get(customUserDetails.getUsername()).getProfilePicture();
+        ProfilePicture profilePicture = anonymousUserService.get(principal.getUsername()).getProfilePicture();
         if (profilePicture != null) {
             return profilePicture.getPhotoUrl();
         }
@@ -59,14 +63,14 @@ public class AnonymousMvcController {
     }
 
     @GetMapping("/main")
-    public String getHomePage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+    public String getHomePage(@RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
                               @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
                               @ModelAttribute("postFilterOptions") FilterDto dto,
                               @AuthenticationPrincipal UserDetails userDetails,
                               Model model) {
 
         List<Post> mostCommented = anonymousUserService.getMostCommented();
-        Page<Post> mostRecentlyCreated = anonymousUserService.getMostRecentlyCreated(pageIndex, pageSize);
+        Page<Post> mostRecentlyCreated = anonymousUserService.getMostRecentlyCreated(pageIndex - 1, pageSize);
 
         model.addAttribute("postsCommented", mostCommented);
         model.addAttribute("postsRecent", mostRecentlyCreated.getContent());

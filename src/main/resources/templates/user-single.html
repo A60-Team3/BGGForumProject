@@ -65,9 +65,14 @@
                 </li>
             </ul>
 
-            <div th:if="${shownUser.username == #authentication.name}">
-                <form id="profile-form" th:action="@{__${requestURI}__/update}" method="get">
-                    <input class="btn btn-secondary" type="submit" value="Edit"/>
+            <div class="d-flex justify-content-center align-items-stretch gap-5"
+                 th:if="${shownUser.username == #authentication.name}">
+                <form th:action="@{/BGGForum/users/__${shownUser.id}__/update}" method="get">
+                    <input class="btn btn-secondary margin12" type="submit" value="Edit">
+                </form>
+                <form th:action="@{/BGGForum/users/__${shownUser.id}__/delete}" method="post">
+                    <input class="btn btn-danger text-center margin12" style="height: fit-content" type="submit"
+                           value="Delete">
                 </form>
             </div>
         </div>
@@ -100,7 +105,7 @@
                 </div>
 
                 <h4 th:if="${param.success}"
-                     th:text="${successMessage}">
+                    th:text="${successMessage}">
                 </h4>
             </div>
         </div>

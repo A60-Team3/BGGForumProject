@@ -46,7 +46,7 @@ public class PictureServiceImpl implements PictureService {
             pictureRepository.updatePhoto(profilePicture);
         }
 
-        return pictureRepository.get(photoUrl);
+        return profilePicture;
     }
 
     @Override

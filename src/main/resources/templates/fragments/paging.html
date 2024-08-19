@@ -1,4 +1,4 @@
-<a th:fragment="pagingPost(pageNum, label, tooltip)" class="page-link"
+<a th:fragment="pagingPost(pageNum, label, tooltip)" class="page-link BGG"
    th:href="@{'__${requestURI}__' + '?' + ${(postFilterOptions.title != null && !postFilterOptions.title.isEmpty()) ? 'title=' + postFilterOptions.title + '&' : ''}
                         + ${(postFilterOptions.content != null && !postFilterOptions.content.isEmpty())  ? 'content=' + postFilterOptions.content + '&' : ''}
                         + ${(postFilterOptions.createCondition != null && !postFilterOptions.createCondition.isEmpty()) ? 'createCondition=' + postFilterOptions.createCondition + '&' : ''}
@@ -14,7 +14,7 @@
     [[${label}]]
 </a>
 
-<a th:fragment="pagingUser(pageNum, label, tooltip)" class="page-link"
+<a th:fragment="pagingUser(pageNum, label, tooltip)" class="page-link BGG"
    th:href="@{'__${requestURI}__' + '?' + ${(userFilterOptions.firstName != null && !userFilterOptions.firstName.isEmpty()) ? 'firstName=' + userFilterOptions.firstName + '&' : ''}
                         + ${(userFilterOptions.lastName != null && !userFilterOptions.lastName.isEmpty()) ? 'lastName=' + userFilterOptions.lastName + '&' : ''}
                         + ${(userFilterOptions.createCondition != null && !userFilterOptions.createCondition.isEmpty()) ? 'createCondition=' + userFilterOptions.createCondition + '&' : ''}
@@ -32,7 +32,7 @@
     [[${label}]]
 </a>
 
-<a th:fragment="pagingComments(pageNum, label, tooltip)" class="page-link"
+<a th:fragment="pagingComments(pageNum, label, tooltip)" class="page-link BGG"
    th:href="@{'__${requestURI}__' + '?' + 'pageIndex=' + ${pageNum + 1} + '&pageSize=' + ${pageSize}}"
    th:title="${tooltip}" rel="tooltip">
     [[${label}]]

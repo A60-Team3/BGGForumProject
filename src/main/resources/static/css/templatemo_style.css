@@ -994,4 +994,52 @@ em {
 .disliked{
     color: red;
 }
+
+.btn-primary.BGG {
+    color: #fff;
+    background-color: #a52834;
+    border-color: #a52834;
+}
+.btn-primary.BGG:hover {
+    color: #fff;
+    background-color: #a50000;
+    border-color: #a50000;
+}
+
+.btn-primary.BGG:disabled, .btn-primary.BGG.disabled {
+    color: #fff;
+    background-color: #a52834;
+    border-color: #a52834;
+}
+
+.page-link.BGG {
+    position: relative;
+    display: block;
+    color: #7a0202;
+    text-decoration: none;
+    background-color: #fff;
+    border: 0.125rem solid #dee2e6;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.page-link:hover {
+    z-index: 2;
+    color: #a52834;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+.page-link:focus {
+    z-index: 3;
+    color: #a52834;
+    background-color: #e9ecef;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(165, 0, 0, 0.25);
+}
+
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #a52834;
+    border-color: #a52834;
+}
 /*custom css*/

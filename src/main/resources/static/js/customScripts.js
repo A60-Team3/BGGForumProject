@@ -1,7 +1,7 @@
 function logout() {
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = '/auth/logout';
+    form.action = '/BGGForum/logout';
 
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
     const csrfInput = document.createElement('input');

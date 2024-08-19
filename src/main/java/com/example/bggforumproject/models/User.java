@@ -55,9 +55,9 @@ public class User extends BaseEntity implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinTable(name = "profile_pictures_users",
             joinColumns =
-                    { @JoinColumn(name = "photo_id", referencedColumnName = "id") },
+                    { @JoinColumn(name = "user_id", referencedColumnName = "id") },
             inverseJoinColumns =
-                    { @JoinColumn(name = "user_id", referencedColumnName = "id") })
+                    { @JoinColumn(name = "photo_id", referencedColumnName = "id") })
     private ProfilePicture profilePicture;
 
     public User() {

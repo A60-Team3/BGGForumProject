@@ -1,33 +1,31 @@
 package com.example.bggforumproject.dtos.request;
 
-import com.example.bggforumproject.models.PhoneNumber;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
 @Schema(description = "The DTO holds the info the front end must provide to update the user's info")
 public record UserUpdateDTO(
 
-        @Size(min = 4, max = 32, message = "First name must be between 4 and 32 characters")
+        @Length(min = 4, max = 32, message = "First name must be between 4 and 32 characters")
         String firstName,
 
-        @Size(min = 4, max = 32, message = "Last name must be between 4 and 32 characters")
+        @Length(min = 4, max = 32, message = "Last name must be between 4 and 32 characters")
         String lastName,
 
         String username,
 
-        @Size(min = 6, message = "Password must be at least 6 characters long")
+        @Length(min = 6, message = "Password must be at least 6 characters long")
         String password,
 
         @NotBlank(message = "This field is mandatory")
         String passwordConfirm,
 
         @Email(regexp = emailRegex, message = "Email should be valid")
-        @Size(max = 255, message = "Email should not be more than 255 characters")
+        @Length(max = 255, message = "Email should not be more than 255 characters")
         String email,
 
         @Email(regexp = phoneNumberRegex, message = "Phone number should be valid")

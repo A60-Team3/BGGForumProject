@@ -10,6 +10,7 @@
     <div th:replace="~{/fragments/navbar}"></div>
 
     <h4 class="post-filter message" th:if="${param.logout}" th:text="#{user.label.logout-success}"> Log out successful</h4>
+    <h4 class="post-filter message" th:if="${param.deleted}" th:text="#{user.label.user-self-delete}"> Log out successful</h4>
 
     <div sec:authorize="isAuthenticated()">
         <h4  class="post-filter message" th:if="${param.success}"
