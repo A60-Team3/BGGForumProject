@@ -1,5 +1,3 @@
-USE boardgames_forum;
-
 ALTER TABLE profile_pictures
     DROP CONSTRAINT profile_pictures_ibfk_1;
 ALTER TABLE profile_pictures

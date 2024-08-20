@@ -97,8 +97,10 @@
 
                 <h2 th:text="${post.getTitle()}">Aliquam lorem ante dapibus in viverra </h2>
                 <span th:text="${#temporals.format(post.getCreatedAt(), 'dd-MM-yyyy')}">December 28, 2048</span> |
-                <strong>Author:</strong> <span
-                    th:text="${post.userId.firstName} + ' ' + ${post.userId.lastName}">John</span> <br>
+                <strong>Author:</strong> <a style="text-decoration: none"
+                                            th:href="@{/BGGForum/users/__${post.userId.id}__}"
+                                            th:text="${post.userId.firstName} + ' ' + ${post.userId.lastName}">John</a>
+                <br>
                 <div>
                     <span th:each="tag, iterStat : ${post.getTags()}">
                 <span class="tag-name">
@@ -142,7 +144,9 @@
 
                             <div class="comment_text">
                                 <div class="comment_author">
-                                    <span th:text="${currentCom.getUserId().firstName + ' ' + currentCom.getUserId().lastName}">Steve</span>
+                                    <a style="text-decoration: none"
+                                       th:href="@{/BGGForum/users/__${currentCom.userId.id}__}"
+                                       th:text="${currentCom.getUserId().firstName + ' ' + currentCom.getUserId().lastName}">Steve</a>
                                     <span class="date"
                                           th:text="${#temporals.format(currentCom.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}">December 10, 2048</span>
                                     <!--<span class="time">12:30 AM</span>-->

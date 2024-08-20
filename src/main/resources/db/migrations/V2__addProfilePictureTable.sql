@@ -1,5 +1,3 @@
-USE boardgames_forum;
-
 CREATE TABLE profile_pictures
 (
     id        INT AUTO_INCREMENT PRIMARY KEY,

@@ -21,7 +21,5 @@ public interface TagService {
 
     void create(Tag tag);
 
-    void update(Tag tag, User user);
-
     void delete(long id, User user);
 }

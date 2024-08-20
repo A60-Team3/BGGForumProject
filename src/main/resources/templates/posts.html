@@ -11,32 +11,35 @@
 
     <div th:replace="~{/fragments/navbar.html}"></div>
 
-    <div class="py-5 post-filter" sec:authorize="isAuthenticated()">
+    <div class="post-filter" sec:authorize="isAuthenticated()">
         <div class="container d-flex align-items-center flex-column">
-            <h5 id="filter-title" th:text="#{filter.label}">Filter Options</h5>
+            <div id="filter-container">
+                <span><i class="fa fa-search"></i></span>
+                <h5 id="filter-title" th:text="#{filter.label}">Filter Options </h5>
+            </div>
             <div id="filter-content" class="filter-content">
                 <form action="#" th:action="@{__${requestURI}__}" method="get" th:object="${postFilterOptions}">
                     <div class="input-group">
                         <input type="text" placeholder="Post Title" th:field="*{title}"/>
                         <input type="text" placeholder="Post Content" th:field="*{content}"/>
                         <select th:field="*{createCondition}">
-                            <option value="">None</option>
-                            <option value="<">'<'</option>
-                            <option value="<=>">'<='</option>
-                            <option value=">">'>'</option>
-                            <option value=">=">'>='</option>
-                            <option value="=">'='</option>
-                            <option value="!=">'!='</option>
+                            <option value="">Published</option>
+                            <option value="<">Before</option>
+                            <option value="<=>">BeforeOrSame</option>
+                            <option value=">">After</option>
+                            <option value=">=">AfterOrSame</option>
+                            <option value="=">Same</option>
+                            <option value="!=">NotSame</option>
                         </select>
                         <input type="datetime-local" th:field="*{created}"/>
                         <select th:field="*{updateCondition}">
-                            <option value="">None</option>
-                            <option value="<">'<'</option>
-                            <option value="<=>">'<='</option>
-                            <option value=">">'>'</option>
-                            <option value=">=">'>='</option>
-                            <option value="=">'='</option>
-                            <option value="!=">'!='</option>
+                            <option value="">Edited</option>
+                            <option value="<">Before</option>
+                            <option value="<=>">BeforeOrSame</option>
+                            <option value=">">After</option>
+                            <option value=">=">AfterOrSame</option>
+                            <option value="=">Same</option>
+                            <option value="!=">NotSame</option>
                         </select>
                         <input type="datetime-local" th:field="*{updated}"/>
                         <select th:field="*{sortBy}">
@@ -86,11 +89,14 @@
                         <h2>
                             <a href="#" th:href="@{__${requestURI}__/__${post.id}__}" th:text="${post.title}">Post</a>
                         </h2>
-                        <div class="tags" th:each="tag, iterStat : ${post.tags}">
-                            <span th:text="${tag.name}">Tag Name</span>
+                        <div class="tags">
+                            <div th:each="tag, iterStat : ${post.tags}">
+                                <span th:text="${tag.name}">Tag Name</span>
+                            </div>
                         </div>
                     </div>
-                    <div th:text="#{post.label.content}  + ': ' + ${post.content}">Post content</div>
+                    <div class="text-ellipsis" th:text="#{post.label.content}  + ': ' + ${post.content}">Post content
+                    </div>
 
                     <div class="comment_text">
                         <div class="reply" th:if="${post.userId.username == #authentication.name}">
@@ -111,8 +117,11 @@
                     <div th:text="#{post.label.updated}  + ': ' + ${#temporals.format(post.updatedAt,'dd-MM-yyyy HH:mm')}">
                         Last Updated
                     </div>
-                    <div th:text="#{post.label.createdBy}  + ': ' + ${post.userId.firstName} + ' ' + ${post.userId.lastName}">
-                        Creator
+                    <div >
+                        <span th:text="#{post.label.createdBy}  + ': '"></span>
+                        <a href="#" style="text-decoration: none"
+                           th:href="@{/BGGForum/users/__${post.userId.id}__}"
+                           th:text="${post.userId.firstName} + ' ' + ${post.userId.lastName}"></a>
                     </div>
                 </div>
                 <nav th:replace="~{/fragments/pagination.html :: pagination(pagingPost)}"></nav>

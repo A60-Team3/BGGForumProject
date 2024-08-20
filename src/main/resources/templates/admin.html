@@ -7,9 +7,12 @@
 <div th:replace="~{/fragments/background}"></div>
 <div id="templatemo_wrapper">
     <div th:replace="~{/fragments/navbar.html}"></div>
-    <div class="py-5 post-filter">
+    <div class="post-filter">
         <div class="container d-flex align-items-center flex-column ">
-            <h5 id="filter-title" th:text="#{filter.label}">Filter Options</h5>
+            <div id="filter-container">
+                <span><i class="fa fa-search"></i></span>
+                <h5 id="filter-title" th:text="#{filter.label}">Filter Options </h5>
+            </div>
             <div id="filter-content" class="filter-content">
                 <form action="#" th:action="@{__${requestURI}__}" method="get" th:object="${userFilterOptions}">
                     <div class="input-group align-content-center">
@@ -18,28 +21,28 @@
                         <input type="text" placeholder="Email" th:field="*{email}"/>
                         <input type="text" placeholder="Username" th:field="*{username}"/>
                         <input type="text" placeholder="Phone Number" th:field="*{phoneNumber}"/>
-                        <input type="radio" th:field="*{isBlocked}" id="isBlocked" value="true"/>
+                        <input type="checkbox" th:field="*{isBlocked}" id="isBlocked" value="true"/>
                         <label for="isBlocked" th:text="isBlocked"></label>
-                        <input type="radio" th:field="*{isDeleted}" id="isDeleted" value="true"/>
+                        <input type="checkbox" th:field="*{isDeleted}" id="isDeleted" value="true"/>
                         <label for="isDeleted" th:text="isDeleted"></label>
                         <select th:field="*{createCondition}">
-                            <option value="">None</option>
-                            <option value="<">'<'</option>
-                            <option value="<=>">'<='</option>
-                            <option value=">">'>'</option>
-                            <option value=">=">'>='</option>
-                            <option value="=">'='</option>
-                            <option value="!=">'!='</option>
+                            <option value="">Registered</option>
+                            <option value="<">Before</option>
+                            <option value="<=>">BeforeOrSame</option>
+                            <option value=">">After</option>
+                            <option value=">=">AfterOrSame</option>
+                            <option value="=">Same</option>
+                            <option value="!=">NotSame</option>
                         </select>
                         <input type="datetime-local" th:field="*{created}"/>
                         <select th:field="*{updateCondition}">
-                            <option value="">None</option>
-                            <option value="<">'<'</option>
-                            <option value="<=>">'<='</option>
-                            <option value=">">'>'</option>
-                            <option value=">=">'>='</option>
-                            <option value="=">'='</option>
-                            <option value="!=">'!='</option>
+                            <option value="">Last Update</option>
+                            <option value="<">Before</option>
+                            <option value="<=>">BeforeOrSame</option>
+                            <option value=">">After</option>
+                            <option value=">=">AfterOrSame</option>
+                            <option value="=">Same</option>
+                            <option value="!=">NotSame</option>
                         </select>
                         <input type="datetime-local" th:field="*{updated}"/>
                         <select th:field="*{sortBy}">
@@ -138,27 +141,41 @@
                                                 <!--AdminButtons-->
                                                 <div>
                                                     <div th:unless="${user.username == #authentication.name}">
-                                                        <form action="#" sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')"
-                                                              th:action="@{__${requestURI}__/__${user.id}__/block(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
-                                                              method="post">
-                                                            <input th:if="${user.isBlocked}" type="submit"
-                                                                   class="btn btn-success mt-auto lh-1" value="Free"/>
-                                                            <input th:unless="${user.isBlocked}" type="submit"
-                                                                   class="btn btn-danger mt-auto lh-1" value="Block">
-                                                        </form>
-                                                        <form action="#" sec:authorize="hasRole('ADMIN')"
-                                                              th:action="@{__${requestURI}__/__${user.id}__/archive(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
-                                                              method="post">
-                                                            <input th:unless="${user.isDeleted}" type="submit"
-                                                                   class="btn btn-danger mt-auto lh-1" value="Archive"/>
-                                                            <input th:formaction="@{__${requestURI}__/__${user.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
-                                                                   type="submit"
-                                                                   class="btn btn-danger mt-auto lh-1" value="Delete"/>
-                                                            <input th:if="${user.roles.?[authority != 'USER'].isEmpty()}"
-                                                                   th:formaction="@{__${requestURI}__/__${user.id}__/promote(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
-                                                                   type="submit"
-                                                                   class="btn btn-success mt-auto lh-1" value="Promote"/>
-                                                        </form>
+                                                        <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                                                            <form action="#" th:if="${user.roles.?[authority == 'ADMIN'].isEmpty()}"
+                                                                  th:action="@{__${requestURI}__/__${user.id}__/block(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
+                                                                  method="post">
+                                                                <input th:if="${user.isBlocked}" type="submit"
+                                                                       class="btn btn-success mt-auto lh-1"
+                                                                       value="Free"/>
+                                                                <input th:unless="${user.isBlocked}" type="submit"
+                                                                       class="btn btn-danger mt-auto lh-1"
+                                                                       value="Block">
+                                                            </form>
+                                                        </div>
+                                                        <div sec:authorize="hasRole('ADMIN')">
+                                                            <form action="#"
+                                                                  th:action="@{__${requestURI}__/__${user.id}__/archive(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
+                                                                  method="post">
+                                                                <input th:unless="${user.isDeleted}" type="submit"
+                                                                       class="btn btn-danger mt-auto lh-1"
+                                                                       value="Archive"/>
+                                                                <input th:formaction="@{__${requestURI}__/__${user.id}__/delete(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
+                                                                       type="submit"
+                                                                       class="btn btn-danger mt-auto lh-1"
+                                                                       value="Delete"/>
+                                                                <input th:if="${user.roles.?[authority == 'MODERATOR'].isEmpty()}"
+                                                                       th:formaction="@{__${requestURI}__/__${user.id}__/promote(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
+                                                                       type="submit"
+                                                                       class="btn btn-success mt-auto lh-1"
+                                                                       value="Promote"/>
+                                                                <input th:if="${user.roles.?[authority == 'USER'].isEmpty()}"
+                                                                       th:formaction="@{__${requestURI}__/__${user.id}__/promote(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
+                                                                       type="submit"
+                                                                       class="btn btn-danger mt-auto lh-1"
+                                                                       value="Demote"/>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <!-- Portfolio Modal - Title-->

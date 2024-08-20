@@ -104,17 +104,6 @@ public class PostMvcController {
     public ReactionDTO populateReactionDto() {
         return new ReactionDTO();
     }
-    //TODO: implement likes and dislikes counter
-    /*
-    @ModelAttribute("likes")
-    public int populateLikesCount() {
-        return reactionService.getLikesCount();
-    }
-
-    @ModelAttribute("dislikes")
-    public List<Reaction> populateDislikes(){
-        return reactionService.getDislikes;
-    }*/
 
     @GetMapping
     public String getPosts(@RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
@@ -198,13 +187,13 @@ public class PostMvcController {
         }
     }
 
-    @GetMapping("/{id}/update")
-    public String showEditPostPage(@PathVariable long id, Model model) {
+    @GetMapping("/{postId}/update")
+    public String showEditPostPage(@PathVariable long postId, Model model) {
 
         try {
-            Post post = postService.get(id);
+            Post post = postService.get(postId);
             PostUpdateDTO dto = mapper.map(post, PostUpdateDTO.class);
-            model.addAttribute("postId", id);
+            model.addAttribute("postId", postId);
             model.addAttribute("post", dto);
             model.addAttribute("tag", new TagDTO());
             return "post-edit";
@@ -215,24 +204,27 @@ public class PostMvcController {
         }
     }
 
-    @PostMapping("/{id}/update")
-    public String updatePost(@PathVariable long id,
+    @PostMapping("/{postId}/update")
+    public String updatePost(@PathVariable long postId,
                              @Valid @ModelAttribute("post") PostUpdateDTO dto,
                              BindingResult bindingResult,
                              Model model,
                              @AuthenticationPrincipal UserDetails loggedUser) {
 
         User user = userService.get(loggedUser.getUsername());
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("tag", new TagDTO());
-            model.addAttribute("postId", id);
+            model.addAttribute("postId", postId);
             return "post-edit";
         }
 
+
+
         try {
             Post post = mapper.map(dto, Post.class);
-            postService.update(id, post, user);
-            return "redirect:/BGGForum/posts/{id}";
+            postService.update(postId, post, user);
+            return "redirect:/BGGForum/posts/{postId}";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());

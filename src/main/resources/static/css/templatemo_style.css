@@ -1217,6 +1217,16 @@ em {
     display: block; /* Show when class is added */
 }
 
+.text-ellipsis {
+    white-space: nowrap;        /* Prevent text from wrapping */
+    overflow: hidden;           /* Hide the overflow text */
+    text-overflow: ellipsis;    /* Display "..." at the end */
+}
 
+#filter-container{
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+}
 
 /*custom css*/

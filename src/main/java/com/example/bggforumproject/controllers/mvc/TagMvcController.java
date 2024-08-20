@@ -1,6 +1,7 @@
 package com.example.bggforumproject.controllers.mvc;
 
 import com.example.bggforumproject.dtos.response.TagDTO;
+import com.example.bggforumproject.exceptions.AuthorizationException;
 import com.example.bggforumproject.exceptions.EntityDuplicateException;
 import com.example.bggforumproject.helpers.filters.TagFilterOptions;
 import com.example.bggforumproject.models.ProfilePicture;
@@ -92,6 +93,10 @@ public class TagMvcController {
             model.addAttribute("statusCode", HttpStatus.CONFLICT.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "error-page";
+        } catch (AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "error-page";
         }
 
         return "redirect:/BGGForum/posts/{postId}/update#tag-input";
@@ -99,10 +104,17 @@ public class TagMvcController {
 
     @GetMapping("/{postId}/tags/{tagId}/remove")
     public String deleteTagFromPost(@PathVariable long postId,
-                                    @PathVariable long tagId,
+                                    @PathVariable long tagId, Model model,
                                     @AuthenticationPrincipal UserDetails loggedUser){
         User user = userService.get(loggedUser.getUsername());
-        tagService.deleteTagFromPost(tagId, postId, user);
+        try {
+            tagService.deleteTagFromPost(tagId, postId, user);
+        } catch (AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "error-page";
+        }
+
         return "redirect:/BGGForum/posts/{postId}";
 
     }

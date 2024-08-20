@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 public class TagServiceImpl implements TagService {
 
-    private static final String DELETE_TAG_ERROR_MESSAGE = "Comments can only be deleted by the post creator, moderators or admins!";
+    private static final String DELETE_TAG_ERROR_MESSAGE = "Tags can only be deleted by the post creator, moderators or admins!";
 
     private final TagRepository tagRepository;
     private final PostRepository postRepository;
@@ -102,11 +102,6 @@ public class TagServiceImpl implements TagService {
 
     }
 
-    /*@Override
-    public List<Tag> getTagsOfPost(long postId) {
-        return tagRepository.getTagsOfPost(postId);
-    }*/
-
     @Override
     public void create(Tag tag) {
         boolean isDuplicate = true;
@@ -122,43 +117,6 @@ public class TagServiceImpl implements TagService {
         }
 
         tagRepository.create(tag);
-    }
-
-    @Override
-    public void update(Tag tag, User user) {
-        //TODO implement - check for ownership, must receive postID but not from tag
-        boolean hasPermission = true;
-        try {
-            authorizationHelper.checkPermissions(user, RoleType.ADMIN,RoleType.MODERATOR);
-        } catch (AuthorizationException e) {
-            hasPermission = false;
-        }
-
-        if (!hasPermission) {
-            try {
-                Post post = new Post(); /* remove when acquire real post*/
-                authorizationHelper.checkOwnership(post /*must be post*/, user);
-            } catch (AuthorizationException e) {
-                throw new AuthorizationException(DELETE_TAG_ERROR_MESSAGE);
-            }
-        }
-
-        boolean isDuplicate = true;
-
-        try {
-            Tag existingTag = tagRepository.get(tag.getName());
-            if (existingTag.getId() == tag.getId()) {
-                isDuplicate = false;
-            }
-        } catch (EntityNotFoundException e) {
-            isDuplicate = false;
-        }
-
-        if (isDuplicate) {
-            throw new EntityDuplicateException("Tag", "name", tag.getName());
-        }
-
-        tagRepository.update(tag);
     }
 
     @Override

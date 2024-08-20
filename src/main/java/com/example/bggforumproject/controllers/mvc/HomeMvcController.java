@@ -17,4 +17,9 @@ public class HomeMvcController {
     public String redirectHomePage(){
         return "redirect:/BGGForum/main";
     }
+
+    @GetMapping("/BGGForum/")
+    public String redirectAlsoToHomePage(){
+        return "redirect:/BGGForum/main";
+    }
 }
