@@ -5,6 +5,7 @@
 #### **Admin user**: 
 ##### Username: _john_doe_ Password: _password123_
 #### Moderators: None - _must promote user from admin menu_
+##### All passwords are _password123_
 ### Additional info about endpoint access levels - [SecurityConfiguration](https://github.com/A60-Team3/BGGForumProject/blob/main/src/main/java/com/example/bggforumproject/security/SecurityConfiguration.java)
 ## Database
 ### A crude implementation of [Flyway](https://flywaydb.org/) database version control. Only used for database creation.
