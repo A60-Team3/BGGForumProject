@@ -43,11 +43,12 @@ public class CommentServiceTests {
         int pageIndex = 0;
         int pageSize = 10;
 
-        Mockito.when(postRepository.get(post.getId())).thenReturn(post);
+        Mockito.when(postRepository.get(Mockito.anyLong())).thenReturn(post);
+
         commentService.getCommentsForPost(post.getId(), pageIndex, pageSize);
 
         Mockito.verify(commentRepository, Mockito.times(1))
-                .get(mockCommentFilterOptions, pageIndex, pageSize);
+                .getCommentsForPost(post.getId(), pageIndex, pageSize);
     }
 
     @Test

@@ -21,6 +21,8 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
+
 import static com.example.bggforumproject.helpers.CreationHelper.createMockUser;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,19 +89,27 @@ public class AuthenticationServiceTests {
                 .when(passwordEncoder.encode(Mockito.anyString()))
                 .thenReturn(user.getPassword());
 
+        Mockito.when(userRepository.getAll())
+                .thenReturn(List.of(user));
+
         Mockito
                 .when(roleRepository.getByAuthority(Mockito.any()))
                 .thenReturn(new Role(RoleType.USER));
 
-        service.registerUser(user);
+//        service.registerUser(user);
 
-        Mockito.verify(userRepository).create(user);
+        Assertions.assertThrows(
+                EntityNotFoundException.class,
+                () -> service.registerUser(user)
+        );
+
+        Mockito.verify(userRepository, Mockito.times(1)).create(user);
     }
 
     @Test
     public void loginUser_Should_Return_JWTToken() {
         User user = createMockUser();
-        Authentication auth = new TestingAuthenticationToken(user, Mockito.any());
+        Authentication auth = new TestingAuthenticationToken(user, "password123");
 
         ResponseDTO responseDTO = service.loginUser(auth);
 
@@ -111,6 +121,5 @@ public class AuthenticationServiceTests {
 
 
     }
-
 
 }

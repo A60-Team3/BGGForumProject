@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
@@ -78,7 +79,7 @@ public class AnonymousUserServiceTests {
         Mockito.when(postRepository.get(postFilterOptions, pageIndex, pageSize))
                 .thenReturn(new PageImpl<>(posts));
 
-        assertEquals(posts, anonymousUserService.getAllPosts(postFilterOptions, pageIndex, pageSize));
+        assertEquals(new PageImpl<>(posts), anonymousUserService.getAllPosts(postFilterOptions, pageIndex, pageSize));
         Mockito.verify(postRepository, Mockito.times(1)).get(postFilterOptions, pageIndex, pageSize);
 
     }
@@ -102,4 +103,44 @@ public class AnonymousUserServiceTests {
 
     }
 
+    @Test
+    public void getMostCommented_Should_ReturnPosts() {
+        Post post = createMockPostWithTags();
+        List<Post> posts = List.of(post);
+
+        Mockito.when(postRepository.getMostCommented()).thenReturn(posts);
+
+        List<Post> mostCommented = anonymousUserService.getMostCommented();
+
+        assertEquals(1, mostCommented.size());
+        Mockito.verify(postRepository, Mockito.times(1)).getMostCommented();
+    }
+
+    @Test
+    public void getMostRecentlyCreated_Should_ReturnPagePosts() {
+        Post post = createMockPostWithTags();
+        List<Post> posts = List.of(post);
+
+        Mockito.when(postRepository.getMostRecentlyCreated(1,5))
+                .thenReturn(new PageImpl<>(List.of(post)));
+
+        Page<Post> mostCommented = anonymousUserService.getMostRecentlyCreated(1,5);
+
+        assertEquals(1, mostCommented.getTotalElements());
+        Mockito.verify(postRepository, Mockito.times(1)).getMostRecentlyCreated(1,5);
+    }
+
+    @Test
+    public void get_Should_ReturnUser() {
+        User user = createMockUser();
+
+        Mockito.when(userRepository.getByUsername(Mockito.anyString()))
+                .thenReturn(user);
+
+        User fromDB = anonymousUserService.get(user.getUsername());
+
+        assertEquals(user.getUsername(), fromDB.getUsername());
+        Mockito.verify(userRepository, Mockito.times(1))
+                .getByUsername(user.getUsername());
+    }
 }
