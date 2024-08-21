@@ -170,7 +170,7 @@
                                                                        class="btn btn-success mt-auto lh-1"
                                                                        value="Promote"/>
                                                                 <input th:if="${user.roles.?[authority == 'USER'].isEmpty()}"
-                                                                       th:formaction="@{__${requestURI}__/__${user.id}__/promote(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
+                                                                       th:formaction="@{__${requestURI}__/__${user.id}__/demote(pageIndex=${currentPage - 1}, pageSize=${pageSize})}"
                                                                        type="submit"
                                                                        class="btn btn-danger mt-auto lh-1"
                                                                        value="Demote"/>

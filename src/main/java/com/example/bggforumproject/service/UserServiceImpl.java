@@ -96,7 +96,12 @@ public class UserServiceImpl implements UserService {
         Role moderator = roleRepository.getByAuthority(RoleType.MODERATOR);
         Role admin = new Role(RoleType.ADMIN);
 
-        if (userToPromote.getRoles().contains(moderator) || userToPromote.getRoles().contains(admin)) {
+        if (userToPromote.getRoles().contains(admin)) {
+            throw new EntityDuplicateException(
+                    String.format("User with id %d is already %s", id, admin.getAuthority()));
+        }
+
+        if (userToPromote.getRoles().contains(moderator)) {
             throw new EntityDuplicateException(
                     String.format("User with id %d is already %s", id, moderator.getAuthority())
             );
@@ -109,6 +114,35 @@ public class UserServiceImpl implements UserService {
         userToPromote.getRoles().add(moderator);
 
         userRepository.update(userToPromote);
+
+        return userRepository.getById(id);
+    }
+
+    @Override
+    public User demote(long id, User currentUser) {
+        authorizationHelper.checkPermissions(currentUser, RoleType.ADMIN);
+
+        User userToDemote = userRepository.getById(id);
+
+        Role user = roleRepository.getByAuthority(RoleType.USER);
+        Role admin = new Role(RoleType.ADMIN);
+
+        if (userToDemote.getRoles().contains(admin)) {
+            throw new EntityDuplicateException("Cannot demote an admin");
+        }
+
+        if (userToDemote.getRoles().contains(user)) {
+            throw new EntityDuplicateException(
+                    String.format("User with id %d is already %s", id, user.getAuthority()));
+        }
+
+        userToDemote.setRoles(userToDemote.getRoles().stream()
+                .filter(userRole -> !userRole.getRole().equals(RoleType.MODERATOR))
+                .collect(Collectors.toSet()));
+
+        userToDemote.getRoles().add(user);
+
+        userRepository.update(userToDemote);
 
         return userRepository.getById(id);
     }

@@ -27,6 +27,8 @@ public interface UserService {
 
     Page<Comment> getSpecificUserComments(long id, int pageIndex, int pageSize);
 
+    User demote(long id, User currentUser);
+
     User update(long id, User loggedUser, User user);
 
     User promote(long id, User currentUser);

@@ -117,6 +117,24 @@ public class AdminMvcController {
         return "redirect:/BGGForum/admin";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{userId}/demote")
+    public String demoteUser(@RequestParam(value = "pageIndex") int pageIndex,
+                              @RequestParam(value = "pageSize") int pageSize,
+                              @PathVariable long userId,
+                              RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.get(authentication.getName());
+
+        redirectAttributes.addAttribute("pageIndex", pageIndex + 1);
+        redirectAttributes.addAttribute("pageSize", pageSize);
+        redirectAttributes.addAttribute("openModal", userId);
+
+        currentUser = userService.demote(userId, currentUser);
+
+        return "redirect:/BGGForum/admin";
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     @PostMapping("/{userId}/block")
     public String blockUser(@RequestParam(value = "pageIndex") int pageIndex,
