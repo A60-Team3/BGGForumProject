@@ -240,8 +240,8 @@ public class PostMvcController {
     }
 
     @GetMapping("/{postId}/delete")
-    public String deletePost(@RequestParam(value = "pageIndex") int pageIndex,
-                             @RequestParam(value = "pageSize") int pageSize,
+    public String deletePost(@RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
+                             @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
                              @PathVariable long postId, Model model,
                              @AuthenticationPrincipal UserDetails loggedUser,
                              RedirectAttributes redirectAttributes) {
